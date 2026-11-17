@@ -296,3 +296,26 @@ export async function assertSaveBytes(
     } actual=${actual[offset] ?? '<end>'}\n${structure}\n${evidence}`,
   );
 }
+
+/** Exact JSON/domain values and download bytes with one failure attachment pair.
+ * Keep the expression as a diagnostic label so subtree checks remain identifiable. */
+export async function assertExact(actual: unknown, expected: unknown, phase: string, peer = 'primary/HTTP', info = test.info()) {
+  if (actual instanceof Uint8Array && expected instanceof Uint8Array) {
+    return assertSaveBytes(actual, expected, { phase, peer }, info);
+  }
+  return assertCanonicalState(actual, expected, { phase, peer }, info);
+}
+
+/** Bounded evidence for HTTP/presentation predicates without a session watermark.
+ * Session peers must use checkpoint()/converge() before their exact assertions. */
+export async function waitForExact(read: () => unknown | Promise<unknown>, expected: unknown, phase: string, timeout = 5000) {
+  const end = Date.now() + timeout;
+  let actual: unknown;
+  do {
+    actual = await read();
+    if (!compareValues(actual, expected).differences) return;
+    if (Date.now() >= end) break;
+    await new Promise(resolve => setTimeout(resolve, 25));
+  } while (true);
+  await assertExact(actual, expected, phase);
+}

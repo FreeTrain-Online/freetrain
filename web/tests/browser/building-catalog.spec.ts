@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { expect,extended,test,type Page } from './fixtures.ts';
 import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 
@@ -76,7 +77,7 @@ for (const ja of [false, true]) test(`independent catalog, category browsing and
     await category.selectOption('signal'); await expect(search).toHaveValue('');
     await category.selectOption('stationary'); await expect(search).toHaveValue('no such item'); await search.fill('');
     await expect(inspect).toHaveAttribute('aria-pressed', 'true');
-    expect(await map(page).getAttribute('data-camera')).toBe(camera); expect(await save(page)).toEqual(before);
+    expect(await map(page).getAttribute('data-camera')).toBe(camera); await assertExact(await save(page),before,"await save(page)");
     await category.selectOption('signal');
     await catalog.getByRole('button', { name: ja ? '入替信号' : 'Shunting signal', exact: true }).click();
     await expect(page.getByRole('button', { name: ja ? '信号' : 'Signals', exact: true })).toHaveAttribute('aria-pressed', 'true');
@@ -107,7 +108,7 @@ for (const ja of [false, true]) test(`independent catalog, category browsing and
     await expect(category).toHaveValue('signal'); await expect(confirm).toBeEnabled();
     await catalog.getByRole('button', { name: ja ? '三灯式' : 'Three-aspect signal', exact: true }).focus(); await page.keyboard.press('Escape');
     await expect(catalog).toHaveCount(0); await expect(confirm).toBeEnabled();
-    expect(await save(page)).toEqual(before);
+    await assertExact(await save(page),before,"await save(page)");
     await page.getByRole('button', { name: ja ? '鉄道アクセサリ' : 'Railway accessories', exact: true }).click();
     await expect(category).toHaveValue('stationary'); await expect(catalog.locator('.catalog-item')).toHaveCount(9);
     const second = catalog.getByRole('button', { name: `${ja ? 'レンガ橋脚' : 'Brick pier'} · 2`, exact: true });
@@ -123,7 +124,7 @@ for (const ja of [false, true]) test(`independent catalog, category browsing and
     await family.locator('.catalog-item-main').click(); await expect(fifth).toHaveAttribute('aria-pressed', 'true');
     await expect(family).toHaveAttribute('data-variant', '{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E');
 
-    expect(await save(page)).toEqual(before);
+    await assertExact(await save(page),before,"await save(page)");
   } finally { await restore(page, original); }
 });
 
@@ -217,5 +218,5 @@ for (const ja of [false, true]) test(`station catalog variants, quotes and platf
   await search.fill('no such station'); await expect(cards).toHaveCount(0);
   await category.selectOption('signal'); await expect(search).toHaveValue('');
   await category.selectOption('station'); await expect(search).toHaveValue('no such station');
-  expect(await save(page)).toEqual(before);
+  await assertExact(await save(page),before,"await save(page)");
 });

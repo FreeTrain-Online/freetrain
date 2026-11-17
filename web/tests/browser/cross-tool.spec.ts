@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { expect,extended,test,type Page } from './fixtures.ts';
 import { closePanel,openPanel,ready,canonicalState as state } from './browser-helpers.ts';
 async function save(p:Page){return(await p.request.get('/api/saves/download')).body();}
@@ -21,8 +22,8 @@ for(const ja of [false,true])test(`cross-tool terrain protection, unrelated peer
    for(const [name,n] of [[ja?'隅のセル X':'Corner cell X',x],[ja?'隅のセル Y':'Corner cell Y',y],[ja?'隅のセル Z':'Corner cell Z',1]] as const)await page.getByLabel(name,{exact:true}).fill(String(n));
    await page.getByRole('button',{name:check,exact:true}).click();
   }
-  await corner(30,27);await expect(page.getByRole('button',{name:confirm,exact:true})).toBeDisabled();expect(await save(page)).toEqual(before);
-  await corner(20,20);await expect(page.getByRole('button',{name:confirm,exact:true})).toBeEnabled();expect(await save(page)).toEqual(before);
+  await corner(30,27);await expect(page.getByRole('button',{name:confirm,exact:true})).toBeDisabled();await assertExact(await save(page),before,"await save(page)");
+  await corner(20,20);await expect(page.getByRole('button',{name:confirm,exact:true})).toBeEnabled();await assertExact(await save(page),before,"await save(page)");
   if(ja&&!extended()){
    const primary=page.getByRole('button',{name:confirm,exact:true});await expect(primary).toBeInViewport();await primary.focus();await page.keyboard.press('Enter');await expect(primary).toBeDisabled();
    await expect.poll(async()=>(await state(page)).terrain.occupants.length).toBe(4);await expect(canvas).toHaveAttribute('data-instance','cross-tool');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect(errors).toEqual([]);return;
@@ -37,11 +38,11 @@ for(const ja of [false,true])test(`cross-tool terrain protection, unrelated peer
   await expect(page.getByRole('button',{name:confirm,exact:true})).toBeEnabled();
   await page.getByRole('button',{name:confirm,exact:true}).click();await expect(page.getByRole('button',{name:confirm,exact:true})).toBeDisabled();
   await expect.poll(async()=>(await state(peer)).terrain.occupants.length).toBe(4);
-  const after=await state(page);expect(after.mixed.voxels).toEqual(withPole.mixed.voxels);expect(after.mixed.voxels).toEqual((await state(peer)).mixed.voxels);expect(after.mixed.accounts).toEqual(built.mixed.accounts);expect(after.tick).toBe(built.tick);
+  const after=await state(page);await assertExact(after.mixed.voxels,withPole.mixed.voxels,"after.mixed.voxels");await assertExact(after.mixed.voxels,(await state(peer)).mixed.voxels,"after.mixed.voxels");await assertExact(after.mixed.accounts,built.mixed.accounts,"after.mixed.accounts");expect(after.tick).toBe(built.tick);
   await page.getByRole('button',{name:ja?'マップ作成を開始':'Enter map authoring',exact:true}).click();await page.getByRole('button',{name:ja?'モード変更を確定':'Confirm mode change',exact:true}).click();
   await expect(page.getByTestId('authoring-mode')).toContainText(ja?'有効':'on');
   await expect(canvas).toHaveAttribute('data-instance','cross-tool');expect(await canvas.getAttribute('data-camera')).toBe(camera);
 
-  const saved=await save(page);await replace(page,saved);await page.reload();await ready(page,ja?'ja':'en');expect(await save(page)).toEqual(saved);expect(errors).toEqual([]);
+  const saved=await save(page);await replace(page,saved);await page.reload();await ready(page,ja?'ja':'en');await assertExact(await save(page),saved,"await save(page)");expect(errors).toEqual([]);
  }finally{await peer.close();await replace(page,original);}
 });

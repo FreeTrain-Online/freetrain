@@ -1,7 +1,19 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Page, type Locator } from '@playwright/test';
+import type { MapDrawObservation } from '../../src/lib/test-observation.ts';
 import type { Camera } from '../../src/lib/map-display.ts';
 
 export type MapPoint = { x: number; y: number };
+
+/** Wait for reactive invalidation and its completed ready draw, including resize
+ * and refinement. This observes the renderer instead of counting browser frames. */
+export async function waitForMapDraw(target: Page | Locator, timeout = 15000): Promise<void> {
+  const canvas = 'viewportSize' in target ? target.locator('canvas.world-canvas') : target;
+  await canvas.evaluate(async element => {
+    const wait = (element as HTMLCanvasElement & MapDrawObservation).__freetrainWaitForDraw;
+    if (!wait) throw new Error('Map draw observation is unavailable');
+    await wait();
+  }, undefined, { timeout });
+}
 
 /** The full-precision camera belongs to a completed draw, including its hit map. */
 export async function renderedCamera(page: Page): Promise<Camera> {

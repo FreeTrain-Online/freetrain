@@ -1,4 +1,7 @@
-import {test,expect,type Page,type Browser} from '@playwright/test';
+import { waitForMapDraw } from './map-picking.ts';
+import { captureProcess } from './process-evidence.ts';
+import { assertExact } from './assertions.ts';
+import {test,expect,type Page,type Browser} from './fixtures.ts';
 import {spawn,execFileSync,type ChildProcess} from 'node:child_process';
 import {readFileSync,mkdirSync,writeFileSync,mkdtempSync} from 'node:fs';
 import {join,resolve} from 'node:path';
@@ -13,7 +16,7 @@ const dll=resolve('../src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.
 const probe=resolve('../tools/TerrainTransportProbe/bin/Release/net10.0/TerrainTransportProbe.dll');
 const boot='/api/bootstrap?protocolVersion=11&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2&contentVersion=mixed-railway-content-1&metadataOnly=true';
 let server:ChildProcess,web:ChildProcess;
-const log=(child:ChildProcess)=>{child.stdout?.on('data',()=>{});child.stderr?.on('data',b=>process.stderr.write(b));return child;};
+const log=(child:ChildProcess)=>captureProcess(child,child.spawnfile==='dotnet'?'backend':'preview',test.info().workerIndex);
 async function startServer(){server=log(spawn('dotnet',[dll,'--urls',serverURL],{env:{...process.env,FreeTrainOnline__Saves__Directory:saves,
   FreeTrainOnline__Participants__0__Id:'viewer',FreeTrainOnline__Participants__0__Role:'observer',FreeTrainOnline__Participants__0__Secret:'capacity-observer'}}));
   await expect.poll(async()=>{try{return(await fetch(serverURL+'/health')).ok;}catch{return false;}},{timeout:60000}).toBe(true);
@@ -50,7 +53,7 @@ async function timedButton(page:Page,label:string,selector:string,text:string){r
  observer.observe(element,{childList:true,subtree:true,characterData:true});
  [...document.querySelectorAll('button')].find(b=>b.textContent===label)!.click();
 }),{label,selector,text});}
-async function frame(page:Page){await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));}
+async function frame(page:Page){await waitForMapDraw(page,60000);}
 for(const mode of ['small','medium','large','limit','route','empty','heavy'])for(const locale of (mode==='empty'||mode==='heavy'?['en','ja']:['en']))test(`P4-23 ${mode} ${locale}: legal rails, cold/steady interaction, chunks and exact restart`,async({page,browser})=>{
  test.setTimeout(600000);const memory=await memorySampler(browser),errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
  const measurement=JSON.parse(readFileSync(join(fixtureRoot,mode,'measurement.json'),'utf8'));
@@ -190,7 +193,7 @@ test('P4-23 heavy resource field and exact railway picking while shared time run
   await page.getByRole('button',{name:'Pause',exact:false}).first().click();await expect(page.getByTestId('clock-state')).toHaveText('Paused');
   await page.screenshot({path:join(directory,'heavy-resource-field.png'),fullPage:true});
   const final=JSON.parse((await(await page.request.get('/api/saves/download',{timeout:60000})).body()).toString());
-  expect(final.mixed).toEqual(saved.mixed);expect(final.packedTerrain).toEqual(saved.packedTerrain);expect(BigInt(final.clock.absoluteMinute)).toBeGreaterThan(BigInt(saved.clock.absoluteMinute));
+  await assertExact(final.mixed,saved.mixed,"final.mixed");await assertExact(final.packedTerrain,saved.packedTerrain,"final.packedTerrain");expect(BigInt(final.clock.absoluteMinute)).toBeGreaterThan(BigInt(saved.clock.absoluteMinute));
   writeFileSync(join(directory,'heavy-resource-field.json'),JSON.stringify({railPicks,paints,railPick:stats(railPicks),paint:stats(paints),zoomSamples,zoomFeedback:stats(zoomSamples.map(s=>s.feedbackMs)),zoomSettled:stats(zoomSamples.map(s=>s.settledMs)),owner,clockAdvanced:true,...memory.values()},null,2)+'\n');
  }finally{await memory.stop();}
 });
@@ -257,7 +260,7 @@ for(const kind of ['voxel-edge','journal'])for(const locale of ['en','ja'])test(
  await expect(page.locator('.command-feedback')).toHaveText(text.accepted);
  const stepped=JSON.parse((await snapshot()).toString());
  expect(BigInt(stepped.clock.absoluteMinute)).toBeGreaterThan(BigInt(saved.clock.absoluteMinute));
- expect(stepped.mixed).toEqual(saved.mixed);expect(stepped.packedTerrain).toEqual(saved.packedTerrain);
+ await assertExact(stepped.mixed,saved.mixed,"stepped.mixed");await assertExact(stepped.packedTerrain,saved.packedTerrain,"stepped.packedTerrain");
  expect(errors).toEqual([]);
  writeFileSync(join(directory,`upper-limit-${kind}-${locale}.json`),JSON.stringify({kind,locale,railwayVoxels:saved.mixed.voxels.length,accountEntries:saved.mixed.accounts.transactions.length,reason,receipt,sha256:digest(full),noPartialEffect:true,reopenedExactly:true,clockStillWorks:true,pageErrors:errors},null,2)+'\n');
 });

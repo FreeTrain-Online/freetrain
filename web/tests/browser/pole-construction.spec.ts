@@ -1,3 +1,5 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,extended,test,type Page } from './fixtures.ts';
 import { sourcePixelCounts } from './pixel-helpers.ts';
@@ -36,12 +38,12 @@ for(const ja of [false,true])test(`pole types, inferred axes, replacement, remov
    const confirm=page.getByRole('button',{name:ja?'架線柱の変更を確定':'Confirm pole change',exact:true});
    for(const type of ja&&!extended()?types.slice(0,1):types){
     await page.getByLabel(ja?'架線柱の種類':'Pole type',{exact:true}).selectOption(type);
-    const before=await save(page);await target(page,ja);await expect(confirm).toBeEnabled();expect(await save(page)).toEqual(before);
+    const before=await save(page);await target(page,ja);await expect(confirm).toBeEnabled();await assertExact(await save(page),before,"await save(page)");
     if(ja&&!extended()){await expect(confirm).toBeInViewport();await confirm.focus();await page.keyboard.press('Enter');}else await confirm.click();
     await expect(page.getByTestId('rail-route')).toHaveCount(0);
     await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');
     const built=await state(page),v=built.mixed.voxels.find((v:any)=>v.ownerId===owner);
-    expect(v.traffic.accessory.definition.contributionId).toBe(type);expect(v.traffic.accessory.direction).toBe(axis);expect(v.traffic.rail).toEqual(bare.mixed.voxels.find((v:any)=>v.ownerId===owner).traffic.rail);expect(built.mixed.accounts).toEqual(bare.mixed.accounts);
+    expect(v.traffic.accessory.definition.contributionId).toBe(type);expect(v.traffic.accessory.direction).toBe(axis);await assertExact(v.traffic.rail,bare.mixed.voxels.find((v:any)=>v.ownerId===owner).traffic.rail,"v.traffic.rail");await assertExact(built.mixed.accounts,bare.mixed.accounts,"built.mixed.accounts");
     await expect.poll(async()=>JSON.stringify((await state(peer)).mixed)).toBe(JSON.stringify(built.mixed));
     expect((await pixels(page,[v]))[0]).toBeGreaterThan(3);
     if(type===types[0]){
@@ -49,20 +51,20 @@ for(const ja of [false,true])test(`pole types, inferred axes, replacement, remov
      // Keep the same panel/camera for both visibility states. Entering/leaving
      // a narrow tool sheet can reframe the map independently of pole rendering.
      await openPanel(page,'view',ja?'ja':'en');
-     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+     await waitForMapDraw(page);
      await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');
      await expect(page.locator('canvas')).toHaveAttribute('data-refinement','ready');
      // Both snapshots should start from a full presentation at this camera.
      await page.getByLabel(ja?'架線柱を表示':'Show electric poles',{exact:true}).uncheck();
      await expect(page.locator('canvas')).toHaveAttribute('data-terrain-variant','spring/day');
-     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+     await waitForMapDraw(page);
      await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');
      await page.getByLabel(ja?'架線柱を表示':'Show electric poles',{exact:true}).check();
-     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+     await waitForMapDraw(page);
      await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');
      const shown=await page.locator('canvas').evaluate(c=>(c as HTMLCanvasElement).toDataURL());
      await page.getByLabel(ja?'架線柱を表示':'Show electric poles',{exact:true}).uncheck();
-     await expect.poll(()=>page.locator('canvas').evaluate(c=>(c as HTMLCanvasElement).toDataURL())).not.toBe(shown);await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');expect(await save(page)).toEqual(saved);
+     await expect.poll(()=>page.locator('canvas').evaluate(c=>(c as HTMLCanvasElement).toDataURL())).not.toBe(shown);await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');await assertExact(await save(page),saved,"await save(page)");
      await page.getByLabel(ja?'架線柱を表示':'Show electric poles',{exact:true}).check();
      await expect.poll(()=>page.locator('canvas').evaluate(c=>(c as HTMLCanvasElement).toDataURL())).toBe(shown);
      await closePanel(page);
@@ -70,7 +72,7 @@ for(const ja of [false,true])test(`pole types, inferred axes, replacement, remov
 
    }
    if(extended()||!ja&&dx===3){
-    const bytes=await save(page);await replace(page,bytes);expect(await save(page)).toEqual(bytes);await page.getByRole('button',{name:ja?'架線柱':'Electric poles',exact:true}).click();
+    const bytes=await save(page);await replace(page,bytes);await assertExact(await save(page),bytes,"await save(page)");await page.getByRole('button',{name:ja?'架線柱':'Electric poles',exact:true}).click();
    }
    await page.getByLabel(ja?'線路の操作':'Track action',{exact:true}).selectOption('remove');await target(page,ja);await expect(confirm).toBeEnabled();await confirm.click();await expect(page.getByTestId('rail-route')).toHaveCount(0);
    expect((await state(page)).mixed.voxels.find((v:any)=>v.ownerId===owner).traffic.accessory).toBeNull();
@@ -85,7 +87,7 @@ test('pole point pick, E/Escape, obstruction, observer and narrow controls',asyn
   await empty(page);await track(page,3,0);const canvas=page.locator('canvas');await canvas.focus();await page.keyboard.press('e');await expect(page.getByRole('button',{name:'Electric poles',exact:true})).toHaveAttribute('aria-pressed','true');
   const q=await canvas.evaluate(el=>{const c=el as HTMLCanvasElement,r=c.getBoundingClientRect(),[cx,cy]=c.dataset.camera!.split(',').map(Number),z=Number(c.dataset.zoom);return{x:r.x+r.width/2+(16*(30+27-20)+16-cx)*z,y:r.y+r.height/2+(8*(-30+27+20)-16+8-cy)*z};});
   await page.mouse.click(q.x,q.y);await expect(page.getByRole('button',{name:'Confirm pole change',exact:true})).toBeEnabled();const before=await save(page);
-  await canvas.focus();await page.keyboard.press('Escape');await expect(page.getByTestId('rail-route')).toHaveCount(0);expect(await save(page)).toEqual(before);
+  await canvas.focus();await page.keyboard.press('Escape');await expect(page.getByTestId('rail-route')).toHaveCount(0);await assertExact(await save(page),before,"await save(page)");
   await page.setViewportSize({width:430,height:850});await target(page);await expect(page.getByRole('button',{name:'Confirm pole change',exact:true})).toBeEnabled();
   await page.getByLabel('Start X',{exact:true}).fill('28');await page.getByRole('button',{name:'Preview route',exact:true}).click();await expect(page.getByRole('button',{name:'Confirm pole change',exact:true})).toBeDisabled();
   expect((await viewer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await viewer.goto('/');await ready(viewer);await expect(viewer.getByRole('button',{name:'Electric poles',exact:true})).toBeDisabled();

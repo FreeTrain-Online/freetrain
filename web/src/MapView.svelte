@@ -12,6 +12,7 @@
   import { toolbar } from './lib/toolbar.ts';
   import { primaryAction } from './lib/primary-action.ts';
   import { onMount, untrack, tick } from 'svelte';
+  import type { MapDrawObservation } from './lib/test-observation.ts';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
   import { MapRenderer, loadImages, type Selection } from './lib/map-renderer.ts';
@@ -361,7 +362,16 @@
   $effect(() => { void followingTrainId;void panel;void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void cityPreview; void stationPreview;void platformPreview;void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
   onMount(() => {
     canvas.dataset.toolActivation = String(toolActivation);
-    let active = true, frame = 0;
+    let active = true, frame = 0, readyDraw = false;
+    const observedCanvas = canvas as HTMLCanvasElement & MapDrawObservation;
+    const drawWaiters = new Set<{ resolve: () => void; reject: (error: Error) => void }>();
+    observedCanvas.__freetrainWaitForDraw = async () => {
+      await tick();
+      if (!active) throw new Error('Map was destroyed before its draw');
+      const bounds = canvas.getBoundingClientRect();
+      if (!dirty && readyDraw && canvas.dataset.renderedReducedMotion === String(reduced.matches) && width === bounds.width && height === bounds.height) return;
+      await new Promise<void>((resolve, reject) => drawWaiters.add({ resolve, reject }));
+    };
     let resumeMotion=false,lastFrame:number|undefined,lastMotionResume=-Infinity;
     let demoTime=0,lastDemoTick:number|undefined,lastDemoPaint=-Infinity;
     const reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -405,7 +415,12 @@
           // Terrain revisions keep the completed scene visible while preparing
           // its replacement. Initial reveal still waits for a complete image.
           if (liveScene) { if(ready)renderState='ready'; zoomPercent = Math.round(camera.zoom * 100); }
-        } catch { if(liveScene)renderState = 'failed'; }
+          readyDraw = ready;
+          if (readyDraw) {
+            canvas.dataset.renderedReducedMotion = String(reduced.matches);
+            for (const waiter of drawWaiters) waiter.resolve(); drawWaiters.clear();
+          }
+        } catch { readyDraw = false; if(liveScene)renderState = 'failed'; }
         dirty = renderer.needsFrame;
       }
       frame = requestAnimationFrame(paint);
@@ -430,7 +445,12 @@
       dirty = true;
     };
     canvas.addEventListener('wheel', wheel, { passive: false }); window.addEventListener('blur', blur); window.addEventListener('focus', focus); document.addEventListener('visibilitychange', visibility);
-    return () => { compact.removeEventListener('change', density);reduced.removeEventListener('change',motion); active = false; resetInteraction(); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); window.removeEventListener('focus', focus); document.removeEventListener('visibilitychange', visibility); };
+    return () => {
+      delete observedCanvas.__freetrainWaitForDraw;
+      for (const waiter of drawWaiters) waiter.reject(new Error('Map was destroyed before its draw'));
+      drawWaiters.clear();
+      compact.removeEventListener('change', density);reduced.removeEventListener('change',motion); active = false; resetInteraction(); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); window.removeEventListener('focus', focus); document.removeEventListener('visibilitychange', visibility);
+    };
   });
 </script>
 

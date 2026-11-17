@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { expect,test,type Page } from './fixtures.ts';
 import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 const state=canonicalState;
@@ -25,15 +26,15 @@ test('Owner mode confirmation, exact forest preview, save/reload, creek route an
  await page.goto('/');await ready(page);const original=await save(page);
  try{
   await empty(page);await tool(page);const before=await save(page);const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','authoring'));
-  await page.getByRole('button',{name:'Enter map authoring',exact:true}).click();expect(await save(page)).toEqual(before);
-  await page.getByRole('region',{name:'Map authoring mode',exact:true}).getByRole('button',{name:'Cancel',exact:true}).click();expect(await save(page)).toEqual(before);
+  await page.getByRole('button',{name:'Enter map authoring',exact:true}).click();await assertExact(await save(page),before,"await save(page)");
+  await page.getByRole('region',{name:'Map authoring mode',exact:true}).getByRole('button',{name:'Cancel',exact:true}).click();await assertExact(await save(page),before,"await save(page)");
   await toggle(page);await author(page);await target(page);await expect(confirm(page)).toBeEnabled();const preview=page.waitForResponse(r=>r.url().includes('/api/terrain/corner/preview'));
-  await target(page);const predicted=(await(await preview).json()).decorations;const untouched=await save(page);await expect(page.getByTestId('authoring-result')).toContainText('Trees:');expect(await save(page)).toEqual(untouched);
+  await target(page);const predicted=(await(await preview).json()).decorations;const untouched=await save(page);await expect(page.getByTestId('authoring-result')).toContainText('Trees:');await assertExact(await save(page),untouched,"await save(page)");
   await confirm(page).click();await expect.poll(async()=>(await state(page)).terrain.occupants.length).toBe(predicted.length);
-  const current=await state(page);for(const d of predicted){const entity=current.entities.find((e:any)=>e.anchor.x===d.position.x&&e.anchor.y===d.position.y);expect(current.terrain.occupants.find((o:any)=>o.entityId===entity.id).forest).toEqual(d.forest);expect(entity.owned).toBe(false);}
-  const forest=await save(page);await page.reload();await ready(page);expect(await save(page)).toEqual(forest);await tool(page);await expect(page.getByTestId('authoring-mode')).toContainText('is on');await author(page);
+  const current=await state(page);for(const d of predicted){const entity=current.entities.find((e:any)=>e.anchor.x===d.position.x&&e.anchor.y===d.position.y);await assertExact(current.terrain.occupants.find((o:any)=>o.entityId===entity.id).forest,d.forest,"current.terrain.occupants.find((o:any)=>o.entityId===entity.id).forest");expect(entity.owned).toBe(false);}
+  const forest=await save(page);await page.reload();await ready(page);await assertExact(await save(page),forest,"await save(page)");await tool(page);await expect(page.getByTestId('authoring-mode')).toContainText('is on');await author(page);
   await target(page,'placeCreek','en',[23,20,1],[23,22]);await expect(confirm(page)).toBeEnabled();await confirm(page).click();await expect.poll(async()=>(await state(page)).terrain.occupants.filter((o:any)=>o.kind==='creek').length).toBe(3);
-  const authored=await state(page);await toggle(page,false);const ended=await state(page);expect(ended.entities).toEqual(authored.entities);expect(ended.terrain.occupants).toEqual(authored.terrain.occupants);expect(ended.terrain.waterLevel).toBe(1);expect(ended.paused).toBe(authored.paused);
+  const authored=await state(page);await toggle(page,false);const ended=await state(page);expect(ended.entities).toEqual(authored.entities);await assertExact(ended.terrain.occupants,authored.terrain.occupants,"ended.terrain.occupants");expect(ended.terrain.waterLevel).toBe(1);expect(ended.paused).toBe(authored.paused);
   // The normal tools remain available after leaving mode.
   await page.getByLabel('Terrain selection',{exact:true}).selectOption('rectangle');await expect(page.getByRole('button',{name:'Preview rectangle',exact:true})).toBeEnabled();
  }finally{await replace(page,original);}
@@ -47,7 +48,7 @@ test('mode changes invalidate peer previews and delayed authoring responses; pan
   await toggle(peer,true);await author(page);
   let release!:()=>void;const waiting=new Promise<void>(r=>release=r);await page.route('**/api/terrain/corner/preview?**',async route=>{const response=await route.fetch();await waiting;await route.fulfill({response});});
   const received=page.waitForResponse(r=>r.url().includes('/api/terrain/corner/preview'));await target(page);await toggle(peer,false);release();void received.catch(()=>{});await expect(confirm(page)).toBeDisabled();
-  expect((await state(page)).terrain.occupants).toEqual([]);
+  await assertExact((await state(page)).terrain.occupants,[],"(await state(page)).terrain.occupants");
  }finally{await peer.close();await replace(page,original);}
 });
 test('Japanese narrow authoring uses keyboard confirmation and all fields stay reachable',async({browser})=>{

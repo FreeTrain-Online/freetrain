@@ -1,3 +1,5 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,extended,test,type Browser,type Page } from './fixtures.ts';
 import { sourcePixelCounts } from './pixel-helpers.ts';
@@ -32,14 +34,14 @@ test('all four bridge directions retain exact source art, alternating piers, act
   for(const [x,y,variants] of [[30,23,[3,4,4,4,5]],[34,27,[2,1,1,1,0]],[30,31,[5,4,4,4,3]],[26,27,[0,1,1,1,2]]] as const){
    await empty(page);await page.getByRole('button',{name:'Bridge',exact:true}).click();const before=await save(page);
    await target(page,[30,27],[x,y]);await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-cost')).toContainText('90,000,000');
-   expect(await save(page)).toEqual(before);
+   await assertExact(await save(page),before,"await save(page)");
    await confirm(page);const s=await state(page),rails=s.mixed.voxels.filter((v:any)=>v.traffic?.rail),piers=s.mixed.voxels.filter((v:any)=>v.kind==='pier');
    const dx=Math.sign(x-30),dy=Math.sign(y-27);expect(Array.from({length:5},(_,i)=>rails.find((v:any)=>v.position.x===30+i*dx&&v.position.y===27+i*dy).traffic.rail.variant)).toEqual(variants);
    expect(piers).toHaveLength(6);expect(rails.every((v:any)=>v.traffic.rail.definition.recipeId===bridge)).toBe(true);
    expect((await pixels(page,rails)).every(n=>n>10)).toBe(true);expect((await pixels(page,piers)).some(n=>n>10)).toBe(true);
 
    if(extended()||x===30&&y===23){
-    const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);
+    const captured=await save(page);await replace(page,captured);await assertExact(await save(page),captured,"await save(page)");
     await cut(page,2);
     expect((await pixels(page,(await state(page)).mixed.voxels.filter((v:any)=>v.kind==='pier'))).some(n=>n>10)).toBe(true);
     await cut(page,5);await page.getByRole('button',{name:'Bridge',exact:true}).click();await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,[30,27],[x,y]);
@@ -56,13 +58,13 @@ test('map short-span cancel and snapped long span synchronize with a peer and pr
   await empty(page);await peer.goto('/');await ready(peer);await page.getByRole('button',{name:'Bridge',exact:true}).click();
   const canvas=page.locator('canvas');const before=await save(page);
   await click(page,30,27,1);await click(page,31,27,1);await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-cost')).toContainText('12,000,000');
-  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();expect(await save(page)).toEqual(before);
-  await target(page,[30,27],[31,27],1);await confirm(page);expect((await state(page)).mixed.voxels.filter((v:any)=>v.traffic?.rail).map((v:any)=>v.traffic.rail.variant)).toEqual([2,0]);
-  const shortSave=await save(page);await replace(page,shortSave);expect(await save(page)).toEqual(shortSave);
+  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();await assertExact(await save(page),before,"await save(page)");
+  await target(page,[30,27],[31,27],1);await confirm(page);await assertExact((await state(page)).mixed.voxels.filter((v:any)=>v.traffic?.rail).map((v:any)=>v.traffic.rail.variant),[2,0],"(await state(page)).mixed.voxels.filter((v:any)=>v.traffic?.rail).map((v:any)=>v.traffic.rail.variant)");
+  const shortSave=await save(page);await replace(page,shortSave);await assertExact(await save(page),shortSave,"await save(page)");
   await page.getByRole('button',{name:'Bridge',exact:true}).click();await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,[30,27],[31,27],1);await expect(page.getByTestId('rail-cost')).toContainText('4,000,000');await confirm(page);
   await page.getByLabel('Track action',{exact:true}).selectOption('lay');await canvas.evaluate(el=>(el as any).__bridgeIdentity=true);
   await target(page,[30,27],[34,29],3);await expect(page.getByTestId('rail-route')).toContainText('30, 27, 3 → 34, 27, 3');await confirm(page);
-  await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');expect(await state(peer)).toEqual(await state(page));expect(await canvas.evaluate(el=>(el as any).__bridgeIdentity)).toBe(true);
+  await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');await assertExact(await state(peer),await state(page),"await state(peer)");expect(await canvas.evaluate(el=>(el as any).__bridgeIdentity)).toBe(true);
   await target(page,[30,27],[34,29],3);await expect(page.getByTestId('rail-cost')).toContainText('90,000,000');await confirm(page);expect((await state(page)).mixed.accounts.transactions).toHaveLength(4);
  }finally{await replace(page,original);await ctx.close();}
 });
@@ -74,8 +76,8 @@ test('existing straight segments survive bridge construction, wrong axis rejects
   const existing=(await state(page)).mixed.voxels.filter((v:any)=>v.traffic?.rail);
   await page.getByRole('button',{name:'Bridge',exact:true}).click();await target(page,[29,27],[34,27],1);await expect(page.getByTestId('rail-cost')).toContainText('36,000,000');await confirm(page);
   let s=await state(page);expect(existing.every((v:any)=>s.mixed.voxels.some((n:any)=>JSON.stringify(v)===JSON.stringify(n)))).toBe(true);
-  expect(s.mixed.voxels.filter((v:any)=>v.traffic?.rail?.definition.recipeId===bridge).map((v:any)=>[v.position.x,v.traffic.rail.variant]).sort((a:any,b:any)=>a[0]-b[0])).toEqual([[29,2],[33,2],[34,0]]);
-  const before=await save(page);await target(page,[30,26],[30,28],1);await expect(page.getByTestId('rail-status')).not.toContainText('route is legal');expect(await save(page)).toEqual(before);
+  await assertExact(s.mixed.voxels.filter((v:any)=>v.traffic?.rail?.definition.recipeId===bridge).map((v:any)=>[v.position.x,v.traffic.rail.variant]).sort((a:any,b:any)=>a[0]-b[0]),[[29,2],[33,2],[34,0]],"s.mixed.voxels.filter((v:any)=>v.traffic?.rail?.definition.recipeId===bridge).map((v:any)=>[v.position.x,");
+  const before=await save(page);await target(page,[30,26],[30,28],1);await expect(page.getByTestId('rail-status')).not.toContainText('route is legal');await assertExact(await save(page),before,"await save(page)");
   await target(page,[29,27],[34,27],3);await expect(page.getByTestId('rail-cost')).toContainText('108,000,000');await expect(page.getByTestId('rail-cost')).toContainText('New piers: 0');await confirm(page);
   s=await state(page);expect(s.mixed.voxels.filter((v:any)=>v.kind==='pier')).toHaveLength(0);
 
@@ -93,7 +95,7 @@ test('Japanese narrow DPR2 bridge task retains costs, keyboard shortcut, cancel 
   await expect(page.getByRole('button',{name:'鉄橋の変更を確定',exact:true})).toHaveClass('primary');
   await page.getByLabel('始点 X',{exact:true}).focus();await page.keyboard.press('Enter');
   await expect(page.getByTestId('rail-route')).toHaveCount(0);await expect(page.locator('.command-feedback')).toContainText('サーバーで確定');
-  const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);
+  const captured=await save(page);await replace(page,captured);await assertExact(await save(page),captured,"await save(page)");
  }finally{await replace(page,original);await ctx.close();}
 });
 
@@ -101,6 +103,7 @@ async function wire(browser:Browser,q:any,secret?:string,duplicate=false){
  const p=await browser.newPage();let finish!:(m:any)=>void;const receipt=new Promise<any>(r=>finish=r);
  try{
   if(secret)expect((await p.request.post('/api/access',{data:{secret}})).ok()).toBe(true);
+ // transport-test: Hold and duplicate construction receipts to test replay behavior.
   await p.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();let n=0;
    server.onMessage(message=>{const m=JSON.parse(String(message));route.send(message);
     if(m.type==='join'){const c=JSON.stringify({type:'command',requestId:'bridge-receipt',expectedWorldEpoch:q.expectedWorldEpoch,payload:{kind:'editRailway',query:q}});server.send(c);if(duplicate)server.send(c);}
@@ -118,9 +121,9 @@ test('late bridge previews cannot replace edited drafts, Observer commits reject
   await empty(page);await page.getByRole('button',{name:'Bridge',exact:true}).click();
   let delayed=false;const held=new Promise<void>(resolve=>release=resolve);
   await page.route('**/api/railway/preview?*',async route=>{const response=await route.fetch();if(!delayed){delayed=true;await held;}await route.fulfill({response});});
-  await target(page);await expect.poll(()=>delayed).toBe(true);await page.getByLabel('End X',{exact:true}).fill('35');release();await page.unrouteAll({behavior:'wait'});await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));await expect(page.getByRole('button',{name:'Confirm bridge change',exact:true})).toBeDisabled();
+  await target(page);await expect.poll(()=>delayed).toBe(true);await page.getByLabel('End X',{exact:true}).fill('35');release();await page.unrouteAll({behavior:'wait'});await waitForMapDraw(page);await expect(page.getByRole('button',{name:'Confirm bridge change',exact:true})).toBeDisabled();
   await target(page);const s=await state(page),q={expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.terrain.geometryRevision,expectedContentVersion:s.contentVersion,from:{x:30,y:27,z:3},to:{x:34,y:27,z:3},action:'lay',routing:'closest',infrastructure:'bridge'};
-  const before=await save(page);expect((await wire(browser,q,'observer-test')).code).toBe('notAuthorized');expect(await save(page)).toEqual(before);
+  const before=await save(page);expect((await wire(browser,q,'observer-test')).code).toBe('notAuthorized');await assertExact(await save(page),before,"await save(page)");
   expect((await wire(browser,q,undefined,true)).type).toBe('accepted');await expect(page.getByTestId('rail-status')).toContainText('changed');expect((await state(page)).mixed.accounts.transactions).toHaveLength(1);
   expect((await wire(browser,q)).code).toBe('staleRevision');
  }finally{release();await replace(page,original);}

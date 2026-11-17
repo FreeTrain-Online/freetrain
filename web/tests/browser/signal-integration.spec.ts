@@ -1,3 +1,5 @@
+import { restartWorldServer } from './session.ts';
+import { assertExact } from './assertions.ts';
 import {browserFixture} from './generated-fixtures.ts';
 import {test,expect,type Page} from './fixtures.ts';
 import {canonicalState as state,openPanel,closePanel,ready} from './browser-helpers.ts';
@@ -42,13 +44,13 @@ for(const [locale,suffix] of [['en','three'],['ja','shunting']] as const)test(`$
  for(const axis of ['X','Y','Z'])await expect(dialog.getByLabel(axis,{exact:true})).toBeDisabled();
  await expect(dialog.getByLabel(text.position,{exact:true})).toBeDisabled();
  await expect(dialog.getByLabel(text.controllerMinutes,{exact:true})).toHaveValue('30');
- await dialog.getByRole('button',{name:text.cancel,exact:true}).click();expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+ await dialog.getByRole('button',{name:text.cancel,exact:true}).click();await assertExact(await(await page.request.get('/api/saves/download')).body(),before,"await(await page.request.get('/api/saves/download')).body()");
  await controls.getByRole('button',{name:text.controllerConfigure,exact:true}).click();dialog=page.getByRole('dialog',{name:text.controllerConfigure,exact:true});
  await dialog.getByLabel(text.controllerMinutes,{exact:true}).fill('20');
  mkdirSync(evidence+'/signals',{recursive:true});await page.screenshot({path:evidence+`/signals/${locale}-settings.png`});
  await dialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
  let current=await state(page);expect(current.mixed.fleet.controllers.find((c:any)=>c.id===first.id).harbors[0].minutes).toBe(10);
- expect(current.mixed.fleet.trains).toEqual(baseline.mixed.fleet.trains);expect(current.mixed.queue).toEqual(baseline.mixed.queue);expect(current.mixed.voxels).toEqual(baseline.mixed.voxels);
+ await assertExact(current.mixed.fleet.trains,baseline.mixed.fleet.trains,"current.mixed.fleet.trains");await assertExact(current.mixed.queue,baseline.mixed.queue,"current.mixed.queue");await assertExact(current.mixed.voxels,baseline.mixed.voxels,"current.mixed.voxels");
  async function stepTo(minute:number){await closePanel(page);while(Number((await state(page)).tick)<minute){const tick=(await state(page)).tick;await expect(page.locator('button.step')).toBeEnabled();const canvas=page.locator('canvas.world-canvas');await canvas.focus();await canvas.press('n');await expect.poll(async()=>Number((await state(page)).tick)).toBe(Number(tick)+1);}}
  async function inspectWait(index:number){
   await openPanel(page,'fleet',locale);await page.getByRole('button',{name:new RegExp('^'+text.ownedStock)}).click();
@@ -62,16 +64,16 @@ for(const [locale,suffix] of [['en','three'],['ja','shunting']] as const)test(`$
   await inspectWait(0);await page.screenshot({path:evidence+`/signals/${locale}-waiting.png`});await closePanel(page);
   const bytes=await(await page.request.get('/api/saves/download')).body();
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:bytes})).ok()).toBe(true);await page.goto('/');await ready(page,locale);if(locale==='ja')await page.evaluate(()=>document.documentElement.style.fontSize='200%');
-  expect((await state(page)).mixed).toEqual(current.mixed);
-  await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);if(locale==='ja')await page.evaluate(()=>document.documentElement.style.fontSize='200%');
-  expect((await state(page)).mixed).toEqual(current.mixed);
+  await assertExact((await state(page)).mixed,current.mixed,"(await state(page)).mixed");
+  await restartWorldServer(worldServer);expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);if(locale==='ja')await page.evaluate(()=>document.documentElement.style.fontSize='200%');
+  await assertExact((await state(page)).mixed,current.mixed,"(await state(page)).mixed");
   await stepTo(114);current=await state(page);const waiting=current.mixed.fleet.trains[1];expect(waiting.state).toBe('stoppingatstation');expect(waiting.stopCallCount).toBe(1);expect(waiting.moveCount).toBe(2);
   expect(current.mixed.queue.pending.find((a:any)=>a.handlerId==='train/'+waiting.id).dueMinute).toBe('134');
   await inspectWait(1);await page.screenshot({path:evidence+`/signals/${locale}-second-wait.png`});
   controls=await manager();await controls.getByRole('combobox',{name:text.controllerManager,exact:true}).selectOption(second.id);
   await controls.getByRole('button',{name:text.controllerConfigure,exact:true}).click();dialog=page.getByRole('dialog',{name:text.controllerConfigure,exact:true});
   await dialog.getByRole('button',{name:text.controllerRemoveLocation,exact:true}).click();await dialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
-  expect((await state(page)).mixed.queue).toEqual(current.mixed.queue);expect((await state(page)).mixed.fleet.trains).toEqual(current.mixed.fleet.trains);
+  await assertExact((await state(page)).mixed.queue,current.mixed.queue,"(await state(page)).mixed.queue");await assertExact((await state(page)).mixed.fleet.trains,current.mixed.fleet.trains,"(await state(page)).mixed.fleet.trains");
   await stepTo(136);current=await state(page);expect(current.mixed.fleet.trains[1].stopCallCount).toBe(0);expect(current.mixed.fleet.trains[1].moveCount).toBe(4);
   const simple=current.mixed.fleet.trains[2];expect(simple.state).toBe('moving');expect(simple.stopCallCount).toBe(0);expect(simple.moveCount).toBe(5);expect(simple.cars[0].state.location.x).toBe(23);
   expect(current.mixed.voxels.find((v:any)=>v.position.x===22&&v.position.y===20).traffic.rail.controllerId).toBeNull();

@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { expect,test,type Page } from './fixtures.ts';
 import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 const compat='protocolVersion=11&contentVersion=terrain-content-1';
@@ -32,10 +33,10 @@ test('rectangle reversed coordinates preview exact fours, preserve canvas and ca
   const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','rectangle'));
   await tool(page);await target(page,'en','raise',[21,21,1],[20,20]);
   await expect(page.getByTestId('rectangle-status')).toContainText('change is legal');await expect(page.locator('.corner-changes li')).toHaveCount(4);
-  await expect(page.locator('.corner-changes')).toContainText('[0,4,0,0]');expect(await save(page)).toEqual(before);
+  await expect(page.locator('.corner-changes')).toContainText('[0,4,0,0]');await assertExact(await save(page),before,"await save(page)");
   await confirm(page).click();await expect.poll(async()=>JSON.parse((await save(page)).toString()).packedTerrain.occupantCount).toBe(4);
   await expect(confirm(page)).toBeDisabled();expect((await state(page)).cash).toBe(cash);await expect(canvas).toHaveAttribute('data-instance','rectangle');
-  const after=await save(page);await page.reload();await ready(page);expect(await save(page)).toEqual(after);
+  const after=await save(page);await page.reload();await ready(page);await assertExact(await save(page),after,"await save(page)");
   await tool(page);await target(page,'en','lower');await expect(page.getByTestId('rectangle-status')).toContainText('Adjust the other corners');await expect(confirm(page)).toBeDisabled();
  }finally{await replace(page,original);}
 });
@@ -61,7 +62,7 @@ test('explicit repair fixes a mismatched cut cell inclusively and reports unchan
   await replace(page,Buffer.from(JSON.stringify(cut)));await ready(page);await tool(page);
   const before=await save(page);await target(page,'en','repair',[20,20,1],[21,21]);
   await expect(page.getByTestId('rectangle-status')).toContainText('change is legal');await expect(page.locator('.corner-changes li')).toHaveCount(1);
-  await expect(page.locator('.tool-card')).toContainText('Skipped sites: 3');await expect(page.locator('.corner-changes')).toContainText('0 [0,0,0,0] → 1 [0,0,0,0]');expect(await save(page)).toEqual(before);
+  await expect(page.locator('.tool-card')).toContainText('Skipped sites: 3');await expect(page.locator('.corner-changes')).toContainText('0 [0,0,0,0] → 1 [0,0,0,0]');await assertExact(await save(page),before,"await save(page)");
   await confirm(page).click();await expect.poll(async()=>Buffer.from(JSON.parse((await save(page)).toString()).packedTerrain.cells,'base64')[610]).toBe(65);
   await target(page,'en','repair',[20,20,1],[20,20]);await expect(page.getByTestId('rectangle-status')).toContainText('No change');await expect(confirm(page)).toBeDisabled();
  }finally{await replace(page,original);}
@@ -74,15 +75,15 @@ test('rectangle malformed, oversized and future requests preserve state; delayed
   const before=await save(page);
   for(const patch of [{rectangle:{end:{x:30,y:30,z:1},soft:false}},{rectangle:{end:{x:21,y:21,z:2},soft:false}},{offsetX:1,offsetY:0}])
    expect((await page.request.post('/api/terrain/corner/preview?'+compat,{data:{...q,...patch}})).status()).toBe(400);
-  expect(await save(page)).toEqual(before);await tool(page);
+  await assertExact(await save(page),before,"await save(page)");await tool(page);
   let delayed=false;await page.route('**/api/terrain/corner/preview?*',async route=>{const response=await route.fetch();if(!delayed){delayed=true;await held;}await route.fulfill({response});});
   await target(page);await expect.poll(()=>delayed).toBe(true);await page.getByLabel('End X',{exact:true}).fill('22');await page.getByRole('button',{name:'Preview rectangle',exact:true}).click();
   await expect(page.getByTestId('rectangle-position')).toContainText('22, 21, 1');release();await expect(page.getByTestId('rectangle-position')).toContainText('22, 21, 1');
   await peer.goto('/');await ready(peer);await tool(peer);await target(peer);await confirm(peer).click();await expect(confirm(peer)).toBeDisabled();
   const changed=await save(page);await expect(confirm(page)).toBeEnabled();await confirm(page).click();
-  await expect(page.getByTestId('rectangle-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();expect(await save(page)).toEqual(changed);
+  await expect(page.getByTestId('rectangle-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();await assertExact(await save(page),changed,"await save(page)");
   // Older geometry can be reviewed again, but a future revision is invalid.
-  const reviewed=await page.request.post('/api/terrain/corner/preview?'+compat,{data:q});expect(reviewed.ok()).toBe(true);expect(await save(page)).toEqual(changed);
+  const reviewed=await page.request.post('/api/terrain/corner/preview?'+compat,{data:q});expect(reviewed.ok()).toBe(true);await assertExact(await save(page),changed,"await save(page)");
   const current=await state(page);expect((await page.request.post('/api/terrain/corner/preview?'+compat,{data:{...q,expectedGeometryRevision:String(BigInt(current.terrain.geometryRevision)+1n)}})).status()).toBe(409);
   // Re-review the larger rectangle: the peer's completed vertex is skipped,
   // while the remaining vertex can still be confirmed from a fresh quote.

@@ -1,3 +1,5 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { assertExact } from './assertions.ts';
 import { writeFile } from 'node:fs/promises';
 import { at,bootstrap,clickSprite,clickTile,closePanel,evidenceDirectory,openPanel,ready,selectStation,selectTrain,worldReplacementFixture } from './browser-helpers.ts';
 import { settled } from './layout-helpers.ts';
@@ -5,6 +7,7 @@ import { expect,test } from './fixtures.ts';
 
 test('map clock shortcuts toggle on Space press and step on N without disrupting panning or text',async({page})=>{
   const commands:string[]=[];
+ // transport-test: Inspect command coordinates and rejected geometry requests on the wire.
   await page.routeWebSocket('**/api/session?*',route=>{
     const server=route.connectToServer();
     route.onMessage(message=>{const data=JSON.parse(String(message));if(data.type==='command')commands.push(data.payload.kind);server.send(message);});
@@ -79,7 +82,7 @@ test('source sprites pick real buildings and station; camera, cut and display ef
   await openPanel(page, 'view');
   await page.getByLabel('Height cut',{exact:true}).focus();await page.keyboard.press('End');await page.getByLabel('Winter ground',{exact:true}).uncheck();await page.getByLabel('Recolor',{exact:true}).uncheck();
 
-  const after=await bootstrap(page);expect(after.cash).toBe(before.cash);expect(after.tracks).toEqual(before.tracks);expect(after.tick).toBe(before.tick);
+  const after=await bootstrap(page);expect(after.cash).toBe(before.cash);await assertExact(after.tracks,before.tracks,"after.tracks");expect(after.tick).toBe(before.tick);
   expect(Number(await canvas.getAttribute('data-culled'))).toBeGreaterThan(0);expect(errors).toEqual([]);
 });
 
@@ -113,6 +116,7 @@ for (const width of [1280, 640]) {
 
 test('preview and cancel never charge; buffer extension confirms once, removal and invalid placement use host state',async({page})=>{
   const timers:ReturnType<typeof setTimeout>[]=[];
+ // transport-test: Inspect command coordinates and rejected geometry requests on the wire.
   await page.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();route.onMessage(message=>{
     const data=JSON.parse(String(message));if(data.type==='command'&&data.payload.kind==='buildTrack')timers.push(setTimeout(()=>server.send(message),600));else server.send(message);
   });});
@@ -180,7 +184,7 @@ test('real automatic reference loop reaches station, dwells, departs and returns
 test('epoch snapshot fixture discards old geometry and restores initial framing', async ({ page }) => {
   const replaceWorld=await worldReplacementFixture(page);
   await page.goto('/'); await ready(page);
-  await page.locator('canvas').evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  await waitForMapDraw(page);
   const homeZoom = await page.locator('canvas').evaluate(el => Math.min(1.5, Math.max(.5, el.getBoundingClientRect().width / 850)).toFixed(3));
   const homeCamera = await page.locator('canvas').getAttribute('data-camera');
   await page.getByRole('button', { name: 'Zoom in', exact: true }).click();

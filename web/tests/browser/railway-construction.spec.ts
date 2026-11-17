@@ -1,3 +1,5 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { assertExact } from './assertions.ts';
 import { createHash } from 'node:crypto';
 import type { StateChunk } from '../../src/generated/contracts.ts';
 import { expect,test,type Browser,type Page } from './fixtures.ts';
@@ -35,7 +37,7 @@ test('hover previews and Shift-click nodes build one continuous route without pr
   await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeDisabled();
   await click(page,34,27,1,'hover');
   await expect(page.getByTestId('rail-route')).toContainText('30, 27, 1 → 34, 27, 1');
-  expect(await save(page)).toEqual(bytes);
+  await assertExact(await save(page),bytes,"await save(page)");
   await click(page,32,29,1,'shift');
   await expect(page.getByTestId('rail-nodes')).toContainText('2/10');
   await click(page,36,29,1,'shift');
@@ -47,12 +49,12 @@ test('hover previews and Shift-click nodes build one continuous route without pr
   const expected=[[30,27],[31,28],[32,29],[33,29],[34,29],[35,29],[36,29],[37,28],[38,27]];
   expect(preview.cells.map((c:any)=>[c.position.x,c.position.y])).toEqual(expected);
   await expect(page.getByTestId('rail-status')).toContainText('route is legal');
-  expect(await save(page)).toEqual(bytes);
+  await assertExact(await save(page),bytes,"await save(page)");
   await click(page,38,27);
   await expect(page.getByTestId('rail-route')).toHaveCount(0);
   await expect(page.locator('.command-feedback')).toContainText('Confirmed by server');
   const built=await state(page);
-  expect(built.mixed.voxels.filter((v:any)=>v.traffic?.rail).map((v:any)=>[v.position.x,v.position.y]).sort()).toEqual([...expected].sort());
+  await assertExact(built.mixed.voxels.filter((v:any)=>v.traffic?.rail).map((v:any)=>[v.position.x,v.position.y]).sort(),[...expected].sort(),"built.mixed.voxels.filter((v:any)=>v.traffic?.rail).map((v:any)=>[v.position.x,v.position.y]).sort()");
   expect(built.mixed.accounts.transactions).toHaveLength(1);
   await click(page,30,30);await click(page,32,30,1,'shift');await page.keyboard.press('Escape');
   await expect(page.getByTestId('rail-nodes')).toContainText('0/10');
@@ -61,6 +63,7 @@ test('hover previews and Shift-click nodes build one continuous route without pr
 
 test('a plain endpoint click builds exactly once and never builds an illegal endpoint or an old hover route',async({page})=>{
  let commands=0;
+ // transport-test: Inspect command identity and inject close/replay/stale transport behavior.
  await page.routeWebSocket('**/api/session?*',route=>{
   const server=route.connectToServer();
   route.onMessage(message=>{if(JSON.parse(String(message)).payload?.kind==='editRailway')commands++;server.send(message);});
@@ -73,11 +76,11 @@ test('a plain endpoint click builds exactly once and never builds an illegal end
   await expect(page.getByTestId('rail-status')).toContainText('route is legal');
   await click(page,30,27);
   await expect(page.getByTestId('rail-status')).toHaveText('Choose two different points.');
-  expect(commands).toBe(0);expect(await save(page)).toEqual(bytes);
+  expect(commands).toBe(0);await assertExact(await save(page),bytes,"await save(page)");
   await click(page,32,27);
   await expect(page.locator('.command-feedback')).toContainText('Confirmed by server');
   const built=await state(page);
-  expect(built.mixed.voxels.filter((v:any)=>v.traffic?.rail).map((v:any)=>v.position.x).sort()).toEqual([30,31,32]);
+  await assertExact(built.mixed.voxels.filter((v:any)=>v.traffic?.rail).map((v:any)=>v.position.x).sort(),[30,31,32],"built.mixed.voxels.filter((v:any)=>v.traffic?.rail).map((v:any)=>v.position.x).sort()");
   await page.keyboard.press('Enter');
   expect(commands).toBe(1);
   await expect(page.getByTestId('rail-nodes')).toContainText('0/10');
@@ -98,7 +101,7 @@ test(`a final ${closeMode==='shift'?'Shift':'plain'} click on the initial node b
   const preview=await (await response).json();expect(preview.legal).toBe(true);expect(preview.cells).toHaveLength(16);
   expect(new Set(preview.cells.map((c:any)=>`${c.position.x},${c.position.y}`)).size).toBe(16);
   expect(preview.cost).toBe('96000000');
-  expect(await save(page)).toEqual(bytes);
+  await assertExact(await save(page),bytes,"await save(page)");
   await click(page,30,27,1,closeMode);
   await expect(page.locator('.command-feedback')).toContainText('Confirmed by server');
   const built=await state(page),rails=built.mixed.voxels.filter((v:any)=>v.traffic?.rail);
@@ -131,7 +134,7 @@ test('illegal topology draws red nodes and segments even without server route ce
   await click(page,38,23,1,'hover');
   await expect(page.getByTestId('rail-status')).toContainText('route is legal');
   await expect.poll(()=>colors([{x:34,y:27,offset:10,color:[18,110,121]},{x:36,y:25,color:[8,126,99]}])).toEqual([true,true]);
-  expect(await save(page)).toEqual(bytes);
+  await assertExact(await save(page),bytes,"await save(page)");
  }finally{await replace(page,original);}
 });
 
@@ -168,13 +171,14 @@ test('Shift-click removes other nodes while preserving the start node',async({pa
   await expect(page.getByTestId('rail-nodes')).toContainText('1/10');
   await expect(page.getByLabel('Start X',{exact:true})).toHaveValue('30');
   await expect(page.getByTestId('rail-route')).toHaveCount(0);
-  expect(await save(page)).toEqual(bytes);
+  await assertExact(await save(page),bytes,"await save(page)");
  }finally{await replace(page,original);}
 });
 
 for (const focus of ['map', 'preview button', 'preview form']) {
  test(`Return confirms track changes from the ${focus} without replaying the command`, async ({page}) => {
   let commands=0;
+ // transport-test: Inspect command identity and inject close/replay/stale transport behavior.
   await page.routeWebSocket('**/api/session?*',route=>{
    const server=route.connectToServer();
    route.onMessage(message=>{if(JSON.parse(String(message)).payload?.kind==='editRailway')commands++;server.send(message);});
@@ -193,7 +197,7 @@ for (const focus of ['map', 'preview button', 'preview form']) {
    await expect(primary).toBeEnabled();const before=await save(page);
    await page.keyboard.press('Shift+Enter');
    await page.evaluate(()=>document.activeElement?.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',repeat:true,bubbles:true,cancelable:true})));
-   expect(await save(page)).toEqual(before);expect(commands).toBe(0);
+   await assertExact(await save(page),before,"await save(page)");expect(commands).toBe(0);
    await page.keyboard.press('Enter');
    await expect(page.getByTestId('rail-route')).toHaveCount(0);
    await expect(page.locator('.command-feedback')).toContainText('Confirmed by server');
@@ -210,6 +214,7 @@ async function wireCommand(browser:Browser,q:any,secret?:string,duplicate=false)
  const receipt=new Promise<any>(resolve=>finish=resolve);
  try{
   if(secret)expect((await page.request.post('/api/access',{data:{secret}})).ok()).toBe(true);
+ // transport-test: Inspect command identity and inject close/replay/stale transport behavior.
   await page.routeWebSocket('**/api/session?*',route=>{
    const server=route.connectToServer();let n=0;
    const command={type:'command',requestId:'railway-receipt',expectedWorldEpoch:q.expectedWorldEpoch,payload:{kind:'editRailway',query:q}};
@@ -227,6 +232,7 @@ async function wireCommand(browser:Browser,q:any,secret?:string,duplicate=false)
 
 test('first track confirmation keeps the live world visible during a delayed railway promotion',async({page})=>{
  let delay=false,release=()=>{};
+ // transport-test: Inspect command identity and inject close/replay/stale transport behavior.
  await page.routeWebSocket('**/api/session?*',route=>{
   const server=route.connectToServer(),parts:Buffer[]=[],held:(string|Buffer)[]=[];
   let waiting=false;
@@ -284,10 +290,10 @@ test('two map points preview/cancel/build, attach, branch and remove in two peer
   let bootstrap=0;page.on('request',r=>{if(r.url().includes('/api/bootstrap'))bootstrap++;});
   await page.getByRole('button',{name:'Track',exact:true}).click();await click(page,30,27);await expect(page.getByLabel('Start X',{exact:true})).toHaveValue('30');
   await click(page,34,27,1,'preview');await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-cost')).toContainText('30,000,000');
-  expect(await save(page)).toEqual(bytes);
-  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();expect(await save(page)).toEqual(bytes);
+  await assertExact(await save(page),bytes,"await save(page)");
+  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();await assertExact(await save(page),bytes,"await save(page)");
   await target(page);await confirm(page);await expect(canvas).toHaveAttribute('data-ruleset','mixed-railway-1');await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');await ready(peer);
-  const built=await state(page);expect(built.mixed.voxels).toHaveLength(5);expect(await state(peer)).toEqual(built);expect(built.tick).toBe(before.tick);expect(built.worldEpoch).toBe(before.worldEpoch);expect(built.terrain).toEqual(before.terrain);
+  const built=await state(page);expect(built.mixed.voxels).toHaveLength(5);await assertExact(await state(peer),built,"await state(peer)");expect(built.tick).toBe(before.tick);expect(built.worldEpoch).toBe(before.worldEpoch);await assertExact(built.terrain,before.terrain,"built.terrain");
   await expect(canvas).toHaveAttribute('data-instance','track-canvas');await expect(canvas).toHaveAttribute('data-camera',camera!);await expect(canvas).toHaveAttribute('data-zoom',zoom!);expect(bootstrap).toBe(0);
   await target(page,[34,27],[36,27]);await confirm(page);await target(page,[32,27],[34,29]);await confirm(page);
   await expect.poll(async()=>(await state(peer)).mixed.voxels.find((v:any)=>v.position.x===32&&v.position.y===27).traffic.rail.pattern).toBe(23);
@@ -384,18 +390,19 @@ test('elevated and buried normal routes build, preview exact support losses, sav
 test('Japanese narrow DPR2 keyboard controls keep the canvas and shared clock, cancel on Escape and survive reopen',async({browser})=>{
  const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:2,locale:'ja-JP'}),page=await context.newPage();await page.goto('/');await ready(page,'ja');const original=await save(page);
  try{
-  await empty(page,'ja');const before=await state(page);await page.getByRole('button',{name:'線路',exact:true}).focus();await page.keyboard.press('Enter');await page.locator('canvas').evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+  await empty(page,'ja');const before=await state(page);await page.getByRole('button',{name:'線路',exact:true}).focus();await page.keyboard.press('Enter');await waitForMapDraw(page);
   const camera=await page.locator('canvas').getAttribute('data-camera');await page.getByRole('button',{name:'線路',exact:true}).click();await page.getByRole('button',{name:'線路',exact:true}).click();await expect(page.locator('canvas')).toHaveAttribute('data-camera',camera!);
   await target(page,[30,27],[34,27],1,true);await page.getByLabel('始点の高さを自動検出',{exact:true}).check();await page.getByRole('button',{name:'経路をプレビュー',exact:true}).click();await expect(page.getByTestId('rail-level-state')).toContainText('検出した高さ: 1');await expect(page.getByTestId('rail-cost')).toBeInViewport();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'線路の変更を確定',exact:true})).toBeDisabled();
   await target(page,[30,27],[34,27],1,true);await confirm(page,true);expect((await state(page)).tick).toBe(before.tick);
-  const bytes=await save(page);await page.reload();await ready(page,'ja');expect(await save(page)).toEqual(bytes);await openPanel(page,'help','ja');await expect(page.locator('.primary-panel')).toContainText('遠回りの探索は行いません');
+  const bytes=await save(page);await page.reload();await ready(page,'ja');await assertExact(await save(page),bytes,"await save(page)");await openPanel(page,'help','ja');await expect(page.locator('.primary-panel')).toContainText('遠回りの探索は行いません');
  }finally{await replace(page,original);await context.close();}
 });
 
 test('a lost construction acknowledgement recovers the committed route without replay or another confirmation',async({page})=>{
  let dropped=false,commands=0;
+ // transport-test: Inspect command identity and inject close/replay/stale transport behavior.
  await page.routeWebSocket('**/api/session?*',route=>{
   const server=route.connectToServer();
   route.onMessage(message=>{const m=JSON.parse(String(message));if(m.type==='command'&&m.payload.kind==='editRailway')commands++;server.send(message);});

@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import {renderingHarness} from './rendering-harnesses.ts';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect} from './fixtures.ts';
@@ -65,7 +66,7 @@ test('real site completion renders canonical owners in EN and JA narrow DPR2 and
   await page.mouse.click(point.x,point.y);await expect(page.getByTestId('selected-object')).toContainText('Building · '+b.id);
   const rgba=await canvas.evaluate((el:any,p:any)=>{const r=el.getBoundingClientRect();return [...el.getContext('2d').getImageData(Math.floor((p.x-r.x)*el.width/r.width),Math.floor((p.y-r.y)*el.height/r.height),1,1).data];},point);expect(rgba).toEqual([179,115,51,255]);
   await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/city-en-forced-cut.png`});expect(await canvas.getAttribute('data-camera')).toBe(camera);
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(bytes);expect(errors).toEqual([]);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),bytes,"await(await page.request.get('/api/saves/download')).body()");expect(errors).toEqual([]);
  }finally{await context.close();}
 });
 test('city site stage completion and removal local pixels and picks match full scenes beside trains and stations',async({page})=>{

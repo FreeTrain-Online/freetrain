@@ -1,3 +1,5 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
 import { closePanel,confirmRemoval,openPanel,previewRemovalLine,ready,canonicalState as state } from './browser-helpers.ts';
@@ -9,7 +11,7 @@ async function click(page:Page,x:number,y:number){
  // Cut and narrow tool layout changes settle on the animation frame; pick
  // against the completed raster and its camera, rather than an earlier frame.
  await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');
- await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
+ await waitForMapDraw(page);
  const p=await page.locator('canvas').evaluate((el,p)=>{
   const c=el as HTMLCanvasElement,r=c.getBoundingClientRect(),[cx,cy]=c.dataset.camera!.split(',').map(Number),zoom=Number(c.dataset.zoom);
   return {x:r.x+r.width/2+(p.x-cx)*zoom,y:r.y+r.height/2+(p.y-cy)*zoom};
@@ -43,12 +45,12 @@ test('Track is build-only and one Remove line previews, cancels and removes trac
   await empty(page);await build(page,'Track',[30,27],[32,27]);await build(page,'Bridge',[34,27],[36,27]);await build(page,'Track',[30,29],[32,29]);
   await peer.goto('/');await ready(peer);const before=await save(page),read=await state(page);
   await previewRemovalLine(page,[30,27],[36,27]);await expect(page.locator('canvas')).toHaveAttribute('data-removal-path-cells','7');
-  await expect(page.locator('.remove-task .rail-losses li')).toHaveCount(6);expect(await save(page)).toEqual(before);
-  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();await expect(confirm(page)).toBeDisabled();await expect(page.locator('canvas')).toHaveAttribute('data-removal-path-cells','0');expect(await save(page)).toEqual(before);
+  await expect(page.locator('.remove-task .rail-losses li')).toHaveCount(6);await assertExact(await save(page),before,"await save(page)");
+  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();await expect(confirm(page)).toBeDisabled();await expect(page.locator('canvas')).toHaveAttribute('data-removal-path-cells','0');await assertExact(await save(page),before,"await save(page)");
   await previewRemovalLine(page,[30,27],[36,27]);await confirmRemoval(page);
   await expect.poll(async()=>(await state(peer)).mixed.voxels.length).toBe(3);
   const after=await state(page);expect(after.mixed.voxels.every((v:any)=>v.position.y===29)).toBe(true);expect(after.tick).toBe(read.tick);expect(after.cash).toBe(read.cash);
-  const bytes=await save(page);await page.reload();await ready(page);expect(await save(page)).toEqual(bytes);
+  const bytes=await save(page);await page.reload();await ready(page);await assertExact(await save(page),bytes,"await save(page)");
  }finally{await peer.close();await replace(page,original);}
 });
 
@@ -66,7 +68,7 @@ test('two map picks keep one level and a mode change discards an in-flight line 
   await page.getByLabel('Removal selection',{exact:true}).selectOption('line');
   for(const [label,value] of [['Start X',30],['Start Y',27],['End X',34],['End Y',27],['Removal level',1]] as const)await page.getByLabel(label,{exact:true}).fill(String(value));
   await page.getByRole('button',{name:'Preview removal',exact:true}).click();await received;await page.getByLabel('Removal selection',{exact:true}).selectOption('single');release();
-  await expect(confirm(page)).toBeDisabled();await expect(page.locator('canvas')).toHaveAttribute('data-removal-path-cells','0');expect(await save(page)).toEqual(before);
+  await expect(confirm(page)).toBeDisabled();await expect(page.locator('canvas')).toHaveAttribute('data-removal-path-cells','0');await assertExact(await save(page),before,"await save(page)");
  }finally{release();await replace(page,original);}
 });
 
@@ -85,6 +87,7 @@ test('Japanese narrow two-point removal accepts keyboard coordinates and confirm
 
 test('Remove picks one rail with its pier, previews/cancels, then confirms once in both peers and survives reload',async({page,browser})=>{
  await page.goto('/');await ready(page);const original=await save(page),peer=await browser.newPage();
+ // transport-test: Count outgoing removal commands while preview is unavailable.
  let commands=0;await page.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();route.onMessage(m=>{if(JSON.parse(String(m)).payload?.kind==='removeObject')commands++;server.send(m);});});
  try{
   await replace(page,mixed);await page.reload();await ready(page);await peer.goto('/');await ready(peer);
@@ -92,12 +95,12 @@ test('Remove picks one rail with its pier, previews/cancels, then confirms once 
   await expect(page.getByLabel('Track action',{exact:true})).toHaveCount(0);
   await click(page,16.5,-55.5);await expect(confirm(page)).toBeEnabled();await expect(page.getByTestId('remove-target')).toContainText('Railway');
   await expect(page.locator('.remove-task li')).toHaveCount(2);const before=await save(page),read=await state(page);
-  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();await expect(confirm(page)).toBeDisabled();expect(await save(page)).toEqual(before);
+  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();await expect(confirm(page)).toBeDisabled();await assertExact(await save(page),before,"await save(page)");
   await click(page,16.5,-55.5);await expect(confirm(page)).toBeEnabled();await page.keyboard.press('Enter');
   await expect.poll(async()=>(await state(peer)).mixed.voxels.length).toBe(2);await expect(confirm(page)).toBeDisabled();
   await page.keyboard.press('Enter');expect(commands).toBe(1);const after=await state(page);
-  expect(after.mixed.voxels.some((v:any)=>['7','8'].includes(v.ownerId))).toBe(false);expect(after.cash).toBe(read.cash);expect(after.tick).toBe(read.tick);expect(after.terrain).toEqual(read.terrain);
-  const removed=await save(page);await page.reload();await ready(page);expect(await save(page)).toEqual(removed);
+  expect(after.mixed.voxels.some((v:any)=>['7','8'].includes(v.ownerId))).toBe(false);expect(after.cash).toBe(read.cash);expect(after.tick).toBe(read.tick);await assertExact(after.terrain,read.terrain,"after.terrain");
+  const removed=await save(page);await page.reload();await ready(page);await assertExact(await save(page),removed,"await save(page)");
  }finally{await peer.close();await replace(page,original);}
 });
 
@@ -106,9 +109,9 @@ test('Remove clears a forest while preserving its terrain and rejects bare groun
  try{
   await replace(page,terrain);await revealForest(page);const before=await state(page);await remove(page).click();
   await click(page,0,-58);await expect(confirm(page)).toBeEnabled();await expect(page.getByTestId('remove-target')).toContainText('Forest');
-  expect(await state(page)).toEqual(before);await confirm(page).click();await expect(page.locator('.command-feedback')).toContainText('Confirmed by server');await expect(confirm(page)).toBeDisabled();
+  await assertExact(await state(page),before,"await state(page)");await confirm(page).click();await expect(page.locator('.command-feedback')).toContainText('Confirmed by server');await expect(confirm(page)).toBeDisabled();
   const after=await state(page);expect(after.terrain.occupants.every((o:any)=>o.forest===null)).toBe(true);
-  expect(after.terrain.cells).toEqual(before.terrain.cells);expect(after.mixed).toBeUndefined();expect(after.tick).toBe(before.tick);
+  await assertExact(after.terrain.cells,before.terrain.cells,"after.terrain.cells");expect(after.mixed).toBeUndefined();expect(after.tick).toBe(before.tick);
   await click(page,16,-33);await expect(confirm(page)).toBeDisabled();await expect(page.getByTestId('remove-status')).toContainText('Modify terrain');
  }finally{await replace(page,original);}
 });
@@ -134,7 +137,7 @@ test('Escape and panels discard object drafts; observers cannot activate Remove'
   await replace(page,mixed);await remove(page).click();await click(page,16.5,-55.5);await expect(confirm(page)).toBeEnabled();const before=await save(page);
   await page.keyboard.press('Escape');await expect(confirm(page)).toBeDisabled();await expect(remove(page)).toHaveAttribute('aria-pressed','true');
   await page.keyboard.press('Escape');await expect(remove(page)).toHaveAttribute('aria-pressed','false');
-  await remove(page).click();await click(page,16.5,-55.5);await expect(confirm(page)).toBeEnabled();await openPanel(page,'help');await closePanel(page);await expect(confirm(page)).toBeDisabled();expect(await save(page)).toEqual(before);
+  await remove(page).click();await click(page,16.5,-55.5);await expect(confirm(page)).toBeEnabled();await openPanel(page,'help');await closePanel(page);await expect(confirm(page)).toBeDisabled();await assertExact(await save(page),before,"await save(page)");
   expect((await observer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await observer.goto('/');await ready(observer);await expect(remove(observer)).toBeDisabled();
  }finally{await observer.close();await replace(page,original);}
 });

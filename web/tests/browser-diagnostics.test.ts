@@ -243,3 +243,36 @@ Deno.test('process evidence separates starts and streams and associates test sli
     e.cleanup();
   }
 });
+
+Deno.test('suite exact assertion dispatch preserves download bytes and full heat comparisons', async () => {
+  const { assertExact } = await import('./browser/assertions.ts');
+  const e = evidence();
+  try {
+    await rejects(assertExact(Buffer.from('{"x":1}'), Buffer.from('{ "x":1}'), 'download', 'owner', e.info), /Exact save bytes mismatch/);
+    const expected = { mixed: { city: { heat: { q: [1, 2, 3] } } } };
+    const actual = structuredClone(expected); actual.mixed.city.heat.q[1] = 4;
+    await rejects(assertExact(actual, expected, 'minute', 'JA peer', e.info), /\$\.mixed\.city\.heat\.q\[1\]/);
+    equal(e.attachments.length, 4);
+  } finally { e.cleanup(); }
+});
+
+Deno.test('independently owned capacity processes retain stdout stderr exit and restart logs', async () => {
+  const { spawn } = await import('node:child_process');
+  const { captureProcess, processEvidenceDirectory } = await import('./browser/process-evidence.ts');
+  const e = evidence(), previous = process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT;
+  process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT = e.directory;
+  try {
+    for (let n = 0; n < 2; n++) {
+      const child = captureProcess(spawn(Deno.execPath(), ['eval', `console.log('start ${n}'); console.error('stderr ${n}');`]), 'backend', 0);
+      await new Promise<void>((resolve, reject) => { child.on('close', code => code === 0 ? resolve() : reject(new Error(`Child exit ${code}`))); child.on('error', reject); });
+    }
+    const directory = processEvidenceDirectory(0);
+    for (let n = 0; n < 2; n++) {
+      const prefix = String(n + 1).padStart(3, '0') + '-backend';
+      match(readFileSync(join(directory, prefix + '.stdout.log'), 'utf8'), new RegExp(`start ${n}`));
+      match(readFileSync(join(directory, prefix + '.stderr.log'), 'utf8'), new RegExp(`stderr ${n}`));
+    }
+    const events = readFileSync(join(directory, 'lifecycle.ndjson'), 'utf8').trim().split('\n').map(line => JSON.parse(line));
+    equal(events.filter(event => event.kind === 'start').length, 2); equal(events.filter(event => event.kind === 'exit' && event.code === 0).length, 2);
+  } finally { if (previous === undefined) delete process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT; else process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT = previous; e.cleanup(); }
+});

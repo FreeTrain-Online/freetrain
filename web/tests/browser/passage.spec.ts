@@ -1,7 +1,9 @@
+import { restartWorldServer } from './session.ts';
+import { assertExact, waitForExact } from './assertions.ts';
 import { previewResponse } from './transport-helpers.ts';
 import {renderingHarness} from './rendering-harnesses.ts';
 import {readFileSync,writeFileSync} from 'node:fs';
-import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
+import { test, expect, type Page } from './fixtures.ts';
 import {canonicalState as state,ready,exposeMapPoint} from './browser-helpers.ts';
 test.use({hasTouch:true});
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -13,12 +15,12 @@ async function quote(p:Page,ja=false,material='concrete',action='place',x=24,end
  for(const [label,value] of [[ja?'通路の始点 X':'Passage start X',x],[ja?'通路の始点 Y':'Passage start Y',y],[ja?'通路の終点 X':'Passage end X',endX],[ja?'通路の終点 Y':'Passage end Y',y],[ja?'通路の高さ':'Passage level',2]] as const)await p.getByLabel(label,{exact:true}).fill(String(value));
  const response=previewResponse(p,'/api/station/passage/preview');await p.locator('.passage-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();return(await response).json();
 }
-for(const ja of [false,true])test(`passage ${ja?'JA narrow touch':'EN'} all materials preview cancel remove peer exact reopen and checkpoint`,async({page,browser,baseURL,worldServer})=>{
+for(const ja of [false,true])test(`passage ${ja?'JA narrow touch':'EN'} all materials preview cancel remove peer exact reopen and checkpoint`,async({page,browser,baseURL,worldServer,sessions})=>{
  test.setTimeout(150000);const context=await browser.newContext({baseURL}),peer=await context.newPage();
  if(ja){await page.setViewportSize({width:430,height:860});await page.addInitScript(()=>localStorage.setItem('freetrain-online.locale','ja'));}
- const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));let socket:WebSocketRoute;const messages:any[]=[];let serial=0;
- await page.routeWebSocket('**/api/session?*',r=>{socket=r.connectToServer();socket.onMessage(m=>{messages.push(JSON.parse(String(m)));r.send(m);});r.onMessage(m=>socket.send(m));});
- async function platform(x:number,heading:number){const s=await state(page),q={expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.mixed?.geometryRevision??s.terrain.geometryRevision,expectedMinute:s.tick,expectedContentVersion:s.contentVersion,action:'place',position:{x,y:25,z:2},direction:heading,length:4,roof:true,platformId:'0',expectedPlatformRevision:'0'};const r=await page.request.post('/api/station/platform/preview?protocolVersion=11&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1',{data:q}),v=await r.json();expect(v.legal,v.reason).toBe(true);const requestId='passage-platform-'+serial++;socket.send(JSON.stringify({type:'command',requestId,expectedWorldEpoch:s.worldEpoch,payload:{kind:'editThinPlatform',query:q,expectedCost:v.cost}}));await expect.poll(()=>messages.find(m=>m.requestId===requestId)?.type).toBe('accepted');}
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));let serial=0;
+ const observedSession=await sessions.observe(page,'page');
+ async function platform(x:number,heading:0|2|4|6){return test.step("Prepare a platform through the server",async()=>{const s=await state(page),q={expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.mixed?.geometryRevision??s.terrain.geometryRevision,expectedMinute:s.tick,expectedContentVersion:s.contentVersion,action:'place' as const,position:{x,y:25,z:2},direction:heading,length:4,roof:true,platformId:'0',expectedPlatformRevision:'0'};const r=await page.request.post('/api/station/platform/preview?protocolVersion=11&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1',{data:q}),v=await r.json();expect(v.legal,v.reason).toBe(true);const requestId='passage-platform-'+serial++;expect((await observedSession.command({type:'command',requestId,expectedWorldEpoch:s.worldEpoch,payload:{kind:'editThinPlatform',query:q,expectedCost:v.cost}})).type).toBe('accepted');});}
  try{
   await page.goto('/');await ready(page,ja?'ja':'en');await empty(page,ja);await ready(page,ja?'ja':'en');
   await platform(25,4);await platform(26,0);
@@ -30,28 +32,28 @@ for(const ja of [false,true])test(`passage ${ja?'JA narrow touch':'EN'} all mate
    const point=await page.locator('canvas.world-canvas').evaluate((el,x)=>{const r=el.getBoundingClientRect(),[cx,cy]=el.dataset.camera!.split(',').map(Number),zoom=Number(el.dataset.zoom);return {x:r.x+r.width/2+(16*(x-19+25)+16-cx)*zoom,y:r.y+r.height/2+(8*(25-x+19)-32+8-cy)*zoom};},x);
    const exposed=await exposeMapPoint(page,point);if(ja)await page.touchscreen.tap(exposed.x,exposed.y);else await page.mouse.click(exposed.x,exposed.y);
   }
-  await expect(confirm).toBeEnabled();await expect(page.getByLabel(ja?'通路の始点 X':'Passage start X',{exact:true})).toHaveValue('24');await expect(page.getByLabel(ja?'通路の終点 X':'Passage end X',{exact:true})).toHaveValue('27');expect(await save(page)).toEqual(initialBytes);
+  await expect(confirm).toBeEnabled();await expect(page.getByLabel(ja?'通路の始点 X':'Passage start X',{exact:true})).toHaveValue('24');await expect(page.getByLabel(ja?'通路の終点 X':'Passage end X',{exact:true})).toHaveValue('27');await assertExact(await save(page),initialBytes,"await save(page)");
   await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();
   for(const material of ['concrete','brown','green']){
-   const before=await save(page),q=await quote(page,ja,material);expect(q.legal,q.reason).toBe(true);expect(q.cost).toBe('0');expect(q.positions).toHaveLength(4);expect(await save(page)).toEqual(before);
+   const before=await save(page),q=await quote(page,ja,material);expect(q.legal,q.reason).toBe(true);expect(q.cost).toBe('0');expect(q.positions).toHaveLength(4);await assertExact(await save(page),before,"await save(page)");
    await page.getByRole('button',{name:ja?'通路のプレビューを表示':'Show passage preview',exact:true}).click();await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-station-ghost-ready','true');
-   await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();await expect(confirm).toBeDisabled();expect(await save(page)).toEqual(before);
+   await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();await expect(confirm).toBeDisabled();await assertExact(await save(page),before,"await save(page)");
    await quote(page,ja,material);await confirm.click();await expect.poll(async()=>(await state(peer)).mixed.stationGraph.platforms[0].yards[0].outlook.material).toBe(material);
-   const s=await state(page);expect(s.mixed.voxels).toEqual(initial.mixed.voxels);expect(s.mixed.accounts).toEqual(initial.mixed.accounts);expect(s.mixed.queue).toEqual(initial.mixed.queue);
-   expect(s.mixed.stationGraph.platforms.map((p:any)=>[p.hostId,p.children,p.name,p.bell,p.dayTimer])).toEqual(initial.mixed.stationGraph.platforms.map((p:any)=>[p.hostId,p.children,p.name,p.bell,p.dayTimer]));
+   const s=await state(page);await assertExact(s.mixed.voxels,initial.mixed.voxels,"s.mixed.voxels");await assertExact(s.mixed.accounts,initial.mixed.accounts,"s.mixed.accounts");await assertExact(s.mixed.queue,initial.mixed.queue,"s.mixed.queue");
+   await assertExact(s.mixed.stationGraph.platforms.map((p:any)=>[p.hostId,p.children,p.name,p.bell,p.dayTimer]),initial.mixed.stationGraph.platforms.map((p:any)=>[p.hostId,p.children,p.name,p.bell,p.dayTimer]),"s.mixed.stationGraph.platforms.map((p:any)=>[p.hostId,p.children,p.name,p.bell,p.dayTimer])");
    await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-presentation','ready');
    await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/passage-${ja?'ja':'en'}-${material}.png`});
-   const bytes=await save(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);await ready(page,ja?'ja':'en');expect(await save(page)).toEqual(bytes);await task(page,ja);
+   const bytes=await save(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);await ready(page,ja?'ja':'en');await assertExact(await save(page),bytes,"await save(page)");await task(page,ja);
    const remove=await quote(page,ja,material,'remove');expect(remove.legal).toBe(true);await page.getByRole('button',{name:ja?'撤去を確定':'Confirm removal',exact:true}).click();await expect.poll(async()=>(await state(peer)).mixed.stationGraph.platforms[0].yards[0].outlook.kind).toBe('plain');
   }
   // Empty paths are legal exact no-ops; ordinary/parallel platform rails reject.
-  const before=await save(page);await quote(page,ja,'concrete','place',30,31,30);await confirm.click();expect(await save(page)).toEqual(before);
+  const before=await save(page);await quote(page,ja,'concrete','place',30,31,30);await confirm.click();await assertExact(await save(page),before,"await save(page)");
   await quote(page,ja,'green');await confirm.click();await expect.poll(async()=>(await state(peer)).mixed.stationGraph.platforms[0].yards[0].outlook.kind).toBe('passage');
-  const bytes=await save(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,ja?'ja':'en');expect(await save(page)).toEqual(bytes);expect(bytes).not.toEqual(initialBytes);expect(errors).toEqual([]);
+  const bytes=await save(page);await restartWorldServer(worldServer);expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,ja?'ja':'en');await assertExact(await save(page),bytes,"await save(page)");expect(bytes).not.toEqual(initialBytes);expect(errors).toEqual([]);
  }finally{await context.close();}
 });
-test('passage stale peer edits late cancellation observer and replacement cannot publish old confirmations',async({page,browser,baseURL})=>{
- test.setTimeout(90000);const context=await browser.newContext({baseURL}),peer=await context.newPage(),observerContext=await browser.newContext({baseURL}),observer=await observerContext.newPage();let socket:WebSocketRoute;const messages:any[]=[];
+test('passage stale peer edits late cancellation observer and replacement cannot publish old confirmations',async({page,browser,baseURL,sessions})=>{
+ test.setTimeout(90000);const context=await browser.newContext({baseURL}),peer=await context.newPage(),observerContext=await browser.newContext({baseURL}),observer=await observerContext.newPage();
  try{
   await page.goto('/');await ready(page);await empty(page);
   await peer.goto('/');await ready(peer);await task(peer);const q=await quote(peer,false,'brown','place',30,31,30),bytes=await save(page);
@@ -60,8 +62,8 @@ test('passage stale peer edits late cancellation observer and replacement cannot
   await peer.route('**/api/station/passage/preview?*',async r=>{const response=await r.fetch();seen=true;await hold;await r.fulfill({response});});
   await peer.locator('.passage-task form').getByRole('button',{name:'Check placement',exact:true}).click();await expect.poll(()=>seen).toBe(true);await peer.getByRole('button',{name:'Cancel preview',exact:true}).click();release();await expect(peer.getByRole('button',{name:'Confirm passage',exact:true})).toBeDisabled();await peer.unroute('**/api/station/passage/preview?*');
   expect((await observer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);
-  await observer.routeWebSocket('**/api/session?*',r=>{socket=r.connectToServer();socket.onMessage(m=>{messages.push(JSON.parse(String(m)));r.send(m);});r.onMessage(m=>socket.send(m));});await observer.goto('/');await ready(observer);await expect(observer.getByRole('button',{name:'Stations',exact:true})).toBeDisabled();
-  socket!.send(JSON.stringify({type:'command',requestId:'observer-passage',expectedWorldEpoch:q.query.expectedWorldEpoch,payload:{kind:'editPassage',query:q.query,expectedCost:'0'}}));await expect.poll(()=>messages.find(m=>m.requestId==='observer-passage')?.code).toBe('notAuthorized');
+  const observedSession=await sessions.observe(observer,'observer');await observer.goto('/');await ready(observer);await expect(observer.getByRole('button',{name:'Stations',exact:true})).toBeDisabled();
+  expect((await observedSession.command({type:'command',requestId:'observer-passage',expectedWorldEpoch:q.query.expectedWorldEpoch,payload:{kind:'editPassage',query:q.query,expectedCost:'0'}})).code).toBe('notAuthorized');
   await quote(peer,false,'brown','place',30,31,30);const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);await ready(peer);await expect(peer.locator('.passage-task')).toHaveCount(0);
  }finally{await context.close();await observerContext.close();}
 });
@@ -73,11 +75,11 @@ test('all 48 passage appearances match independent source crop pixels and alpha 
  }
  writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/passages-report.json`,JSON.stringify(reports,null,2));
 });
-for(const ja of [false,true])test(`stairs ${ja?'JA narrow touch':'EN'} materials neighbors remove peer exact reopen and checkpoint`,async({page,browser,baseURL,worldServer})=>{
+for(const ja of [false,true])test(`stairs ${ja?'JA narrow touch':'EN'} materials neighbors remove peer exact reopen and checkpoint`,async({page,browser,baseURL,worldServer,sessions})=>{
  test.setTimeout(150000);const context=await browser.newContext({baseURL}),peer=await context.newPage();
  if(ja){await page.setViewportSize({width:430,height:860});await page.addInitScript(()=>localStorage.setItem('freetrain-online.locale','ja'));}
- let socket:WebSocketRoute;const messages:any[]=[];
- await page.routeWebSocket('**/api/session?*',r=>{socket=r.connectToServer();socket.onMessage(m=>{messages.push(JSON.parse(String(m)));r.send(m);});r.onMessage(m=>socket.send(m));});
+
+ const observedSession=await sessions.observe(page,'page');
  async function stair(material='concrete',action='place',y=26){
   await page.getByLabel(ja?'部品':'Part',{exact:true}).selectOption('stairs');
   await page.getByLabel(ja?'階段の操作':'Stair action',{exact:true}).selectOption(action);
@@ -89,15 +91,15 @@ for(const ja of [false,true])test(`stairs ${ja?'JA narrow touch':'EN'} materials
  }
  try{
   await page.goto('/');await ready(page,ja?'ja':'en');await empty(page,ja);
-  const s=await state(page),q={expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.terrain.geometryRevision,expectedMinute:s.tick,expectedContentVersion:s.contentVersion,action:'place',position:{x:25,y:25,z:2},direction:4,length:4,roof:true,platformId:'0',expectedPlatformRevision:'0'};
+  const s=await state(page),q={expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.terrain.geometryRevision,expectedMinute:s.tick,expectedContentVersion:s.contentVersion,action:'place' as const,position:{x:25,y:25,z:2},direction:4 as const,length:4,roof:true,platformId:'0',expectedPlatformRevision:'0'};
   const r=await page.request.post('/api/station/platform/preview?protocolVersion=11&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1',{data:q}),v=await r.json();expect(v.legal,v.reason).toBe(true);
-  socket!.send(JSON.stringify({type:'command',requestId:'stair-platform',expectedWorldEpoch:s.worldEpoch,payload:{kind:'editThinPlatform',query:q,expectedCost:v.cost}}));await expect.poll(()=>messages.find(m=>m.requestId==='stair-platform')?.type).toBe('accepted');
+  expect((await observedSession.command({type:'command',requestId:'stair-platform',expectedWorldEpoch:s.worldEpoch,payload:{kind:'editThinPlatform',query:q,expectedCost:v.cost}})).type).toBe('accepted');
   await peer.goto('/');await ready(peer);await task(page,ja);
   expect((await stair()).reason).toBe('stairNeighbor');
   await page.getByLabel(ja?'部品':'Part',{exact:true}).selectOption('passage');await quote(page,ja);await page.getByRole('button',{name:ja?'通路の設置を確定':'Confirm passage',exact:true}).click();
   const confirm=page.getByRole('button',{name:ja?'階段の設置を確定':'Confirm stairs',exact:true});
   for(const material of ['concrete','brown','green']){
-   const before=await save(page),p=await stair(material);expect(p.legal,p.reason).toBe(true);expect(p.positions).toEqual([{x:25,y:26,z:2}]);expect(p.cost).toBe('0');expect(await save(page)).toEqual(before);
+   const before=await save(page),p=await stair(material);expect(p.legal,p.reason).toBe(true);expect(p.positions).toEqual([{x:25,y:26,z:2}]);expect(p.cost).toBe('0');await assertExact(await save(page),before,"await save(page)");
    await page.getByRole('button',{name:ja?'通路のプレビューを表示':'Show passage preview',exact:true}).click();await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-station-ghost-ready','true');
    if(material==='concrete'){
     await page.getByRole('button',{name:ja?'地図で階段の位置を選択':'Pick stair location on map',exact:true}).click();
@@ -106,13 +108,13 @@ for(const ja of [false,true])test(`stairs ${ja?'JA narrow touch':'EN'} materials
     await expect(confirm).toBeEnabled();await expect(page.getByLabel(ja?'階段 X':'Stair X',{exact:true})).toHaveValue('25');await expect(page.getByLabel(ja?'階段 Y':'Stair Y',{exact:true})).toHaveValue('26');
    }
    await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();await expect(confirm).toBeDisabled();
-   await stair(material);await confirm.click();await expect.poll(async()=>(await state(peer)).mixed.stationGraph.platforms[0].yards[1].outlook).toEqual({kind:'stair',material,bridge:false,upward:false});
+   await stair(material);await confirm.click();await waitForExact(async()=>(await state(peer)).mixed.stationGraph.platforms[0].yards[1].outlook,{kind:'stair',material,bridge:false,upward:false},"async()=>(await state(peer)).mixed.stationGraph.platforms[0].yards[1].outlook");
    await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/stairs-${ja?'ja':'en'}-${material}.png`});
-   const bytes=await save(page),now=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+now.worldEpoch,{data:bytes})).ok()).toBe(true);await ready(page,ja?'ja':'en');expect(await save(page)).toEqual(bytes);await task(page,ja);
+   const bytes=await save(page),now=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+now.worldEpoch,{data:bytes})).ok()).toBe(true);await ready(page,ja?'ja':'en');await assertExact(await save(page),bytes,"await save(page)");await task(page,ja);
    await stair(material,'remove');await page.getByRole('button',{name:ja?'撤去を確定':'Confirm removal',exact:true}).click();await expect.poll(async()=>(await state(peer)).mixed.stationGraph.platforms[0].yards[1].outlook.kind).toBe('plain');
   }
   await stair('green');await confirm.click();await expect.poll(async()=>(await state(page)).mixed.stationGraph.platforms[0].yards[1].outlook.kind).toBe('stair');
-  const bytes=await save(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,ja?'ja':'en');expect(await save(page)).toEqual(bytes);
+  const bytes=await save(page);await restartWorldServer(worldServer);expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,ja?'ja':'en');await assertExact(await save(page),bytes,"await save(page)");
  }finally{await context.close();}
 });
 test('all 96 stair appearances match literal crops and alpha picks in eight variants including corrected index23',async({page})=>{

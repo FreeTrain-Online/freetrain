@@ -1,5 +1,6 @@
+import { assertExact, waitForExact } from './assertions.ts';
 import type { CommandPayload } from '../../src/generated/contracts.ts';
-import { compatibilityURL, authenticate, collectSession, pausedCanonicalScene } from './transport-helpers.ts';
+import { compatibilityURL, authenticate, pausedCanonicalScene } from './transport-helpers.ts';
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
 import {canonicalState as state,ready} from './browser-helpers.ts';
@@ -8,11 +9,11 @@ const previewPath=compatibilityURL('/api/station/building/preview',['terrain-con
 const save=async(p:Page)=>(await p.request.get('/api/saves/download')).body();
 
 // Real publication/decoder witness. Session/construction tests own domain matrices.
-test('P6-06 construction and removal publish station owners through real EN/JA peer decoders',async({page,browser,baseURL})=>{
+test('P6-06 construction and removal publish station owners through real EN/JA peer decoders',async({page,browser,baseURL,sessions: fixture})=>{
  test.setTimeout(120000);
  const errors:string[]=[];
  const context=await browser.newContext({baseURL,locale:'ja-JP',viewport:{width:430,height:860}}),peer=await context.newPage();
- const sessions=await Promise.all([page,peer].map(async p=>{p.on('pageerror',e=>errors.push(String(e)));return collectSession(p);}));
+ const sessions=await Promise.all([page,peer].map(async p=>{p.on('pageerror',e=>errors.push(String(e)));return fixture.observe(p,p===page?'owner':'peer');}));
  let serial=0;
  async function command(payload:CommandPayload){
   const s=await state(page);
@@ -31,12 +32,12 @@ test('P6-06 construction and removal publish station owners through real EN/JA p
   const current=await state(page),q={expectedWorldEpoch:current.worldEpoch,expectedGeometryRevision:current.terrain.geometryRevision,expectedMinute:current.tick,
    expectedContentVersion:current.contentVersion,action:'place' as const,position:{x:25,y:25,z:2},definition:type.reference,stationId:'0',expectedStationRevision:'0'};
   const before=await save(page),response=await preview(page,q);expect(response.ok(),await response.text()).toBe(true);const quote=await response.json();
-  expect(quote.legal,quote.reason).toBe(true);expect(quote.positions).toHaveLength(type.sizeX*type.sizeY*type.height);expect(await save(page)).toEqual(before);
+  expect(quote.legal,quote.reason).toBe(true);expect(quote.positions).toHaveLength(type.sizeX*type.sizeY*type.height);await assertExact(await save(page),before,"await save(page)");
   expect((await command({kind:'editStationBuilding',query:q,expectedCost:quote.cost})).type).toBe('accepted');
   const built=await state(page),graph=built.mixed.stationGraph,b=graph.buildings[0];
   expect(b.definition).toEqual(type.reference);expect(b.location).toEqual(q.position);expect(graph.nextStationName).toBe(2);
   expect(built.mixed.voxels).toHaveLength(0);expect(built.entities.find((e:any)=>e.id===b.id).footprint).toHaveLength(quote.positions.length);
-  await expect.poll(()=>latest(1)?.mixed?.stationGraph).toEqual(graph);
+  await waitForExact(()=>latest(1)?.mixed?.stationGraph,graph,"()=>latest(1)?.mixed?.stationGraph");
   for(const p of [page,peer])await expect(p.locator('canvas.world-canvas')).toHaveAttribute('data-render-revision',built.revision);
   const remove={...q,expectedWorldEpoch:built.worldEpoch,expectedGeometryRevision:built.mixed.geometryRevision,
    expectedContentVersion:built.contentVersion,expectedMinute:built.tick,action:'remove' as const,definition:null,position:quote.positions.at(-1),stationId:b.id,expectedStationRevision:b.revision};

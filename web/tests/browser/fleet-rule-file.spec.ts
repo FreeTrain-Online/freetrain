@@ -1,3 +1,5 @@
+import { restartWorldServer } from './session.ts';
+import { assertExact } from './assertions.ts';
 import {browserFixture} from './generated-fixtures.ts';
 import {test,expect,type Page} from './fixtures.ts';
 import {canonicalState as state,openPanel,closePanel,ready} from './browser-helpers.ts';
@@ -30,12 +32,12 @@ for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]]
  await dialog.getByLabel(text.ruleFileRead,{exact:true}).setInputFiles(legacy);
  await expect(dialog.getByRole('list',{name:text.ruleFilePreview,exact:true}).getByRole('listitem')).toHaveCount(9);
  await expect(dialog).toContainText(text.ruleFileLegacy);await expect(dialog).toContainText(text.ruleFileAppendHelp);
- expect(await saved()).toEqual(before);
+ await assertExact(await saved(),before,"await saved()");
  mkdirSync(evidence+'/rule-files',{recursive:true});await dialog.getByRole('list',{name:text.ruleFilePreview,exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:evidence+`/rule-files/${locale}-${coarse?'coarse':'desktop'}-preview.png`});
- await dialog.getByRole('button',{name:text.cancel,exact:true}).click();expect(await saved()).toEqual(before);
+ await dialog.getByRole('button',{name:text.cancel,exact:true}).click();await assertExact(await saved(),before,"await saved()");
  await dialog.getByLabel(text.ruleFileRead,{exact:true}).setInputFiles({name:'wrong.ftdd.json',mimeType:'application/json',buffer:Buffer.from('{"format":"wrong","version":1,"rules":[]}')});
- await expect(dialog).toContainText(text.ruleFileError);expect(await saved()).toEqual(before);
- await dialog.getByLabel(text.ruleFileRead,{exact:true}).setInputFiles({name:'oversize.ftdd',mimeType:'application/octet-stream',buffer:Buffer.alloc(512*1024+1)});await expect(dialog).toContainText(text.ruleFileError);expect(await saved()).toEqual(before);
+ await expect(dialog).toContainText(text.ruleFileError);await assertExact(await saved(),before,"await saved()");
+ await dialog.getByLabel(text.ruleFileRead,{exact:true}).setInputFiles({name:'oversize.ftdd',mimeType:'application/octet-stream',buffer:Buffer.alloc(512*1024+1)});await expect(dialog).toContainText(text.ruleFileError);await assertExact(await saved(),before,"await saved()");
  await dialog.getByLabel(text.ruleFileRead,{exact:true}).setInputFiles(legacy);
  await dialog.getByRole('button',{name:text.ruleFileAppend,exact:true}).click();await expect(dialog.getByRole('button',{name:text.ruleFileAppend,exact:true})).toHaveCount(0);
  expect((await current()).harbors[0].rules).toEqual([source.harbors[0].rules[0],...expected]);
@@ -61,7 +63,7 @@ for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]]
   const remote=await manager(peer,en,'en');await remote.getByRole('button',{name:en.controllerRename,exact:true}).click();const rename=peer.getByRole('dialog');await rename.getByLabel(en.controllerName,{exact:true}).fill('Peer rules');await rename.getByRole('button',{name:en.controllerApply,exact:true}).click();
   await expect.poll(()=>page.evaluate(()=>typeof (window as any).releaseRuleRead)).toBe('function');await page.evaluate(()=>(window as any).releaseRuleRead());
   await expect(dialog).toContainText(text.controllerConflict);await expect(dialog.getByRole('button',{name:text.ruleFileAppend,exact:true})).toBeDisabled();
-  const afterPeer=await saved();await dialog.getByRole('button',{name:text.cancel,exact:true}).click();expect(await saved()).toEqual(afterPeer);
+  const afterPeer=await saved();await dialog.getByRole('button',{name:text.cancel,exact:true}).click();await assertExact(await saved(),afterPeer,"await saved()");
  }finally{await context.close();}
  await dialog.getByRole('button',{name:text.close,exact:true}).click();
  const observerContext=await browser.newContext({baseURL}),observer=await observerContext.newPage();
@@ -72,8 +74,8 @@ for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]]
  }finally{await observerContext.close();}
  const finalRules=(await current()).harbors[0].rules,downloaded=await saved(),epoch=(await state(page)).worldEpoch;
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+epoch,{data:downloaded})).ok()).toBe(true);
- await expect(page.getByRole('dialog')).toHaveCount(0);await page.goto('/');await ready(page,locale);expect((await current()).harbors[0].rules).toEqual(finalRules);
- await closePanel(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
- expect((await current()).harbors[0].rules).toEqual(finalRules);const final=await state(page);expect(final.tick).toBe(baseline.tick);expect(final.cash).toBe(baseline.cash);expect(final.mixed.queue).toEqual(baseline.mixed.queue);expect(errors).toEqual([]);
+ await expect(page.getByRole('dialog')).toHaveCount(0);await page.goto('/');await ready(page,locale);await assertExact((await current()).harbors[0].rules,finalRules,"(await current()).harbors[0].rules");
+ await closePanel(page);await restartWorldServer(worldServer);expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
+ await assertExact((await current()).harbors[0].rules,finalRules,"(await current()).harbors[0].rules");const final=await state(page);expect(final.tick).toBe(baseline.tick);expect(final.cash).toBe(baseline.cash);await assertExact(final.mixed.queue,baseline.mixed.queue,"final.mixed.queue");expect(errors).toEqual([]);
 });
 });

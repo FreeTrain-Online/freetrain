@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { test, expect } from '../browser/fixtures.ts';
 import { closePanel, exposeMapPoint, openPanel, ready } from '../browser/browser-helpers.ts';
-import { panMapBy, projectMapPoint, renderedCamera, renderedTool } from '../browser/map-picking.ts';
+import { waitForMapDraw, panMapBy, projectMapPoint, renderedCamera, renderedTool } from '../browser/map-picking.ts';
 
 type FrameWindow = Window & { holdMapFrames?: boolean; releaseMapFrames?: () => void; pickWheelObserved?: boolean };
 test.use({ viewport: { width: 430, height: 860 }, hasTouch: true });
@@ -29,13 +29,15 @@ test('map picking waits for completed tool and pan draws, then exposes the same 
     // click schedules the tool change while its rendering is deliberately held.
     document.querySelector<HTMLButtonElement>('.tool-strip button[aria-label="Inspect"]')!.click();
   });
+  const draw = waitForMapDraw(page); draw.catch(() => {});
   const tool = renderedTool(page, 'inspect'); tool.catch(() => {});
   try {
     // Intentional absence window: a pending tool draw must not satisfy readiness.
     expect(await Promise.race([tool.then(() => 'early'), new Promise(resolve => setTimeout(() => resolve('waiting'), 100))])).toBe('waiting');
+    expect(await Promise.race([draw.then(() => 'early'), new Promise(resolve => setTimeout(() => resolve('waiting'), 100))])).toBe('waiting');
     expect(await renderedCamera(page)).toEqual(beforeTool);
   } finally { await page.evaluate(() => (window as FrameWindow).releaseMapFrames!()); }
-  await tool;
+  await tool; await draw;
 
   const beforePan = await renderedCamera(page);
   await page.evaluate(() => {
@@ -52,6 +54,19 @@ test('map picking waits for completed tool and pan draws, then exposes the same 
   const afterPan = await pan;
   expect(await renderedCamera(page)).toEqual(afterPan);
   await expect(projectMapPoint(page, { x: 207.5, y: 112.5 }, beforePan)).rejects.toThrow('Map camera changed before pick');
+
+  await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-rendered-reduced-motion', 'false');
+  await page.evaluate(() => { (window as FrameWindow).holdMapFrames = true; });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const preferenceDraw = waitForMapDraw(page); preferenceDraw.catch(() => {});
+  try {
+    // Intentional absence window: an earlier ready draw cannot satisfy a new media preference.
+    expect(await Promise.race([preferenceDraw.then(() => 'early'), new Promise(resolve => setTimeout(() => resolve('waiting'), 100))])).toBe('waiting');
+    await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-rendered-reduced-motion', 'false');
+  } finally { await page.evaluate(() => (window as FrameWindow).releaseMapFrames!()); }
+  await preferenceDraw;
+  await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-rendered-reduced-motion', 'true');
+  await waitForMapDraw(page);
 
   await closePanel(page); await openPanel(page, 'settings');
   const canvas = page.locator('canvas.world-canvas'), sheet = await page.locator('.primary-panel').boundingBox();

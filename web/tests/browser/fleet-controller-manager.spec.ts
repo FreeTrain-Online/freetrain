@@ -1,3 +1,5 @@
+import { restartWorldServer } from './session.ts';
+import { assertExact } from './assertions.ts';
 import {browserFixture} from './generated-fixtures.ts';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {canonicalState as state,openPanel,closePanel,ready} from './browser-helpers.ts';
@@ -67,7 +69,7 @@ for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]]
  const before=await(await page.request.get('/api/saves/download')).body();
  await controls.getByRole('button',{name:text.controllerConfigure,exact:true}).click();dialog=page.getByRole('dialog',{name:text.controllerConfigure,exact:true});
  await dialog.getByLabel(text.controllerMinutes,{exact:true}).fill('59');await dialog.getByRole('button',{name:text.cancel,exact:true}).click();
- expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+ await assertExact(await(await page.request.get('/api/saves/download')).body(),before,"await(await page.request.get('/api/saves/download')).body()");
  await controls.getByRole('combobox',{name:text.controllerManager,exact:true}).selectOption(copy.id);
  await controls.getByRole('button',{name:text.controllerDelete,exact:true}).click();dialog=page.getByRole('dialog',{name:text.controllerDelete,exact:true});
  await dialog.getByRole('button',{name:text.controllerDelete,exact:true}).click();await expect(dialog).toHaveCount(0);
@@ -76,7 +78,7 @@ for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]]
  await page.goto('/');await ready(page,locale);const current=await state(page);
  expect(current.mixed.fleet.controllers.find((c:any)=>c.id===source.id).name).toBe('変更・Renamed');
  expect(current.mixed.fleet.trains[0].controllerId).toBe(delegation.id);expect(current.mixed.fleet.trains[1].controllerId).toBe(source.id);
- expect(current.tick).toBe(initial.tick);expect(current.cash).toBe(initial.cash);expect(current.mixed.queue).toEqual(initial.mixed.queue);
+ expect(current.tick).toBe(initial.tick);expect(current.cash).toBe(initial.cash);await assertExact(current.mixed.queue,initial.mixed.queue,"current.mixed.queue");
  const context=await browser.newContext({baseURL}),peer=await context.newPage();
  try{
   expect((await peer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);
@@ -88,19 +90,20 @@ for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]]
  controls=await manager(page,text,locale);await controls.getByRole('combobox',{name:text.controllerManager,exact:true}).selectOption(source.id);
  mkdirSync(evidence+'/controller-manager',{recursive:true});await page.screenshot({path:evidence+`/controller-manager/${locale}-${coarse?'coarse':'desktop'}.png`});
  expect(errors).toEqual([]);
- await closePanel(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
+ await closePanel(page);await restartWorldServer(worldServer);expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
  expect((await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===source.id).harbors[0].minutes).toBe(17);
 });
 });
 test('controller drafts detect peer revision changes and identical command receipts do not create twice',async({page,browser,baseURL})=>{
  await setup(page);let transport:WebSocketRoute|undefined;const commands:any[]=[],replies:any[]=[];
+ // transport-test: Replay exact controller requests and count disabled writes.
  await page.routeWebSocket('**/api/session?*',route=>{transport=route.connectToServer();route.onMessage(m=>{const d=JSON.parse(String(m));if(d.payload?.kind==='manageFleetController')commands.push(d);transport!.send(m);});transport.onMessage(m=>{const d=JSON.parse(String(m));if(d.type==='accepted'||d.type==='rejected')replies.push(d);route.send(m);});});
  await page.reload();await ready(page);const controls=await manager(page);
  await controls.getByRole('button',{name:en.controllerCreate,exact:true}).click();let dialog=page.getByRole('dialog',{name:en.controllerCreate,exact:true});
  await dialog.getByLabel(en.controllerName,{exact:true}).fill('Shared timetable');await dialog.getByRole('button',{name:en.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
  const request=commands.at(-1),before=await(await page.request.get('/api/saves/download')).body();transport!.send(JSON.stringify(request));
  await expect.poll(()=>replies.filter(r=>r.requestId===request.requestId).length).toBe(2);
- expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+ await assertExact(await(await page.request.get('/api/saves/download')).body(),before,"await(await page.request.get('/api/saves/download')).body()");
  const f=(await state(page)).mixed.fleet,c=f.controllers.find((c:any)=>c.name==='Shared timetable');
  await controls.getByRole('combobox',{name:en.controllerManager,exact:true}).selectOption(c.id);
  await controls.getByRole('button',{name:en.controllerRename,exact:true}).click();dialog=page.getByRole('dialog',{name:en.controllerRename,exact:true});await dialog.getByLabel(en.controllerName,{exact:true}).fill('Local draft');
@@ -134,27 +137,27 @@ test('signal inspector edits a selected shared controller at its location withou
  const before=await(await page.request.get('/api/saves/download')).body();
  await inspector.getByRole('button',{name:en.controllerConfigure,exact:true}).click();dialog=page.getByRole('dialog',{name:en.controllerConfigure,exact:true});
  await expect(dialog.getByLabel('X',{exact:true})).toHaveValue(String(p.x));await expect(dialog.getByLabel('Y',{exact:true})).toHaveValue(String(p.y));
- expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+ await assertExact(await(await page.request.get('/api/saves/download')).body(),before,"await(await page.request.get('/api/saves/download')).body()");
  await dialog.getByRole('button',{name:en.controllerLocation,exact:true}).click();await dialog.getByLabel(en.controllerStop,{exact:true}).selectOption('pass');
  await dialog.getByRole('button',{name:en.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
- const after=await state(page);expect(after.mixed.fleet.controllers.find((r:any)=>r.id===c.id).harbors).toEqual([{location:p,kind:'pass',minutes:0,reverse:false}]);
- expect(after.mixed.fleet.trains).toEqual(read.mixed.fleet.trains);expect(after.mixed.voxels).toEqual(read.mixed.voxels);expect(voxel.traffic.rail.controllerId).toBeNull();
+ const after=await state(page);await assertExact(after.mixed.fleet.controllers.find((r:any)=>r.id===c.id).harbors,[{location:p,kind:'pass',minutes:0,reverse:false}],"after.mixed.fleet.controllers.find((r:any)=>r.id===c.id).harbors");
+ await assertExact(after.mixed.fleet.trains,read.mixed.fleet.trains,"after.mixed.fleet.trains");await assertExact(after.mixed.voxels,read.mixed.voxels,"after.mixed.voxels");expect(voxel.traffic.rail.controllerId).toBeNull();
  await inspector.getByRole('button',{name:en.controllerConfigure,exact:true}).click();dialog=page.getByRole('dialog',{name:en.controllerConfigure,exact:true});
  await dialog.getByRole('button',{name:en.controllerRemoveLocation,exact:true}).click();await dialog.getByRole('button',{name:en.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
- expect((await state(page)).mixed.fleet.controllers.find((r:any)=>r.id===c.id).harbors).toEqual([]);
+ await assertExact((await state(page)).mixed.fleet.controllers.find((r:any)=>r.id===c.id).harbors,[],"(await state(page)).mixed.fleet.controllers.find((r:any)=>r.id===c.id).harbors");
 });
 test('named controllers can be created and configured before buying a train',async({page})=>{
  await page.goto('/');await ready(page);const initial=await state(page);expect(initial.mixed?.fleet).toBeUndefined();
  const controls=await manager(page);await controls.getByRole('button',{name:en.controllerCreate,exact:true}).click();
  let dialog=page.getByRole('dialog',{name:en.controllerCreate,exact:true});await dialog.getByLabel(en.controllerName,{exact:true}).fill('Before trains');
  await dialog.getByRole('button',{name:en.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
- const after=await state(page);expect(after.mixed.fleet.trains).toEqual([]);expect(after.mixed.accounts.transactions).toEqual([]);expect(after.tick).toBe(initial.tick);
+ const after=await state(page);await assertExact(after.mixed.fleet.trains,[],"after.mixed.fleet.trains");await assertExact(after.mixed.accounts.transactions,[],"after.mixed.accounts.transactions");expect(after.tick).toBe(initial.tick);
  const controller=after.mixed.fleet.controllers.find((c:any)=>c.name==='Before trains');expect(controller.kind).toBe('timetable');
  await controls.getByRole('combobox',{name:en.controllerManager,exact:true}).selectOption(controller.id);
  const before=await(await page.request.get('/api/saves/download')).body();
  await controls.getByRole('button',{name:en.controllerConfigure,exact:true}).click();dialog=page.getByRole('dialog',{name:en.controllerConfigure,exact:true});
  await expect(dialog.getByRole('button',{name:en.controllerLocation,exact:true})).toBeEnabled();
- await dialog.getByRole('button',{name:en.cancel,exact:true}).click();expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+ await dialog.getByRole('button',{name:en.cancel,exact:true}).click();await assertExact(await(await page.request.get('/api/saves/download')).body(),before,"await(await page.request.get('/api/saves/download')).body()");
 });
 for(const locale of ['en','ja'] as const)test(`${locale} basic TAT junction and daily drafts synchronize, cancel and reopen`,async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(90000);const text=locale==='ja'?ja:en;
@@ -177,7 +180,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} basic TAT junction and 
   }
   let dialog=await editJunction();await dialog.getByLabel(text.controllerDefaultRoute,{exact:true}).selectOption('straight');
   const before=await(await page.request.get('/api/saves/download')).body();await dialog.getByRole('button',{name:text.cancel,exact:true}).click();
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),before,"await(await page.request.get('/api/saves/download')).body()");
   dialog=await editJunction();await expect(dialog.getByLabel(text.controllerDefaultRoute,{exact:true})).toHaveValue('curve');
   await dialog.getByLabel(text.controllerDefaultRoute,{exact:true}).selectOption('straight');
   mkdirSync(evidence+'/tat',{recursive:true});await page.screenshot({path:evidence+`/tat/${locale}-junction.png`});
@@ -196,11 +199,11 @@ for(const locale of ['en','ja'] as const)test(`${locale} basic TAT junction and 
   await reopenedControls.getByRole('button',{name:new RegExp('^'+text.controllerCleanJunctions)}).click();
   dialog=page.getByRole('dialog',{name:text.controllerCleanJunctions,exact:true});await expect(dialog).toContainText('100, 100, 2');
   const beforeCleanup=await(await page.request.get('/api/saves/download')).body();await dialog.getByRole('button',{name:text.cancel,exact:true}).click();
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(beforeCleanup);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),beforeCleanup,"await(await page.request.get('/api/saves/download')).body()");
   await reopenedControls.getByRole('button',{name:new RegExp('^'+text.controllerCleanJunctions)}).click();dialog=page.getByRole('dialog',{name:text.controllerCleanJunctions,exact:true});
   await dialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
   const cleaned=(await state(page)).mixed.fleet.controllers.find((row:any)=>row.id===copy.id);expect(cleaned.junctions).toHaveLength(1);expect(cleaned.harbors).toHaveLength(1);
-  await closePanel(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
+  await closePanel(page);await restartWorldServer(worldServer);expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
   expect((await state(page)).mixed.fleet.controllers.find((row:any)=>row.id===source.id).harbors[0].minutes).toBe(480);
  }finally{await context.close();}
 });
@@ -226,7 +229,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} advanced ordered rules 
  await expect(dialog.getByLabel(text.ruleAction,{exact:true})).toHaveValue('pass');
  for(const [label,value] of [[text.ruleMonth,'4'],[text.ruleDay,'23'],[text.ruleWeekday,'5'],[text.ruleHour,'8'],[text.ruleMinute,'0']])await dialog.getByLabel(label,{exact:true}).selectOption(value);
  await dialog.getByLabel(text.ruleAction,{exact:true}).selectOption('pass');
- await dialog.getByRole('button',{name:text.cancel,exact:true}).click();expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+ await dialog.getByRole('button',{name:text.cancel,exact:true}).click();await assertExact(await(await page.request.get('/api/saves/download')).body(),before,"await(await page.request.get('/api/saves/download')).body()");
  await dialog.getByRole('button',{name:text.ruleAdd,exact:true}).click();
  for(const [label,value] of [[text.ruleMonth,'4'],[text.ruleDay,'23'],[text.ruleWeekday,'5'],[text.ruleHour,'8'],[text.ruleMinute,'0']])await dialog.getByLabel(label,{exact:true}).selectOption(value);
  await dialog.getByLabel(text.ruleAction,{exact:true}).selectOption('pass');await apply();
@@ -267,19 +270,19 @@ for(const locale of ['en','ja'] as const)test(`${locale} advanced ordered rules 
   await expect(inspected.getByRole('button',{name:en.ruleAdd,exact:true})).toBeDisabled();await expect(inspected.getByRole('button',{name:en.ruleClear,exact:true})).toBeDisabled();
  }finally{await context.close();}
  dialog=await openRules();await dialog.getByRole('button',{name:text.ruleClear,exact:true}).click();await expect(dialog).toContainText(text.ruleClearHelp);
- const prior=await(await page.request.get('/api/saves/download')).body();await dialog.getByRole('button',{name:text.cancel,exact:true}).click();expect(await(await page.request.get('/api/saves/download')).body()).toEqual(prior);
+ const prior=await(await page.request.get('/api/saves/download')).body();await dialog.getByRole('button',{name:text.cancel,exact:true}).click();await assertExact(await(await page.request.get('/api/saves/download')).body(),prior,"await(await page.request.get('/api/saves/download')).body()");
  await dialog.getByRole('button',{name:text.close,exact:true}).click();
  await controls.getByRole('button',{name:text.controllerCopy,exact:true}).click();let copyDialog=page.getByRole('dialog',{name:text.controllerCopy,exact:true});await copyDialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(copyDialog).toHaveCount(0);
  const copy=(await state(page)).mixed.fleet.controllers.find((c:any)=>c.name==='Peer ordered TAT 1');expect(copy.harbors).toEqual((await data()).harbors);expect(copy.junctions).toEqual((await data()).junctions);
  dialog=await openRules();await dialog.getByRole('button',{name:text.ruleClear,exact:true}).click();await apply();expect((await data()).harbors[0].rules).toBeUndefined();
  await dialog.getByRole('button',{name:text.close,exact:true}).click();
- const after=await state(page);expect(after.tick).toBe(baseline.tick);expect(after.cash).toBe(baseline.cash);expect(after.mixed.queue).toEqual(baseline.mixed.queue);expect(after.mixed.fleet.trains).toEqual(baseline.mixed.fleet.trains);
+ const after=await state(page);expect(after.tick).toBe(baseline.tick);expect(after.cash).toBe(baseline.cash);await assertExact(after.mixed.queue,baseline.mixed.queue,"after.mixed.queue");await assertExact(after.mixed.fleet.trains,baseline.mixed.fleet.trains,"after.mixed.fleet.trains");
  const bytes=await(await page.request.get('/api/saves/download')).body();dialog=await openRules();
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+after.worldEpoch,{data:bytes})).ok()).toBe(true);
  await expect(dialog).toHaveCount(0);await page.goto('/');await ready(page,locale);
  const reopened=(await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===copy.id);expect(reopened.harbors[0].rules.map((r:any)=>r.action)).toEqual(['stop','go']);expect(reopened.junctions[0].rules[0].minutes).toBe(-1);
- await closePanel(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
- expect((await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===copy.id).harbors).toEqual(reopened.harbors);expect(errors).toEqual([]);
+ await closePanel(page);await restartWorldServer(worldServer);expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
+ await assertExact((await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===copy.id).harbors,reopened.harbors,"(await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===copy.id).harbors");expect(errors).toEqual([]);
 });
 
 for(const locale of ['en','ja'] as const)test(`${locale} TURNING actions edit, depart with exact car identities and survive checkpoint restart`,async({page,worldServer})=>{
@@ -318,19 +321,20 @@ for(const locale of ['en','ja'] as const)test(`${locale} TURNING actions edit, d
   await expect.poll(async()=>Number((await state(page)).tick)).toBe(Number(before.tick)+1);
  }
  const current=await state(page),after=current.mixed.fleet.trains.find((t:any)=>t.id===train.id);
- expect(after.cars.map((c:any)=>c.id)).toEqual(train.cars.map((c:any)=>c.id));
- expect(after.cars.map((c:any)=>c.state.location.x)).toEqual([17,18,19]);
- expect(after.cars.map((c:any)=>c.state.heading)).toEqual([6,6,6]);
+ await assertExact(after.cars.map((c:any)=>c.id),train.cars.map((c:any)=>c.id),"after.cars.map((c:any)=>c.id)");
+ await assertExact(after.cars.map((c:any)=>c.state.location.x),[17,18,19],"after.cars.map((c:any)=>c.state.location.x)");
+ await assertExact(after.cars.map((c:any)=>c.state.heading),[6,6,6],"after.cars.map((c:any)=>c.state.heading)");
  expect(after.isReversed).toBe(false);expect(after.forwarding).toBe(locale==='ja');expect(after.moveCount).toBe(1);expect(after.stopCallCount).toBe(0);
  expect(current.mixed.queue.pending.filter((a:any)=>a.handlerId==='train/'+train.id)).toHaveLength(1);
  expect(current.mixed.queue.pending.find((a:any)=>a.handlerId==='train/'+train.id).dueMinute).toBe('214');
  await page.screenshot({path:evidence+`/turning/${locale}-departed.png`});
- await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
- expect((await state(page)).mixed.fleet.trains.find((t:any)=>t.id===train.id)).toEqual(after);expect(errors).toEqual([]);
+ await restartWorldServer(worldServer);expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
+ await assertExact((await state(page)).mixed.fleet.trains.find((t:any)=>t.id===train.id),after,"(await state(page)).mixed.fleet.trains.find((t:any)=>t.id===train.id)");expect(errors).toEqual([]);
 });
 
 test('canonical train panels expose automatic controllers without driving controls or key input',async({page})=>{
  await setup(page);const commands:string[]=[];
+ // transport-test: Replay exact controller requests and count disabled writes.
  await page.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();route.onMessage(message=>{
   const data=JSON.parse(String(message));if(data.type==='command')commands.push(data.payload.kind);server.send(message);
  });});
@@ -345,6 +349,7 @@ test('canonical train panels expose automatic controllers without driving contro
  for(const name of ['Take control','Release control'])await expect(page.getByRole('button',{name,exact:true})).toHaveCount(0);
  await closePanel(page);const canvas=page.locator('canvas.world-canvas');await canvas.focus();
  for(const key of ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Shift'])await canvas.press(key);
+ // Intentional bounded absence window: verify no delayed writes/repeats after the observed cancellation or stop.
  await page.waitForTimeout(1200);
  expect(commands.filter(kind=>['acquireControl','releaseControl','setController','controllerInput'].includes(kind))).toEqual([]);
 });

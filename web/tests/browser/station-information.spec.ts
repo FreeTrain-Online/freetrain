@@ -1,5 +1,8 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { requireMixedState, required } from './session.ts';
+import { assertExact } from './assertions.ts';
 import {readFileSync,writeFileSync} from 'node:fs';
-import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
+import { test, expect, type Page } from './fixtures.ts';
 import {canonicalState as state,ready,closePanel,openPanel,exposeMapPoint} from './browser-helpers.ts';
 import {fit} from './layout-helpers.ts';
 const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8'));
@@ -8,7 +11,7 @@ const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','
 const compat='protocolVersion=11&contentVersion=mixed-railway-content-1';
 const bytes=async(p:Page)=>(await p.request.get('/api/saves/download')).body();
 test.use({hasTouch:true,actionTimeout:15000});
-async function pick(page:Page,object:any,text:typeof en,touch:boolean,hasController=false){
+async function pick(page:Page,object:any,text:typeof en,touch:boolean,hasController=false){return test.step("Pick the intended station or platform",async()=>{
  await closePanel(page);await page.getByRole('button',{name:text.referenceInspect,exact:true}).click();
  const canvas=page.locator('canvas.world-canvas');await expect(canvas).toHaveAttribute('data-presentation','ready');
  const recipe=object.kind?`system:thin-${object.direction}`:object.definition.recipeId;
@@ -22,35 +25,36 @@ async function pick(page:Page,object:any,text:typeof en,touch:boolean,hasControl
   y:8*(location.y+frame.cell[1]-location.x-frame.cell[0]+center)-16*(object.location.z+frame.cell[2])-frame.anchor[1]+sample.y};
  // Bring the exact painted opaque sample into view, then clear the narrow sheet.
  await canvas.dispatchEvent('wheel',await canvas.evaluate((el,q)=>{const [x,y]=el.dataset.camera!.split(',').map(Number),z=Number(el.dataset.zoom);return {deltaX:(q.x-x)*z,deltaY:(q.y-y)*z,deltaMode:0};},q));
- await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+ await waitForMapDraw(page);
  const point=await canvas.evaluate((el,q)=>{const r=el.getBoundingClientRect(),[x,y]=el.dataset.camera!.split(',').map(Number),z=Number(el.dataset.zoom);return {x:r.x+r.width/2+(q.x-x)*z,y:r.y+r.height/2+(q.y-y)*z};},q);
  const p=await exposeMapPoint(page,point);
- await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+ await waitForMapDraw(page);
  await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/pick-${object.id}.png`});
  writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/pick-${object.id}.json`,JSON.stringify({object,q,p,camera:await canvas.getAttribute('data-camera')}));
  if(touch)await page.touchscreen.tap(p.x,p.y);else await page.mouse.click(p.x,p.y);
  if(hasController)await expect(page.locator('.primary-panel .fleet-controller-manager')).toBeVisible();
-}
+});}
 
-for(const locale of ['en','ja'] as const)test(`P6-23 ${locale} station information, sorted identity list, labels, peer drafts and midnight reopen`,async({page,browser,baseURL})=>{
+for(const locale of ['en','ja'] as const)test(`P6-23 ${locale} station information, sorted identity list, labels, peer drafts and midnight reopen`,async({page,browser,baseURL,sessions})=>{
  test.setTimeout(180000);const text=locale==='ja'?ja:en,touch=locale==='ja';
  if(touch)await page.setViewportSize({width:430,height:860});
  await page.addInitScript(l=>localStorage.setItem('freetrain-online.locale',l),locale);
  const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
  const context=await browser.newContext({baseURL}),peer=await context.newPage();
- let socket:WebSocketRoute|undefined,serial=0;const receipts:any[]=[];
- await peer.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();socket=server;
-  server.onMessage(m=>{receipts.push(JSON.parse(String(m)));route.send(m);});route.onMessage(m=>server.send(m));});
- async function command(payload:any){const requestId='info-'+(++serial),s=await state(page);socket!.send(JSON.stringify({type:'command',requestId,expectedWorldEpoch:s.worldEpoch,payload}));await expect.poll(()=>receipts.find(m=>m.requestId===requestId)?.type).toBe('accepted');}
- async function consistent(){const s=await state(page);await expect.poll(async()=>(await state(peer)).mixed).toEqual(s.mixed);return s;}
- async function upload(data:Buffer){const s=await state(page);const r=await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data});expect(r.ok(),await r.text()).toBe(true);await ready(page,locale);await ready(peer);await consistent();}
+ let serial=0;
+ const observedSession=await sessions.observe(peer,'operator');
+ const owner=await sessions.observe(page,'owner');
+ async function command(payload:any){return test.step("Send a correlated domain command",async()=>{const requestId='info-'+(++serial),s=await state(page);expect((await observedSession.command({type:'command',requestId,expectedWorldEpoch:s.worldEpoch,payload})).type).toBe('accepted');});}
+ async function consistent(){return test.step("Converge on one paused peer checkpoint",async()=>{return requireMixedState(await sessions.checkpoint(owner,'station information peers'),'fleet','queue','stationGraph');});}
+ async function upload(data:Buffer){await sessions.replaceSave(owner,data,'station information replacement');await ready(page,locale);await ready(peer);}
  async function list(id?:string){await openPanel(page,'stations',locale);if(id)await page.getByLabel(text.stationSelect,{exact:true}).selectOption(id);}
- async function step(){const minute=BigInt((await state(page)).tick)+1n;await page.locator('canvas.world-canvas').focus();await page.locator('canvas.world-canvas').press('n');await expect.poll(async()=>(await state(page)).tick).toBe(String(minute));return consistent();}
+ async function step(){return requireMixedState(await sessions.minute(owner,async()=>{const canvas=page.locator('canvas.world-canvas');await canvas.focus();await canvas.press('n');},'station information single minute'),'fleet','queue','stationGraph');}
+
  try{
   await page.goto('/');await ready(page,locale);await list();await expect(page.getByText(text.stationListEmpty,{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:text.stationMove,exact:true})).toBeDisabled();
   expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);
   await upload(readFileSync('tests/fixtures/station-controller-v11.json'));
-  let s=await consistent();const a=s.mixed.stationGraph.buildings.find((b:any)=>b.id===s.mixed.stationGraph.platforms[0].hostId),b=s.mixed.stationGraph.buildings.find((b:any)=>b.id!==a.id),train=s.mixed.fleet.trains[0];
+  let s=await consistent();const a=required(s.mixed.stationGraph.buildings.find((b:any)=>b.id===s.mixed.stationGraph.platforms[0].hostId),'host station'),b=required(s.mixed.stationGraph.buildings.find((b:any)=>b.id!==a.id),'other station'),train=s.mixed.fleet.trains[0];
   const q={expectedWorldEpoch:s.worldEpoch,expectedRevision:s.revision,expectedMinute:s.tick,stationId:a.id,platformId:s.mixed.stationGraph.platforms[0].id,trainId:train.id};
   const viewer=await browser.newContext({baseURL});
   try{
@@ -62,7 +66,7 @@ for(const locale of ['en','ja'] as const)test(`P6-23 ${locale} station informati
    expect((await viewer.request.post(path,{data:{...q,expectedWorldEpoch:String(BigInt(q.expectedWorldEpoch)+1n)}})).status()).toBe(409);
    expect((await viewer.request.post(path,{data:{...q,trainId:'-1'}})).status()).toBe(400);
    expect((await viewer.request.post(path.replace('protocolVersion=11','protocolVersion=8'),{data:q})).status()).toBe(426);
-   expect(await bytes(page)).toEqual(before);
+   await assertExact(await bytes(page),before,"await bytes(page)");
   }finally{await viewer.close();}
   // Empty and duplicate names are rendered by ID; native list selection supports keys.
   await list(a.id);await expect(page.getByTestId('station-waiting')).toHaveText('5,000');await expect(page.getByTestId('station-demand')).toHaveText('5,000');
@@ -91,7 +95,7 @@ for(const locale of ['en','ja'] as const)test(`P6-23 ${locale} station informati
   // Move changes only the local camera; it leaves time, save and canvas intact.
   const canvas=page.locator('canvas.world-canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','station-information'));
   const beforeMove=await bytes(page);await canvas.dispatchEvent('wheel',{deltaX:150,deltaY:80,deltaMode:0});const camera=await canvas.getAttribute('data-camera');
-  await page.getByRole('button',{name:text.stationMove,exact:true}).first().click();await expect(canvas).not.toHaveAttribute('data-camera',camera!);expect(await bytes(page)).toEqual(beforeMove);await expect(canvas).toHaveAttribute('data-instance','station-information');
+  await page.getByRole('button',{name:text.stationMove,exact:true}).first().click();await expect(canvas).not.toHaveAttribute('data-camera',camera!);await assertExact(await bytes(page),beforeMove,"await bytes(page)");await expect(canvas).toHaveAttribute('data-instance','station-information');
   // Peer updates confirmed name and information without overwriting a local draft.
   await page.getByRole('button',{name:text.stationProperties,exact:true}).click();
   await expect(page.getByTestId('station-information-name')).toContainText(a.name);
@@ -101,13 +105,13 @@ for(const locale of ['en','ja'] as const)test(`P6-23 ${locale} station informati
   await closePanel(page);let dialog=page.locator('.decision-dialog');await expect(dialog).toBeVisible();await dialog.getByRole('button',{name:text.keepEditing,exact:true}).click();
   await page.getByRole('button',{name:text.resetDraft,exact:true}).click();await page.getByLabel(text.stationName,{exact:true}).fill('Same / 同名');await page.getByLabel(text.stationName,{exact:true}).press('Enter');
   await expect(page.getByTestId('confirmed-name')).toHaveText('Same / 同名');await consistent();
-  await list(a.id);s=await state(page);const other=s.mixed.stationGraph.buildings.find((x:any)=>x.id===b.id);
+  await list(a.id);s=await state(page);const other=required(s.mixed.stationGraph.buildings.find((x:any)=>x.id===b.id),'renamed peer station');
   await command({kind:'renameStation',stationId:other.id,expectedRevision:other.revision,name:'Same / 同名'});
   await expect(selector).toHaveValue(a.id);await expect(selector.locator('option')).toHaveText([a.id,b.id].sort((a,b)=>Number(BigInt(a)-BigInt(b))).map(id=>`Same / 同名 · #${id}`));
   await fit(page);await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-list-${locale}.png`});
   // Label controls remain local and survive reload. They cannot rename shared data.
   const beforeLabels=await bytes(page);await openPanel(page,'view',locale);await page.getByLabel(text.stationNamesVisible,{exact:true}).uncheck();await page.getByLabel(text.stationNameFont,{exact:true}).selectOption('serif');await page.getByLabel(text.stationNameSize,{exact:true}).fill('18');await page.getByLabel(text.stationNameSize,{exact:true}).press('Tab');await page.getByLabel(text.stationNameColor,{exact:true}).fill('#12abcd');
-  expect(await bytes(page)).toEqual(beforeLabels);await page.reload();await ready(page,locale);await openPanel(page,'view',locale);await expect(page.getByLabel(text.stationNamesVisible,{exact:true})).not.toBeChecked();await expect(page.getByLabel(text.stationNameFont,{exact:true})).toHaveValue('serif');await expect(page.getByLabel(text.stationNameSize,{exact:true})).toHaveValue('18');await expect(page.getByLabel(text.stationNameColor,{exact:true})).toHaveValue('#12abcd');
+  await assertExact(await bytes(page),beforeLabels,"await bytes(page)");await page.reload();await ready(page,locale);await openPanel(page,'view',locale);await expect(page.getByLabel(text.stationNamesVisible,{exact:true})).not.toBeChecked();await expect(page.getByLabel(text.stationNameFont,{exact:true})).toHaveValue('serif');await expect(page.getByLabel(text.stationNameSize,{exact:true})).toHaveValue('18');await expect(page.getByLabel(text.stationNameColor,{exact:true})).toHaveValue('#12abcd');
   // A response delayed beyond several simulation minutes still updates during Run.
   await list(a.id);await expect(page.getByTestId('station-observed-minute')).toBeVisible();
   const observed=await page.getByTestId('station-observed-minute').textContent();let delayed=0;
@@ -131,8 +135,8 @@ for(const locale of ['en','ja'] as const)test(`P6-23 ${locale} station informati
   const before=await bytes(page);s=await step();expect(BigInt(s.tick)%1440n).toBe(0n);
   await expect(page.getByTestId('station-boarded-today')).toHaveText('0');await expect(page.getByTestId('station-boarded-yesterday')).toHaveText(midnight.exports.today.toLocaleString(locale));await expect(page.getByTestId('station-calls-yesterday')).toHaveText(midnight.trains.today.toLocaleString(locale));
   await expect(page.getByTestId('station-alighted-today')).toHaveText('0');await expect(page.getByTestId('station-alighted-yesterday')).toHaveText('300');await expect(page.getByTestId('station-waiting')).toHaveText('9,286');await expect(page.getByTestId('station-average-boarded')).toHaveText('22');await expect(page.getByTestId('station-average-alighted')).toHaveText('2');
-  const after=await bytes(page);await upload(before);await list(midnight.id);await step();expect(await bytes(page)).toEqual(after);
-  await upload(after);expect(await bytes(page)).toEqual(after);await list(midnight.id);await expect(page.getByTestId('station-boarded-yesterday')).toHaveText(midnight.exports.today.toLocaleString(locale));await expect(page.getByTestId('station-waiting')).not.toHaveText('—');
+  const after=await bytes(page);await upload(before);await list(midnight.id);await step();await assertExact(await bytes(page),after,"await bytes(page)");
+  await upload(after);await assertExact(await bytes(page),after,"await bytes(page)");await list(midnight.id);await expect(page.getByTestId('station-boarded-yesterday')).toHaveText(midnight.exports.today.toLocaleString(locale));await expect(page.getByTestId('station-waiting')).not.toHaveText('—');
   await page.getByRole('button',{name:text.stationMove,exact:true}).click();await page.locator('.station-logs').scrollIntoViewIfNeeded();await expect(page.getByTestId('station-calls-yesterday')).toBeVisible();
   await fit(page);await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-midnight-${locale}.png`});
   // A selected station disappearing clears selection and disables Move.

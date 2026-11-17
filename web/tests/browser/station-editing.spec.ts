@@ -70,6 +70,7 @@ test('disconnect cancels dirty decisions without replaying a name', async ({ pag
   if (await page.getByTestId('clock-state').textContent() === 'Running') await page.getByRole('button', { name: 'Pause', exact: false }).click();
   let drop!: () => void, offline = false, renames = 0;
   await page.route('**/api/bootstrap?*', route => offline ? route.fulfill({ status: 503 }) : route.continue());
+ // transport-test: Disconnect during a dirty name decision and count unsent renames.
   await page.routeWebSocket('**/api/session?*', route => {
     const server = route.connectToServer(); drop = () => { offline = true; server.close(); route.close(); };
     route.onMessage(message => { if (JSON.parse(String(message)).payload?.kind === 'renameStation') renames++; server.send(message); });

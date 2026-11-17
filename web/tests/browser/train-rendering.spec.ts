@@ -128,7 +128,6 @@ test('terrain grids stay behind opaque buildable structure pixels at fractional 
  expect(result.checked).toBeGreaterThan(1000);
 });
 
-
 test('terrain grids stay behind all straight curved and junction track bitmaps',async({page})=>{
  const harness=renderingHarness('train');
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
@@ -141,7 +140,6 @@ test('terrain grids stay behind all straight curved and junction track bitmaps',
  },catalog);
  expect(result.checked).toBeGreaterThan(28000);
 });
-
 
 test('continuous diagonal tracks survive neighboring ground fills while higher terrain still obscures them',async({page})=>{
  const harness=renderingHarness('train');

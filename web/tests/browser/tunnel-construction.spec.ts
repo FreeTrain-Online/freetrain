@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
 import { closePanel,openPanel,ready,canonicalState as state } from './browser-helpers.ts';
@@ -69,11 +70,11 @@ test('four cardinal routes, both removal orders, mixed ordinary rail and exact s
    const before=await mountains(page,[[30,27],[x,y]]),terrainBefore=(await state(page)).terrain;
    await selectTunnel(page);await target(page,[30,27],[x,y]);
    await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-cost')).toContainText('60,000,000');
-   expect(await save(page)).toEqual(before);await page.getByRole('button',{name:'Cancel preview',exact:true}).click();expect(await save(page)).toEqual(before);
+   await assertExact(await save(page),before,"await save(page)");await page.getByRole('button',{name:'Cancel preview',exact:true}).click();await assertExact(await save(page),before,"await save(page)");
    await target(page,[30,27],[x,y]);await confirm(page);const s=await state(page);
    expect(s.mixed.voxels).toHaveLength(5);expect(s.mixed.voxels.filter((v:any)=>v.traffic.rail.definition.recipeId===tunnel)).toHaveLength(2);
    expect(s.mixed.voxels.filter((v:any)=>v.traffic.rail.definition.recipeId===tunnel).every((v:any)=>v.traffic.rail.variant===variant&&v.traffic.rail.pattern===pattern&&JSON.stringify(v.traffic.rail.terrainBackup)===JSON.stringify({ne:0,se:1,sw:2,nw:3}))).toBe(true);
-   const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);await cut(page,2);
+   const captured=await save(page);await replace(page,captured);await assertExact(await save(page),captured,"await save(page)");await cut(page,2);
    expect((await pixels(page,s.mixed.voxels.filter((v:any)=>v.traffic.rail.definition.recipeId===tunnel))).every(n=>n>10)).toBe(true);
    await page.getByRole('button',{name:'Inspect',exact:true}).click();
    await click(page,(30+x)/2,(27+y)/2,2);await expect(page.getByTestId('selected-object')).toContainText('Railway');await closePanel(page);
@@ -81,8 +82,8 @@ test('four cardinal routes, both removal orders, mixed ordinary rail and exact s
    await selectTunnel(page);await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,[30,27],[x,y]);await expect(page.getByTestId('rail-cost')).toContainText('4,000,000');await confirm(page);
    let after=await state(page);expect(after.mixed.voxels).toHaveLength(4);expect(after.mixed.voxels.find((v:any)=>v.position.x===x&&v.position.y===y).traffic.rail.definition.recipeId).toBe(tunnel);
    await target(page,[x,y],[30,27]);await confirm(page);after=await state(page);
-   expect(after.mixed.voxels).toHaveLength(3);expect(after.terrain.cells).toEqual(terrainBefore.cells);
-   expect(after.terrain.occupants.map((o:any)=>[o.ne,o.se,o.sw,o.nw,o.forest])).toEqual([[0,1,2,3,null],[0,1,2,3,null]]);
+   expect(after.mixed.voxels).toHaveLength(3);await assertExact(after.terrain.cells,terrainBefore.cells,"after.terrain.cells");
+   await assertExact(after.terrain.occupants.map((o:any)=>[o.ne,o.se,o.sw,o.nw,o.forest]),[[0,1,2,3,null],[0,1,2,3,null]],"after.terrain.occupants.map((o:any)=>[o.ne,o.se,o.sw,o.nw,o.forest])");
    expect(after.entities.filter((e:any)=>after.terrain.occupants.some((o:any)=>o.entityId===e.id)).every((e:any)=>!e.owned)).toBe(true);
   }
  }finally{await replace(page,original);}
@@ -94,14 +95,14 @@ test('cut map picks, keyboard shortcut, illegal and cancelled work, stale quote 
   const before=await mountains(page,[[30,27],[34,27]]);await peer.goto('/');await ready(peer);
   const canvas=page.locator('canvas');await canvas.evaluate(el=>(el as any).__tunnelIdentity=true);await canvas.focus();await page.keyboard.press('u');
   await expect(page.getByRole('heading',{name:'Tunnel',exact:true})).toBeVisible();
-  await target(page,[30,27],[34,27],0);await expect(page.getByTestId('rail-status')).toContainText('crosses water');await expect(page.getByRole('button',{name:'Confirm tunnel change',exact:true})).toBeDisabled();expect(await save(page)).toEqual(before);
-  await target(page,[30,29],[34,29]);await expect(page.getByTestId('rail-status')).toContainText('Mountain cell');expect(await save(page)).toEqual(before);
+  await target(page,[30,27],[34,27],0);await expect(page.getByTestId('rail-status')).toContainText('crosses water');await expect(page.getByRole('button',{name:'Confirm tunnel change',exact:true})).toBeDisabled();await assertExact(await save(page),before,"await save(page)");
+  await target(page,[30,29],[34,29]);await expect(page.getByTestId('rail-status')).toContainText('Mountain cell');await assertExact(await save(page),before,"await save(page)");
   await page.getByRole('button',{name:'Cancel preview',exact:true}).click();await cut(page,2);await selectTunnel(page);
   await click(page,30,27,2);await click(page,34,27,2);await expect(page.getByTestId('rail-status')).toContainText('route is legal');
-  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();expect(await save(page)).toEqual(before);
+  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();await assertExact(await save(page),before,"await save(page)");
   await target(page);await selectTunnel(peer);await target(peer);await confirm(page);
   await expect(peer.getByTestId('rail-status')).toContainText('world changed');await expect(peer.getByRole('button',{name:'Confirm tunnel change',exact:true})).toBeDisabled();
-  expect(await canvas.evaluate(el=>(el as any).__tunnelIdentity)).toBe(true);expect(await state(peer)).toEqual(await state(page));
+  expect(await canvas.evaluate(el=>(el as any).__tunnelIdentity)).toBe(true);await assertExact(await state(peer),await state(page),"await state(peer)");
 
  }finally{await peer.close();await replace(page,original);}
 });
@@ -141,7 +142,7 @@ test('outside and inside sloped-hill clicks resolve portals, automatic height an
   for(const [a,b] of [[29,44],[30,43],[31,42]]){
    await target(page,[a,27],[b,27],6);await expect(page.getByTestId('rail-status')).toContainText('route is legal');
    await expect(page.getByTestId('rail-route')).toContainText('30, 27, 6 → 43, 27, 6');await expect(page.getByTestId('rail-cost')).toContainText('168,000,000');
-   expect(await save(page)).toEqual(before);await page.getByRole('button',{name:'Cancel preview',exact:true}).click();
+   await assertExact(await save(page),before,"await save(page)");await page.getByRole('button',{name:'Cancel preview',exact:true}).click();
   }
   // A surface pick one cell into the hill is a whole level higher. Automatic
   // detection can choose the nearby lower portals; manual level7 remains exact.
@@ -158,11 +159,11 @@ test('outside and inside sloped-hill clicks resolve portals, automatic height an
   await expect(page.getByRole('button',{name:'Confirm tunnel change',exact:true})).toBeEnabled();
 
   await confirm(page);const built=await state(page);expect(built.mixed.voxels).toHaveLength(14);expect(built.mixed.voxels.every((v:any)=>v.position.z===6)).toBe(true);
-  const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);await cut(page,6);await selectTunnel(page);
+  const captured=await save(page);await replace(page,captured);await assertExact(await save(page),captured,"await save(page)");await cut(page,6);await selectTunnel(page);
   await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,[30,27],[43,27],6);await confirm(page);
   await target(page,[43,27],[30,27],6);await confirm(page);
-  const after=await state(page);expect(after.terrain.cells).toEqual(terrainBefore.cells);const geometry=(s:any)=>s.terrain.occupants.map((o:any)=>{const p=s.entities.find((e:any)=>e.id===o.entityId).anchor;return JSON.stringify([p.x,p.y,p.z,o.kind,o.ne,o.se,o.sw,o.nw]);}).sort();
-  expect(geometry(after)).toEqual(geometry(snapshotBefore));
+  const after=await state(page);await assertExact(after.terrain.cells,terrainBefore.cells,"after.terrain.cells");const geometry=(s:any)=>s.terrain.occupants.map((o:any)=>{const p=s.entities.find((e:any)=>e.id===o.entityId).anchor;return JSON.stringify([p.x,p.y,p.z,o.kind,o.ne,o.se,o.sw,o.nw]);}).sort();
+  await assertExact(geometry(after),geometry(snapshotBefore),"geometry(after)");
  }finally{await replace(page,original);}
 });
 
@@ -171,9 +172,9 @@ test('an older server rejecting the route request gives actionable feedback and 
  try{
   await slopedRidge(page);const before=await save(page);await selectTunnel(page);
   await page.route('**/api/railway/preview?**',route=>route.fulfill({status:400,contentType:'application/json',body:JSON.stringify({code:'invalidInput'})}));
-  await target(page,[30,27],[43,27],6);await expect(page.getByTestId('rail-status')).toContainText('restart the server');await expect(page.getByRole('button',{name:'Confirm tunnel change',exact:true})).toBeDisabled();expect(await save(page)).toEqual(before);
+  await target(page,[30,27],[43,27],6);await expect(page.getByTestId('rail-status')).toContainText('restart the server');await expect(page.getByRole('button',{name:'Confirm tunnel change',exact:true})).toBeDisabled();await assertExact(await save(page),before,"await save(page)");
   await page.unroute('**/api/railway/preview?**');await page.getByRole('button',{name:'Preview route',exact:true}).click();await expect(page.getByRole('button',{name:'Confirm tunnel change',exact:true})).toBeEnabled();
-  expect(await save(page)).toEqual(before);
+  await assertExact(await save(page),before,"await save(page)");
  }finally{await replace(page,original);}
 });
 

@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,extended,test,type Page } from './fixtures.ts';
 import { sourcePixelCounts } from './pixel-helpers.ts';
@@ -32,9 +33,9 @@ for(const ja of [false,true])test(`garage axes, ground legality, cumulative remo
    const before=await save(page);await target(page,[30,27],[x,y],2,ja);
    await expect(page.getByTestId('rail-status')).toContainText(ja?'地表の高さ':'local ground level');
    await expect(page.getByRole('button',{name:ja?'機関庫の変更を確定':'Confirm garage change',exact:true})).toBeDisabled();
-   expect(await save(page)).toEqual(before);
+   await assertExact(await save(page),before,"await save(page)");
    await target(page,[30,27],[x,y],1,ja);await expect(page.getByTestId('rail-cost')).toContainText('32,500,000');
-   expect(await save(page)).toEqual(before);
+   await assertExact(await save(page),before,"await save(page)");
    if(ja&&!extended()){const primary=page.getByRole('button',{name:'機関庫の変更を確定',exact:true});await expect(primary).toBeInViewport();await primary.focus();await page.keyboard.press('Enter');await expect(page.getByTestId('rail-route')).toHaveCount(0);}else await confirm(page,ja);
    const built=await state(page),rails=built.mixed.voxels.filter((v:any)=>v.traffic?.rail);
    expect(rails).toHaveLength(5);expect(rails.every((v:any)=>v.traffic.rail.definition.recipeId===garage&&v.traffic.rail.variant===art)).toBe(true);
@@ -43,11 +44,11 @@ for(const ja of [false,true])test(`garage axes, ground legality, cumulative remo
    expect((await pixels(page,rails)).every(n=>n>10)).toBe(true);
 
    if(extended()||!ja&&x===34&&y===27){
-    const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);
+    const captured=await save(page);await replace(page,captured);await assertExact(await save(page),captured,"await save(page)");
     await page.getByRole('button',{name:ja?'機関庫':'Train garage',exact:true}).click();await page.getByLabel(ja?'線路の操作':'Track action',{exact:true}).selectOption('remove');
     await target(page,[30,27],[x,y],1,ja);await expect(page.getByTestId('rail-cost')).toContainText('2,000,000');await confirm(page,ja);
     const removed=await state(page);expect(removed.mixed.voxels.filter((v:any)=>v.traffic?.rail.definition.recipeId===garage)).toHaveLength(1);
-    expect(removed.mixed.accounts.transactions.map((t:any)=>t.expenditure)).toEqual(['32500000','200000','400000','600000','800000']);
+    await assertExact(removed.mixed.accounts.transactions.map((t:any)=>t.expenditure),['32500000','200000','400000','600000','800000'],"removed.mixed.accounts.transactions.map((t:any)=>t.expenditure)");
     await target(page,[x,y],[30,27],1,ja);await expect(page.getByTestId('rail-cost')).toContainText('800,000');await confirm(page,ja);
     expect((await state(page)).mixed.voxels.every((v:any)=>v.traffic.rail.definition.contributionId.startsWith('system:pattern/'))).toBe(true);
    }
@@ -67,10 +68,10 @@ test('garage map picks, keyboard cancellation, mixed track replacement and obser
    await page.mouse.click(q.x,q.y);
   }
   await expect(page.getByLabel('Track level',{exact:true})).toHaveValue('1');await expect(page.getByRole('button',{name:'Confirm garage change',exact:true})).toBeEnabled();
-  const before=await save(page);await canvas.focus();await page.keyboard.press('Escape');await expect(page.getByTestId('rail-route')).toHaveCount(0);expect(await save(page)).toEqual(before);
+  const before=await save(page);await canvas.focus();await page.keyboard.press('Escape');await expect(page.getByTestId('rail-route')).toHaveCount(0);await assertExact(await save(page),before,"await save(page)");
   await page.getByRole('button',{name:'Track',exact:true}).click();await target(page,[30,27],[31,27],1);await confirm(page,false,true);
   await page.getByRole('button',{name:'Train garage',exact:true}).click();await target(page);await confirm(page);
-  const built=await state(page);expect(built.mixed.voxels).toHaveLength(5);expect(built.mixed.accounts.transactions.map((t:any)=>t.expenditure)).toEqual(['12000000','32500000']);
+  const built=await state(page);expect(built.mixed.voxels).toHaveLength(5);await assertExact(built.mixed.accounts.transactions.map((t:any)=>t.expenditure),['12000000','32500000'],"built.mixed.accounts.transactions.map((t:any)=>t.expenditure)");
   expect(await canvas.evaluate(el=>el===(window as any).garageCanvas)).toBe(true);
   expect((await viewer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await viewer.goto('/');await ready(viewer);
   await expect(viewer.getByRole('button',{name:'Train garage',exact:true})).toBeDisabled();

@@ -1,6 +1,8 @@
+import type { StationBuildingQuery } from '../../src/generated/contracts.ts';
+import { waitForExact, assertExact } from './assertions.ts';
 import {renderingHarness} from './rendering-harnesses.ts';
 import {readFileSync,writeFileSync} from 'node:fs';
-import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
+import { test, expect, type Page } from './fixtures.ts';
 import {canonicalState as state,ready,openPanel,closePanel} from './browser-helpers.ts';
 import {settled} from './layout-helpers.ts';
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -33,19 +35,18 @@ test('station build/remove local raster and picks match fresh full scenes with o
     writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-local-${i?'removed':'built'}.png`,Buffer.from(r.png.split(',')[1],'base64'));
   }
 });
-test('real station art cut picks names and EN/JA presentation preserve canvas camera and cache across panels, peers and removal',async({page,browser,baseURL})=>{
+test('real station art cut picks names and EN/JA presentation preserve canvas camera and cache across panels, peers and removal',async({page,browser,baseURL,sessions})=>{
   test.setTimeout(120000);
   const context=await browser.newContext({baseURL,locale:'ja-JP',viewport:{width:430,height:860},deviceScaleFactor:2}),peer=await context.newPage();
-  let server:WebSocketRoute;const messages:any[]=[],errors:string[]=[];
+  const errors:string[]=[];
   page.on('pageerror',e=>errors.push(String(e)));peer.on('pageerror',e=>errors.push(String(e)));
-  await page.routeWebSocket('**/api/session?*',route=>{server=route.connectToServer();server.onMessage(m=>{messages.push(JSON.parse(String(m)));route.send(m);});route.onMessage(m=>server.send(m));});
+  const observedSession=await sessions.observe(page,'page');
   let serial=0;
-  async function edit(action:string,building?:any) {
-    const s=await state(page),q={expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.mixed?.geometryRevision??s.terrain.geometryRevision,expectedMinute:s.tick,expectedContentVersion:s.contentVersion,
+  async function edit(action:StationBuildingQuery['action'],building?:any) {
+    const s=await state(page),q:StationBuildingQuery={expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.mixed?.geometryRevision??s.terrain.geometryRevision,expectedMinute:s.tick,expectedContentVersion:s.contentVersion,
       action,position:building?.location??{x:29,y:30,z:2},definition:action==='place'?type.reference:null,stationId:building?.id??'0',expectedStationRevision:building?.revision??'0'};
     const response=await page.request.post('/api/station/building/preview?'+compat,{data:q});expect(response.ok(),await response.text()).toBe(true);const quote=await response.json();expect(quote.legal,quote.reason).toBe(true);
-    const requestId='station-art-'+(++serial);server.send(JSON.stringify({type:'command',requestId,expectedWorldEpoch:s.worldEpoch,payload:{kind:'editStationBuilding',query:q,expectedCost:quote.cost}}));
-    await expect.poll(()=>messages.find(m=>m.requestId===requestId)?.type).toBe('accepted');
+    const requestId='station-art-'+(++serial);expect((await observedSession.command({type:'command',requestId,expectedWorldEpoch:s.worldEpoch,payload:{kind:'editStationBuilding',query:q,expectedCost:quote.cost}})).type).toBe('accepted');
   }
   const type=profile.definitions.find((d:any)=>d.sizeX===1&&d.sizeY===2&&d.height===2);
   try{
@@ -56,7 +57,7 @@ test('real station art cut picks names and EN/JA presentation preserve canvas ca
     await peer.goto('/');await ready(peer,'ja');
     const canvas=page.locator('canvas');await canvas.evaluate(el=>el.dataset.instance='station-preserved');const camera=await canvas.getAttribute('data-camera');
     await edit('place');await expect(canvas).toHaveAttribute('data-presentation','ready');
-    const built=await state(page),b=built.mixed.stationGraph.buildings[0];await expect.poll(async()=>(await state(peer)).mixed.stationGraph).toEqual(built.mixed.stationGraph);
+    const built=await state(page),b=built.mixed.stationGraph.buildings[0];await waitForExact(async()=>(await state(peer)).mixed.stationGraph,built.mixed.stationGraph,"async()=>(await state(peer)).mixed.stationGraph");
     // The HTTP snapshot can arrive before the socket delta and its new raster.
     await expect(canvas).toHaveAttribute('data-render-revision',built.revision);
     await expect(canvas).toHaveAttribute('data-presentation','ready');
@@ -92,7 +93,7 @@ test('real station art cut picks names and EN/JA presentation preserve canvas ca
     const jp=await point(peer,pixel.x,pixel.y);await peer.mouse.click(jp.x,jp.y);await expect(peer.getByTestId('selected-object')).toContainText('駅 · '+b.id);
     await peer.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-ja-narrow.png`});
     await openPanel(page,'session');await openPanel(page,'help');await expect(canvas).toHaveAttribute('data-instance','station-preserved');expect(await canvas.getAttribute('data-camera')).toBe(camera);
-    const decoded=sheets,decodeCount=await page.evaluate(()=>(window as any).__stationDecodes);await openPanel(page,'session');await openPanel(page,'help');expect(sheets).toBe(decoded);expect(await page.evaluate(()=>(window as any).__stationDecodes)).toBe(decodeCount);expect((await(await page.request.get('/api/saves/download')).body())).toEqual(bytes);
+    const decoded=sheets,decodeCount=await page.evaluate(()=>(window as any).__stationDecodes);await openPanel(page,'session');await openPanel(page,'help');expect(sheets).toBe(decoded);expect(await page.evaluate(()=>(window as any).__stationDecodes)).toBe(decodeCount);await assertExact((await(await page.request.get('/api/saves/download')).body()),bytes,"(await(await page.request.get('/api/saves/download')).body())");
     await closePanel(page);await edit('remove',b);await expect(canvas).toHaveAttribute('data-presentation','ready');await expect(canvas).toHaveAttribute('data-terrain-update','local');
     await expect.poll(async()=>(await state(peer)).mixed.stationGraph.buildings.length).toBe(0);
     const gone=await point(page,pixel.x,pixel.y);await page.mouse.click(gone.x,gone.y);await expect(page.getByTestId('selected-object')).not.toContainText('Station · '+b.id);

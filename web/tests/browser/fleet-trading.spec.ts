@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import {readFileSync,mkdirSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {canonicalState,closePanel,openPanel,ready} from './browser-helpers.ts';
@@ -9,6 +10,7 @@ test('purchase confirmation stays enabled through minute 720 and expires at minu
   test.setTimeout(60000);
   let transport:WebSocketRoute|undefined;
   const replies=new Map<string,string>();
+ // transport-test: Control quote clock boundaries and replay exact trade requests.
   await page.routeWebSocket('**/api/session?*',route=>{
     const server=route.connectToServer();transport=server;
     route.onMessage(m=>server.send(m));
@@ -78,20 +80,21 @@ test('first train quote and purchase retain an existing city and its callbacks',
   await page.getByRole('button',{name:'Get purchase quote',exact:true}).click();
   expect((await response).ok()).toBe(true);
   const dialog=page.getByRole('dialog',{name:'Purchase quote',exact:true});
-  await expect(dialog).toBeVisible();expect(await state(page)).toEqual(before);
+  await expect(dialog).toBeVisible();await assertExact(await state(page),before,"await state(page)");
   await dialog.getByRole('button',{name:'Confirm purchase',exact:true}).click();
   await expect(dialog).toHaveCount(0);
   const after=await state(page);
   expect(after.mixed.fleet.trains).toHaveLength(1);
-  expect(after.mixed.city).toEqual(before.mixed.city);
-  expect(after.mixed.stationGraph).toEqual(before.mixed.stationGraph);
-  expect(after.mixed.queue).toEqual(before.mixed.queue);
+  await assertExact(after.mixed.city,before.mixed.city,"after.mixed.city");
+  await assertExact(after.mixed.stationGraph,before.mixed.stationGraph,"after.mixed.stationGraph");
+  await assertExact(after.mixed.queue,before.mixed.queue,"after.mixed.queue");
 });
 
 test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resale publish once to two peers and reopen exactly',async({page,browser,baseURL})=>{
   const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
   let socket:WebSocketRoute|undefined,lastTrade:any;
   const receipts:any[]=[];
+ // transport-test: Control quote clock boundaries and replay exact trade requests.
   await page.routeWebSocket('**/api/session?*',route=>{
     const server=route.connectToServer();socket=server;
     route.onMessage(message=>{const m=JSON.parse(String(message));if(m.payload?.kind==='tradeFleet')lastTrade=m;server.send(message);});
@@ -121,7 +124,7 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
     await page.getByRole('button',{name:'Get purchase quote',exact:true}).click();let dialog=page.getByRole('dialog',{name:'Purchase quote',exact:true});
     await expect(dialog).toBeVisible();expect((await dialog.boundingBox())!.x).toBe((await page.locator('.primary-panel').boundingBox())!.x);await expect(dialog.getByTestId('stock-total')).toHaveText('300,000,000');
     await expect(dialog).toContainText('400');await expect(dialog).toContainText('Capacities below are totals');
-    expect(await state(page)).toEqual(before);await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'Get purchase quote',exact:true})).toBeFocused();
+    await assertExact(await state(page),before,"await state(page)");await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'Get purchase quote',exact:true})).toBeFocused();
     await page.getByRole('button',{name:'Get purchase quote',exact:true}).click();await expect(dialog).toBeVisible();
     await peer.getByRole('button',{name:'Step',exact:false}).first().click();
     await expect(dialog.getByText('This quote is out of date.',{exact:false})).toHaveCount(0);await expect(dialog.getByRole('button',{name:'Confirm purchase',exact:true})).toBeEnabled();
@@ -131,10 +134,10 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
     await expect(dialog).toHaveCount(0);await expect(peer.locator('.catalog li')).toHaveCount(2);
     const bought=await state(page);expect(bought.mixed.fleet.trains).toHaveLength(2);
     expect(bought.cash).toBe('14700000000');await expect(page.getByTestId('current-funds')).toHaveText('¥14,700,000,000');expect(bought.mixed.accounts.transactions).toHaveLength(1);
-    expect(bought.mixed.fleet.trains.map((t:any)=>t.cars.length)).toEqual([3,3]);
+    await assertExact(bought.mixed.fleet.trains.map((t:any)=>t.cars.length),[3,3],"bought.mixed.fleet.trains.map((t:any)=>t.cars.length)");
     // The same wire request reuses its original receipt; a new request with the old query rejects.
     const count=receipts.length;socket!.send(JSON.stringify(lastTrade));await expect.poll(()=>receipts.length).toBe(count+1);
-    expect(receipts.at(-1).type).toBe('accepted');expect(await state(page)).toEqual(bought);
+    expect(receipts.at(-1).type).toBe('accepted');await assertExact(await state(page),bought,"await state(page)");
     socket!.send(JSON.stringify({...lastTrade,requestId:'stale-trade-new-id'}));await expect.poll(()=>receipts.at(-1)?.requestId).toBe('stale-trade-new-id');expect(receipts.at(-1).code).toBe('staleRevision');
     await page.getByRole('button',{name:'Owned stock',exact:false}).click();
     await expect(page.locator('.fleet-owned .catalog-item-main').first()).toHaveAttribute('aria-pressed','true');
@@ -160,10 +163,10 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
     await page.getByRole('button',{name:'売却見積もり',exact:true}).click();await dialog.getByRole('button',{name:'売却を確定',exact:true}).click();
     await expect(peer.locator('.catalog li')).toHaveCount(1);
     const sold=await state(page);expect(sold.cash).toBe('14775000000');await expect(page.getByTestId('current-funds')).toHaveText('¥14,775,000,000');expect(sold.mixed.accounts.transactions).toHaveLength(2);expect(sold.mixed.accounts.transactions.at(-1).revenue).toBe('75000000');
-    const saved=await(await page.request.get('/api/saves/download')).json();expect(saved.mixed).toEqual(sold.mixed);
+    const saved=await(await page.request.get('/api/saves/download')).json();await assertExact(saved.mixed,sold.mixed,"saved.mixed");
     expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+sold.worldEpoch,{data:Buffer.from(JSON.stringify(saved))})).ok()).toBe(true);
     await expect.poll(async()=>(await state(page)).worldEpoch).not.toBe(sold.worldEpoch);
-    await peer.reload();await ready(peer);expect((await state(peer)).mixed).toEqual(saved.mixed);
+    await peer.reload();await ready(peer);await assertExact((await state(peer)).mixed,saved.mixed,"(await state(peer)).mixed");
     await expect(canvas).toHaveAttribute('data-instance','trade-preserved');expect(errors).toEqual([]);
     await openPanel(page,'fleet','ja');await page.getByRole('button',{name:'保有車両',exact:false}).click();await expect(page.locator('.catalog li')).toHaveCount(1);
     mkdirSync(evidence,{recursive:true});await page.screenshot({path:`${evidence}/fleet-owned-ja.png`});

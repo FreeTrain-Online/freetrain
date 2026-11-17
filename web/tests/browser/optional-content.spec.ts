@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { assertExact } from './assertions.ts';
+import { test, expect } from './fixtures.ts';
 
 test('server-selected source directories prepare at startup and expose separate localized credits',async({page})=>{
   await page.goto('/');
@@ -54,7 +55,7 @@ test('reviewed fixed map uses exact prepared source bytes and metadata and reope
   // The resulting terrain uses bundled geometry. The exact source pack/resource
   // remains provenance; reopening cannot require or decode its image again.
   expect(JSON.parse(data.packedTerrain.provenance.requestJson).Image.Provider.PackId).toBe('fixture-one');
-  await page.reload();await expect(page.getByTestId('connection')).toHaveText('Connected to game',{timeout:30000});expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
+  await page.reload();await expect(page.getByTestId('connection')).toHaveText('Connected to game',{timeout:30000});await assertExact(await(await page.request.get('/api/saves/download')).body(),captured,"await(await page.request.get('/api/saves/download')).body()");
  }finally{
   const state=await(await page.request.get('/api/bootstrap?protocolVersion=11&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2')).json();
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+state.worldEpoch,{data:original})).ok()).toBe(true);

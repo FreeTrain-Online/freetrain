@@ -1,6 +1,6 @@
 import { test as base } from '@playwright/test';
 import { spawn, type ChildProcess } from 'node:child_process';
-import { appendFileSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -62,17 +62,19 @@ async function stop(child: ChildProcess) {
 export const test = base.extend<{ resetWorld: void; diagnostics: BrowserDiagnostics | undefined; processEvidence: void; sessions: SessionFixture }, { worldServer: WorldServer }>({
   sessions: async ({}, use, testInfo) => { await use(new SessionFixture(testInfo)); },
   diagnostics: [async ({ browser }, use, testInfo) => {
-    if (![...managedProjects, 'diagnostic-harness'].includes(testInfo.project.name)) { await use(undefined); return; }
     const diagnostics = new BrowserDiagnostics(testInfo);
     diagnostics.install(browser);
     try { await use(diagnostics); } finally { await diagnostics.finish(); }
   }, { auto: true }],
   processEvidence: [async ({}, use, testInfo) => {
-    if (![...managedProjects, 'diagnostic-harness'].includes(testInfo.project.name)) { await use(); return; }
     const directory = processEvidenceDirectory(testInfo.workerIndex);
     const offsets = processLogOffsets(directory);
+    const configurationDirectory = resolve(process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT!, 'processes', 'configuration');
+    const configurationOffsets = processLogOffsets(configurationDirectory);
     try { await use(); } finally {
-      try { await attachProcessEvidence(testInfo, directory, offsets); }
+      try { await attachProcessEvidence(testInfo, directory, offsets);
+        if (existsSync(configurationDirectory))
+          await attachProcessEvidence(testInfo, configurationDirectory, configurationOffsets, 'configuration-processes'); }
       catch (error) { testInfo.annotations.push({ type: 'diagnostic-capture-error', description: String(error) }); }
     }
   }, { auto: true }],

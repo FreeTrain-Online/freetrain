@@ -3,7 +3,7 @@ import type { ReadState } from '../../src/lib/session-client.ts';
 import { applyDelta, immutable, parseMessageValue } from '../../src/lib/protocol.ts';
 import { StateAssembler } from '../../src/lib/state-transfer.ts';
 
-export type Receipt = Accepted | Rejected;
+export type Receipt = (Accepted & { readonly code?: undefined }) | Rejected;
 export type StateTarget = Pick<Snapshot, 'worldEpoch' | 'revision' | 'tick'>;
 export type SessionIdentity = Pick<Join, 'serverIncarnation' | 'participantId' | 'sessionId' | 'role'>;
 export interface SessionEvent { generation: number; type: string; worldEpoch?: string; revision?: string; tick?: string; requestId?: string }

@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { bootstrap,clickTile,closePanel,openPanel,ready,selectStation,selectTrain } from './browser-helpers.ts';
 import { expect,test,type Page } from './fixtures.ts';
 
@@ -43,6 +44,7 @@ test('real game runs, steps, renames Japanese station and recovers on refresh', 
 
 test('delayed real result preserves drafts, composition, focus and catalog scroll', async ({ page }) => {
   const timers: ReturnType<typeof setTimeout>[] = [];
+ // transport-test: Inject receipt/connection faults and measure update traffic.
   await page.routeWebSocket('**/api/session?*', route => {
     const server = route.connectToServer();
     server.onMessage(message => {
@@ -84,6 +86,7 @@ test('delayed real result preserves drafts, composition, focus and catalog scrol
 test('lost acknowledgement retries same request once and a missing delta base resyncs', async ({ page }) => {
   let dropped = false; let resynced = false; let corrupted = false;
   const ids: string[] = [];
+ // transport-test: Inject receipt/connection faults and measure update traffic.
   await page.routeWebSocket('**/api/session?*', route => {
     const server = route.connectToServer();
     route.onMessage(message => {
@@ -110,6 +113,7 @@ test('lost acknowledgement retries same request once and a missing delta base re
 
 test('dropped connection recovers confirmed state and reports ambiguous command without replay', async ({ page }) => {
   let dropped = false; let commandCount = 0;
+ // transport-test: Inject receipt/connection faults and measure update traffic.
   await page.routeWebSocket('**/api/session?*', route => {
     const server = route.connectToServer();
     route.onMessage(message => { if (JSON.parse(String(message)).type === 'command') commandCount++; server.send(message); });
@@ -141,6 +145,7 @@ test('second tab sharing one participant waits until its first socket disconnect
 
 test('real stale station edit is rejected without losing the Japanese draft', async ({ page }) => {
   let stale = true;
+ // transport-test: Inject receipt/connection faults and measure update traffic.
   await page.routeWebSocket('**/api/session?*', route => {
     const server = route.connectToServer();
     route.onMessage(message => {
@@ -210,7 +215,7 @@ test('selected inspectors, clock and explicit rail confirm/cancel remain playabl
   await clickTile(page, { x: 37, y: 16, z: 1 }); await expect(page.getByTestId('preview-position')).toHaveText('37, 16, 1');
 
   await page.getByRole('button', { name: 'Cancel preview', exact: true }).click();
-  expect(await bootstrap(page)).toEqual(before);
+  await assertExact(await bootstrap(page),before,"await bootstrap(page)");
   await clickTile(page, { x: 37, y: 16, z: 1 });
   await page.getByRole('button', { name: 'Confirm track change', exact: true }).dblclick(); await expect(page.getByRole('status')).toHaveText('Confirmed by server');
   await expect(page.getByRole('button', { name: 'Confirm track change', exact: true })).toBeDisabled();

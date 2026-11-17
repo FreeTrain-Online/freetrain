@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { delayedResponse } from './transport-helpers.ts';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -43,7 +44,7 @@ test('prepared bundled catalog and decoded source sheets ship separately from th
     expect(await page.evaluate(async url=>{const image=new Image();image.src=url;await image.decode();return [image.naturalWidth,image.naturalHeight];},rail[mode].url)).toEqual([rail.width,rail.height]);
   }
   expect(before.requiredPacks.every((p:any)=>p.id!=='exav-stable-bundled')).toBeTruthy();
-  expect(await bootstrap(page)).toEqual(before);await expect(canvas).toHaveAttribute('data-instance','prepared-preserved');
+  await assertExact(await bootstrap(page),before,"await bootstrap(page)");await expect(canvas).toHaveAttribute('data-instance','prepared-preserved');
 });
 
 test('default live H/V map renders, picks source rails and keeps unsupported operations unavailable',async({page})=>{
@@ -58,7 +59,7 @@ test('default live H/V map renders, picks source rails and keeps unsupported ope
   await canvas.evaluate(el=>el.setAttribute('data-instance','canonical-preserved'));
   await target(page,{x:31,y:24,z:0});await expect(page.getByTestId('selected-object')).toHaveText(`Track · ${before.tracks.find((t:any)=>t.position.x===31&&t.position.y===24).entityId} · 31, 24, 0`);await expect(page.locator('.primary-panel')).toContainText('Normal rail pattern 6');
   await openPanel(page,'session');await expect(page.locator('.primary-panel')).toContainText('Economy, trains and construction are not available yet.');
-  await expect(canvas).toHaveAttribute('data-instance','canonical-preserved');expect(await bootstrap(page)).toEqual(before);expect(errors).toEqual([]);
+  await expect(canvas).toHaveAttribute('data-instance','canonical-preserved');await assertExact(await bootstrap(page),before,"await bootstrap(page)");expect(errors).toEqual([]);
 });
 
 test('source H/V targeting checks eight-direction snapping without changing the world',async({page})=>{
@@ -66,7 +67,7 @@ test('source H/V targeting checks eight-direction snapping without changing the 
   await target(page,{x:27,y:24,z:0});await expect(page.getByTestId('geometry-status')).toContainText('within the map');
   await page.getByRole('button',{name:'Use as alignment anchor',exact:true}).click();await page.getByLabel('Align target',{exact:true}).selectOption('8');
   await target(page,{x:29,y:29,z:0});await expect(page.getByTestId('preview-position')).toHaveText('29, 26, 0');await expect(page.getByTestId('preview-heading')).toContainText('South-east');
-  await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeDisabled();expect(await bootstrap(page)).toEqual(before);
+  await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeDisabled();await assertExact(await bootstrap(page),before,"await bootstrap(page)");
 
 });
 
@@ -78,7 +79,7 @@ test('real Save 9 download, upload confirmation and socket epoch replacement pre
   const confirmation=page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true});
   await expect(confirmation).toBeVisible();await confirmation.getByRole('button',{name:'Confirm load',exact:true}).click();
   await expect(canvas).toHaveAttribute('data-world-epoch',String(BigInt(before.worldEpoch)+1n));await expect(canvas).toHaveAttribute('data-instance','save-preserved');
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(save);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),save,"await(await page.request.get('/api/saves/download')).body()");
 });
 
 test('prototype and corrupt saves report errors without replacement confirmation or mutation',async({page})=>{
@@ -87,7 +88,7 @@ test('prototype and corrupt saves report errors without replacement confirmation
     await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'unsupported.json',mimeType:'application/json',buffer:Buffer.from(body)});
     await expect(page.getByTestId('save-feedback')).toContainText(message);await expect(page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true})).toHaveCount(0);
-    expect(await bootstrap(page)).toEqual(before);
+    await assertExact(await bootstrap(page),before,"await bootstrap(page)");
   }
 });
 
@@ -102,8 +103,8 @@ test('random state validation rejects incompatible saves before confirmation and
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'random.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
     await expect(page.getByTestId('save-feedback')).toContainText(message);
     await expect(page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true})).toHaveCount(0);
-    expect(await bootstrap(page)).toEqual(before);
-    expect(await(await page.request.get('/api/saves/download')).body()).toEqual(bytes);
+    await assertExact(await bootstrap(page),before,"await bootstrap(page)");
+    await assertExact(await(await page.request.get('/api/saves/download')).body(),bytes,"await(await page.request.get('/api/saves/download')).body()");
   }
 });
 
@@ -150,7 +151,7 @@ test('canonical Observer can inspect and query geometry while save endpoints enf
     expect(response.ok()).toBe(true);expect((await response.json()).storage).toEqual({h:10,v:28,z:0});
     expect((await page.request.post('/api/saves/slot1/save?expectedWorldEpoch='+before.worldEpoch)).status()).toBe(403);
     expect((await page.request.get('/api/saves/download')).status()).toBe(403);
-    expect(await bootstrap(page)).toEqual(before);
+    await assertExact(await bootstrap(page),before,"await bootstrap(page)");
   }finally{await context.close();}
 });
 
@@ -166,7 +167,7 @@ test('save availability must be known before upload, and Cancel never sends a re
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'canonical.json',mimeType:'application/json',buffer:save});
     const modal=page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true});await expect(modal).toBeVisible();
     expect(uploads).toBe(0);await modal.getByRole('button',{name:'Cancel',exact:true}).click();await expect(modal).toHaveCount(0);
-    expect(uploads).toBe(0);expect(await bootstrap(page)).toEqual(before);
+    expect(uploads).toBe(0);await assertExact(await bootstrap(page),before,"await bootstrap(page)");
   }finally{release();}
 });
 
@@ -205,6 +206,7 @@ test('canonical clock step, shared run/pause, panel navigation and Save 9 contin
 });
 
 test('dangling entity ownership blocks reveal before the live canvas',async({page})=>{
+ // transport-test: Count joins and inject lifecycle transport during world creation.
   await page.routeWebSocket('**/api/session?*',route=>{
     const server=route.connectToServer();
     server.onMessage(message=>{const body=JSON.parse(String(message));if(body.type==='join')body.snapshot.tracks[0].entityId='999';route.send(JSON.stringify(body));});
@@ -224,7 +226,7 @@ test('invalid entity graphs report localized save errors before confirmation and
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'entities.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
     await expect(page.getByTestId('save-feedback')).toContainText('Invalid save data');
     await expect(page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true})).toHaveCount(0);
-    expect(await bootstrap(page)).toEqual(before);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(bytes);
+    await assertExact(await bootstrap(page),before,"await bootstrap(page)");await assertExact(await(await page.request.get('/api/saves/download')).body(),bytes,"await(await page.request.get('/api/saves/download')).body()");
   }
 });
 
@@ -278,7 +280,7 @@ for(const exhaustive of [false,true])test(`bundled recipe gallery ${exhaustive?'
   expect(await pixel()).toEqual(sample.rgb.map((v:number,i:number)=>(v>>1)+([199,213,194][i]>>1)));
   await page.locator('#effect').selectOption('shape');await expect(canvas).toHaveAttribute('data-ready','true');
   expect(await pixel()).toEqual([255,212,90]);
-  expect(await bootstrap(page)).toEqual(before);
+  await assertExact(await bootstrap(page),before,"await bootstrap(page)");
 });
 
 test('bundled bells keep gesture-gated localized previews with BGM deferred and a preserved world',async({page})=>{
@@ -349,7 +351,7 @@ test('bundled bells keep gesture-gated localized previews with BGM deferred and 
   await expect(page.getByLabel('発車ベル',{exact:true}).locator('option')).toHaveCount(6);
   expect(musicRequests).toEqual([]);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  expect(await bootstrap(page)).toEqual(before);expect(errors).toEqual([]);
+  await assertExact(await bootstrap(page),before,"await bootstrap(page)");expect(errors).toEqual([]);
 });
 
 test('bell hash failures remain localized and retryable; closing Settings fences late previews',async({page})=>{
@@ -408,7 +410,8 @@ test('mixed Save10 loads into the playable railway shell, steps and saves exactl
   await page.getByRole('button',{name:'Step',exact:false}).first().click();
   await expect.poll(async()=>(await bootstrap(page)).tick).toBe('130082');
   const saved=JSON.parse((await(await page.request.get('/api/saves/download')).body()).toString());
-  expect(saved.saveVersion).toBe(11);expect(saved.mixed).toEqual(JSON.parse(data.toString()).mixed);
+  expect(saved.saveVersion).toBe(11);await assertExact(saved.mixed,JSON.parse(data.toString()).mixed,"saved.mixed");
+ // transport-test: Count joins and inject lifecycle transport during world creation.
   await page.routeWebSocket('**/api/session?*',route=>{
     const server=route.connectToServer();server.onMessage(message=>{const body=JSON.parse(String(message));if(body.type==='join')body.snapshot.mixed.accounts.transactions[0].cashAfter='1';route.send(JSON.stringify(body));});
     route.onMessage(message=>server.send(message));

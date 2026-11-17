@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { writeFile } from 'node:fs/promises';
 import { expect,test } from './fixtures.ts';
 import { bootstrap,evidenceDirectory,openPanel,ready,selectStation } from './browser-helpers.ts';
@@ -26,7 +27,7 @@ test('schemes persist across refresh and gates without changing camera, canvas, 
   }
   await page.getByLabel('UI color scheme', { exact: true }).selectOption('plum');
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('freetrain-online.ui.v1')!))).toEqual({ version: 1, scheme: 'plum' });
-  expect(await bootstrap(page)).toEqual(before);
+  await assertExact(await bootstrap(page),before,"await bootstrap(page)");
   await page.reload(); await ready(page); await expect(page.locator('html')).toHaveAttribute('data-ui-scheme', 'plum');
   await selectStation(page); await page.getByLabel('Station name', { exact: true }).fill('Preserve my draft');
   await page.getByRole('button', { name: 'Reset draft', exact: true }).click();
@@ -78,6 +79,6 @@ test('every preset has readable text/states in English and narrow Japanese witho
     }
     if(locale==='en') await page.getByLabel('Language',{exact:true}).selectOption('en');
   }
-  expect(await bootstrap(page)).toEqual(before);
+  await assertExact(await bootstrap(page),before,"await bootstrap(page)");
   await writeFile(`${evidence}/presets.json`,JSON.stringify(observations,null,2));
 });

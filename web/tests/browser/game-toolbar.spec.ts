@@ -101,6 +101,7 @@ test('Normal and Fast keep moving trains responsive without resync or disabled-b
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:readFileSync(input)})).ok()).toBe(true);
   const messages:Record<string,number>={},sent:Record<string,number>={};
   let lastMoves=0;
+ // transport-test: Count outgoing commands across shortcut and disabled-control actions.
   await page.routeWebSocket('**/api/session?*',route=>{
     const server=route.connectToServer();
     server.onMessage(message=>{
@@ -242,6 +243,7 @@ test('confirmed trains animate through Normal across peers, use discrete Fast an
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:readFileSync('tests/helpers/moving-fleet-v11.json')})).ok()).toBe(true);
  const context=await browser.newContext({baseURL}),peer=await context.newPage();
  let resyncs=0,messages=0,lastDelivery=0;
+ // transport-test: Count outgoing commands across shortcut and disabled-control actions.
  await page.routeWebSocket('**/api/session?*',route=>{
   const server=route.connectToServer();let delivery=Promise.resolve();
   server.onMessage(message=>{

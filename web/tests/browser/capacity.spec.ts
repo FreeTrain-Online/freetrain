@@ -1,4 +1,6 @@
-import {test,expect,type Page,type Browser} from '@playwright/test';
+import { waitForMapDraw } from './map-picking.ts';
+import { captureProcess } from './process-evidence.ts';
+import {test,expect,type Page,type Browser} from './fixtures.ts';
 import {spawn,execFileSync,type ChildProcess} from 'node:child_process';
 import {readFileSync,mkdirSync,writeFileSync,mkdtempSync} from 'node:fs';
 import {join,resolve} from 'node:path';
@@ -13,7 +15,7 @@ const dll=resolve('../src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.
 const probe=resolve('../tools/TerrainTransportProbe/bin/Release/net10.0/TerrainTransportProbe.dll');
 const boot='/api/bootstrap?protocolVersion=11&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2&contentVersion=mixed-railway-content-1&metadataOnly=true';
 let server:ChildProcess,web:ChildProcess;
-const log=(child:ChildProcess)=>{child.stdout?.on('data',()=>{});child.stderr?.on('data',b=>process.stderr.write(b));return child;};
+const log=(child:ChildProcess)=>captureProcess(child,child.spawnfile==='dotnet'?'backend':'preview',test.info().workerIndex);
 async function startServer(){server=log(spawn('dotnet',[dll,'--urls',serverURL],{env:{...process.env,FreeTrainOnline__Saves__Directory:saves,
   FreeTrainOnline__Participants__0__Id:'viewer',FreeTrainOnline__Participants__0__Role:'observer',FreeTrainOnline__Participants__0__Secret:'capacity-observer'}}));
   await expect.poll(async()=>{try{return(await fetch(serverURL+'/health')).ok;}catch{return false;}},{timeout:60000}).toBe(true);
@@ -84,8 +86,8 @@ test(`${h}×${v}×${z} ${mode}: atomic transfer, viewport picking, reconnect, ex
   await expect(page.locator('canvas')).toHaveAttribute('data-refinement','ready');
   const image=await page.locator('canvas').evaluate(c=>c.toDataURL()),size=page.viewportSize()!;
   const cachedCamera=await page.locator('canvas').getAttribute('data-camera');
-  await page.setViewportSize({...size,width:size.width+2});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
-  await page.setViewportSize(size);await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));await expect(page.locator('canvas')).toHaveAttribute('data-refinement','ready');
+  await page.setViewportSize({...size,width:size.width+2});await waitForMapDraw(page,60000);
+  await page.setViewportSize(size);await waitForMapDraw(page,60000);await expect(page.locator('canvas')).toHaveAttribute('data-refinement','ready');
   const fresh=await page.locator('canvas').evaluate(c=>c.toDataURL());
   writeFileSync(join(directory,`${h}-${mode}-cached.png`),Buffer.from(image.split(',')[1],'base64'));
   writeFileSync(join(directory,`${h}-${mode}-fresh.png`),Buffer.from(fresh.split(',')[1],'base64'));
@@ -198,8 +200,8 @@ test(`${mode} DPR${dpr}: responsive zoom refinement, latest camera, picking and 
     await page.getByRole('button',{name:'Close panel',exact:true}).click();
     // A fresh rebuild must produce the same settled image and pick at fixed scale.
     const before=await canvas.evaluate(c=>c.toDataURL());
-    await page.setViewportSize({width:1882,height:1040});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));await expect(canvas).toHaveAttribute('data-refinement','ready');
-    await page.setViewportSize({width:1880,height:1040});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));await expect(canvas).toHaveAttribute('data-refinement','ready');
+    await page.setViewportSize({width:1882,height:1040});await waitForMapDraw(page,60000);await expect(canvas).toHaveAttribute('data-refinement','ready');
+    await page.setViewportSize({width:1880,height:1040});await waitForMapDraw(page,60000);await expect(canvas).toHaveAttribute('data-refinement','ready');
     expect(digest(Buffer.from(await canvas.evaluate(c=>c.toDataURL())))).toBe(digest(Buffer.from(before)));
     await page.mouse.click(box.x+box.width/2,box.y+box.height/2);await expect(page.getByTestId('selected-object')).toHaveText(selected!);
     writeFileSync(join(directory,`zoom-${mode}-dpr${dpr}.json`),JSON.stringify({mode,dpr,samples,feedbackP95:p95(feedback),paintP95:p95(paint),refinement},null,2)+'\n');
@@ -375,6 +377,7 @@ test('P3-17 continuous paint at minimum parity extent: immediate held feedback, 
   await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
   await expect(page.locator('.command-feedback')).toContainText('Confirmed');
   const saved=await(await page.request.get('/api/saves/download')).body(),sha256=digest(saved);
+ // Intentional bounded absence window: verify no delayed writes/repeats after the observed cancellation or stop.
   await page.waitForTimeout(400);expect(digest(await(await page.request.get('/api/saves/download')).body())).toBe(sha256);
   const feedbackMs=await page.evaluate(()=>(window as any).paintFeedback as number);expect(feedbackMs).toBeLessThan(100);
   await page.reload();await ready(page);expect(digest(await(await page.request.get('/api/saves/download')).body())).toBe(sha256);

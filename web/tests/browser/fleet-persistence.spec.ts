@@ -1,11 +1,17 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { requireMixedState } from './session.ts';
+import { required } from './session.ts';
+import { restartWorldServer } from './session.ts';
+import { assertExact } from './assertions.ts';
+import type { ObservedSession } from './session.ts';
 import {browserFixture} from './generated-fixtures.ts';
 import {readFileSync} from 'node:fs';
-import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
+import {test,expect,type Page} from './fixtures.ts';
 import {ready,closePanel} from './browser-helpers.ts';
 const boot='/api/bootstrap?protocolVersion=11&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
 
-test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP reopen and restart',async({page,browser,baseURL,worldServer})=>{
+test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP reopen and restart',async({page,browser,baseURL,worldServer,sessions})=>{
  // Allow CI headroom for four restore cycles, two peers and a real backend
  // restart. Keep ordinary assertion waits bounded.
  test.setTimeout(90_000);
@@ -13,15 +19,12 @@ test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP 
  const initial=await snapshot(page),save=JSON.parse(readFileSync(input!,'utf8'));
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:Buffer.from(JSON.stringify(save))})).ok()).toBe(true);
  const context=await browser.newContext({baseURL,locale:'ja-JP'}),peer=await context.newPage();
- const messages:any[][]=[[],[]],errors:string[]=[];
+ const observed: ObservedSession[]=[],errors:string[]=[];
  for(const [i,p] of [page,peer].entries()){
   p.on('pageerror',error=>errors.push(String(error)));
-  await p.routeWebSocket('**/api/session?*',route=>{
-   const server=route.connectToServer();server.onMessage(message=>{messages[i].push(JSON.parse(String(message)));route.send(message);});
-   route.onMessage(message=>server.send(message));
-  });
+  observed[i]=await sessions.observe(p,i===0?'owner':'peer');
  }
- const latest=(i:number)=>messages[i].filter(m=>m.type==='snapshot'||m.type==='delta').at(-1);
+ const latest=(i:number)=>observed[i].latest();
  try{
   await test.step('Connect EN and JA peers',async()=>{
    await page.goto('/');await peer.goto('/');await ready(page);await ready(peer,'ja');
@@ -45,7 +48,7 @@ test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP 
    for(let now=phase.now+1;now<=phase.due;now++){
     await page.getByRole('button',{name:'Step',exact:false}).first().click();
     for(const i of [0,1])await expect.poll(()=>latest(i)?.tick).toBe(String(now));
-    if(now<phase.due){const waiting=await snapshot(page);expect(waiting.mixed).toEqual(before.mixed);}
+    if(now<phase.due){const waiting=await snapshot(page);await assertExact(waiting.mixed,before.mixed,"waiting.mixed");}
    }
    const current=await snapshot(page),train=current.mixed.fleet.trains[0];
    expect(train.moveCount).toBe(phase.move);expect(train.passengers).toBe(phase.passengers);expect(train.forwarding).toBe(false);
@@ -56,7 +59,7 @@ test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP 
    expect(current.mixed.queue.pending).toHaveLength(1);expect(current.mixed.queue.pending[0].dueMinute).toBe(String(phase.due+2));
    const inside=train.cars.filter((c:any)=>c.state.kind==='inside');
    expect(current.mixed.voxels.filter((v:any)=>v.traffic?.car)).toHaveLength(inside.length);
-   for(const c of inside)expect(current.mixed.voxels.find((v:any)=>v.traffic?.car?.carId===c.id).position).toEqual(c.state.location);
+   for(const c of inside)await assertExact(current.mixed.voxels.find((v:any)=>v.traffic?.car?.carId===c.id).position,c.state.location,"current.mixed.voxels.find((v:any)=>v.traffic?.car?.carId===c.id).position");
    if(phase.passengers===100){
     expect(current.mixed.accounts.transactions.filter((a:any)=>(a.revenue??'0')!=='0')).toHaveLength(1);
     expect(current.mixed.accounts.transactions.find((a:any)=>(a.revenue??'0')!=='0')).toMatchObject({absoluteMinute:phase.suffix==='.charged'?'200':'202',revenue:'187200'});
@@ -67,28 +70,28 @@ test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP 
      expect(cost.worldRevision).toBe(fare.worldRevision);expect(cost.absoluteMinute).toBe(fare.absoluteMinute);
     }
    }
-   for(const i of [0,1])expect(latest(i).mixed).toEqual(current.mixed);
+   for(const i of [0,1])await assertExact(requireMixedState(latest(i)).mixed,current.mixed,"requireMixedState(latest(i)).mixed");
    const saved=await(await page.request.get('/api/saves/download')).json();
    expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:Buffer.from(JSON.stringify(saved))})).ok()).toBe(true);
    for(const i of [0,1])await expect.poll(()=>latest(i)?.worldEpoch).toBe(String(BigInt(current.worldEpoch)+1n));
-   expect((await snapshot(peer)).mixed).toEqual(saved.mixed);
+   await assertExact((await snapshot(peer)).mixed,saved.mixed,"(await snapshot(peer)).mixed");
   });
   const saved=await(await page.request.get('/api/saves/download')).json();
   await test.step('Reload JA peer from the saved world',async()=>{
-   const joins=messages[1].filter(m=>m.type==='join').length;
+   const joins=observed[1].count('join');
    await peer.reload();await ready(peer,'ja');
-   await expect.poll(()=>messages[1].filter(m=>m.type==='join').length).toBe(joins+1);
-   expect(messages[1].filter(m=>m.type==='join').at(-1).snapshot.mixed).toEqual(saved.mixed);
+   await expect.poll(()=>observed[1].count('join')).toBe(joins+1);
+   await assertExact((await observed[1].ready()).mixed,saved.mixed,"(await observed[1].ready()).mixed");
    await expect(page.locator('canvas')).toHaveAttribute('data-instance','outside-preserved');expect(errors).toEqual([]);
   });
   await test.step('Restart backend and rejoin both peers',async()=>{
    // These assertions cover persistence through reload, so release live sessions
    // before stopping the server instead of racing automatic reconnect attempts.
    for(const p of [page,peer])await p.goto('about:blank');
-   await worldServer.restart!();
+   await restartWorldServer(worldServer);
    for(const p of [page,peer])expect((await p.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);
    await page.goto('/');await ready(page);await peer.goto('/');await ready(peer,'ja');
-   for(const p of [page,peer])expect((await snapshot(p)).mixed).toEqual(saved.mixed);
+   for(const p of [page,peer])await assertExact((await snapshot(p)).mixed,saved.mixed,"(await snapshot(p)).mixed");
   });
   await test.step('Continue the restored trip after restart',async()=>{
    await page.getByRole('button',{name:'Step',exact:false}).first().click();
@@ -96,25 +99,22 @@ test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP 
    const current=await snapshot(page);expect(current.mixed.fleet.trains[0].moveCount).toBe(1);expect(current.cash).toBe('10057200');
    await page.getByRole('button',{name:'Step',exact:false}).first().click();
    for(const p of [page,peer])await expect.poll(async()=>(await snapshot(p)).tick).toBe('202');
-   expect((await snapshot(peer)).mixed).toEqual((await snapshot(page)).mixed);expect(errors).toEqual([]);
+   await assertExact((await snapshot(peer)).mixed,(await snapshot(page)).mixed,"(await snapshot(peer)).mixed");expect(errors).toEqual([]);
   });
  }finally{await context.close();}
 });
 
-test('P5-13 limited movement timing and 39-passenger costs agree for EN/JA peers through reopen',async({page,browser,baseURL})=>{
+test('P5-13 limited movement timing and 39-passenger costs agree for EN/JA peers through reopen',async({page,browser,baseURL,sessions})=>{
  const input=browserFixture('timing');
  const save=JSON.parse(readFileSync(input!,'utf8')),initial=await snapshot(page);
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:Buffer.from(JSON.stringify(save))})).ok()).toBe(true);
  const context=await browser.newContext({baseURL,locale:'ja-JP'}),peer=await context.newPage();
- const messages:any[][]=[[],[]],errors:string[]=[];
+ const observed: ObservedSession[]=[],errors:string[]=[];
  for(const [i,p] of [page,peer].entries()){
   p.on('pageerror',error=>errors.push(String(error)));
-  await p.routeWebSocket('**/api/session?*',route=>{
-   const server=route.connectToServer();server.onMessage(message=>{messages[i].push(JSON.parse(String(message)));route.send(message);});
-   route.onMessage(message=>server.send(message));
-  });
+  observed[i]=await sessions.observe(p,i===0?'owner':'peer');
  }
- const latest=(i:number)=>messages[i].filter(m=>m.type==='snapshot'||m.type==='delta').at(-1);
+ const latest=(i:number)=>observed[i].latest();
  try{
   await page.goto('/');await peer.goto('/');await ready(page);await ready(peer,'ja');
   for(const p of [page,peer])await p.locator('canvas').evaluate(el=>el.setAttribute('data-instance','timing-preserved'));
@@ -130,23 +130,23 @@ test('P5-13 limited movement timing and 39-passenger costs agree for EN/JA peers
    expect(fleet.trains[0].cars.map((c:any)=>c.id)).toEqual(ids);
    if(move%4===1)charges.push(due);
    expect(current.cash).toBe(String(10000000-charges.length*122000));
-   expect(current.mixed.accounts.transactions.map((a:any)=>a.absoluteMinute)).toEqual(charges.map(String));
+   await assertExact(current.mixed.accounts.transactions.map((a:any)=>a.absoluteMinute),charges.map(String),"current.mixed.accounts.transactions.map((a:any)=>a.absoluteMinute)");
    for(const a of current.mixed.accounts.transactions)expect(a).toMatchObject({operation:'trainMove',expenditure:'122000',genre:'{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}'});
    expect(current.mixed.queue.pending).toHaveLength(1);
    expect(current.mixed.queue.pending[0].dueMinute).toBe(String(times[index+1]??139));
-   expect(latest(0).mixed).toEqual(current.mixed);expect(latest(1).mixed).toEqual(current.mixed);
+   await assertExact(requireMixedState(latest(0)).mixed,current.mixed,"requireMixedState(latest(0)).mixed");await assertExact(requireMixedState(latest(1)).mixed,current.mixed,"requireMixedState(latest(1)).mixed");
    for(const c of fleet.trains[0].cars)expect(current.mixed.voxels.find((v:any)=>JSON.stringify(v.position)===JSON.stringify(c.state.location)).traffic.car.carId).toBe(c.id);
    if(move===4){
     const saved=await(await page.request.get('/api/saves/download')).json();
     expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:Buffer.from(JSON.stringify(saved))})).ok()).toBe(true);
     for(const i of [0,1])await expect.poll(()=>latest(i)?.worldEpoch).toBe(String(BigInt(current.worldEpoch)+1n));
-    expect(latest(1).mixed).toEqual(saved.mixed);
+    await assertExact(requireMixedState(latest(1)).mixed,saved.mixed,"requireMixedState(latest(1)).mixed");
    }
   }
   expect(charges).toEqual([102,113,121,129,137]);
   const saved=await(await page.request.get('/api/saves/download')).json();
-  await peer.reload();await ready(peer,'ja');await expect.poll(()=>messages[1].filter(m=>m.type==='join').length).toBe(2);
-  expect(messages[1].filter(m=>m.type==='join').at(-1).snapshot.mixed).toEqual(saved.mixed);
+  await peer.reload();await ready(peer,'ja');await expect.poll(()=>observed[1].count('join')).toBe(2);
+  await assertExact((await observed[1].ready()).mixed,saved.mixed,"(await observed[1].ready()).mixed");
   await expect(page.locator('canvas')).toHaveAttribute('data-instance','timing-preserved');expect(errors).toEqual([]);
  }finally{await context.close();}
 });
@@ -161,62 +161,55 @@ function inventory(){
  save.clock.pending=[];save.clock.absoluteMinute='130089';
  return save;
 }
-test('fleet Save10 two-peer load, scalar delta, rejected upload and reconnect retain one exact graph',async({page,browser,baseURL})=>{
+test('fleet Save10 two-peer load, scalar delta, rejected upload and reconnect retain one exact graph',async({page,browser,baseURL,sessions})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
  const initial=await snapshot(page),save=inventory(),data=Buffer.from(JSON.stringify(save));
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data})).ok()).toBe(true);
  const peerContext=await browser.newContext({baseURL});const peer=await peerContext.newPage();peer.on('pageerror',e=>errors.push(String(e)));
- const messages:any[][]=[[],[]];
- for(const [i,p] of [page,peer].entries())await p.routeWebSocket('**/api/session?*',route=>{
-  const server=route.connectToServer();server.onMessage(message=>{messages[i].push(JSON.parse(String(message)));route.send(message);});route.onMessage(message=>server.send(message));
- });
+ const observed: ObservedSession[]=[];
+ for(const [i,p] of [page,peer].entries())observed[i]=await sessions.observe(p,i===0?'owner':'peer');
  try{
   await page.goto('/');await ready(page);await peer.goto('/');await ready(peer);
   for(const p of [page,peer])await p.locator('canvas').evaluate(el=>el.setAttribute('data-instance','fleet-preserved'));
-  const joined=messages.map(rows=>rows.find(m=>m.type==='join').snapshot);
-  expect(joined[0]).toEqual(joined[1]);expect(joined[0].mixed.fleet).toEqual(save.mixed.fleet);
-  expect(joined[0].cash).toBe('7050000000');expect(joined[0].mixed.accounts.transactions.at(-1).revenue).toBe('50000000');
+  const joined=await Promise.all(observed.map(session=>session.ready()));
+  await assertExact(joined[0],joined[1],'peer join checkpoint');await assertExact(requireMixedState(joined[0],'fleet').mixed.fleet,save.mixed.fleet,"requireMixedState(joined[0],'fleet').mixed.fleet");
+  expect(joined[0].cash).toBe('7050000000');expect(required(requireMixedState(joined[0]).mixed.accounts.transactions.at(-1),'sale transaction').revenue).toBe('50000000');
   const beforeTime=await peer.getByTestId('game-time').textContent();
   await page.getByRole('button',{name:'Step',exact:false}).first().click();
   await expect.poll(async()=>(await snapshot(page)).tick).toBe('130090');
   await expect(peer.getByTestId('game-time')).not.toHaveText(beforeTime!);
-  for(const rows of messages)expect(rows.find(m=>m.type==='delta').mixed.fleet).toEqual(save.mixed.fleet);
-  const saved=await(await page.request.get('/api/saves/download')).json();expect(saved.saveVersion).toBe(11);expect(saved.mixed).toEqual(save.mixed);
+  await sessions.checkpoint(observed[0],'scalar minute applied');for(const session of observed)await assertExact(session.latest()!.mixed!.fleet,save.mixed.fleet,"session.latest()!.mixed!.fleet");
+  const saved=await(await page.request.get('/api/saves/download')).json();expect(saved.saveVersion).toBe(11);await assertExact(saved.mixed,save.mixed,"saved.mixed");
   const bad=structuredClone(saved);bad.mixed.fleet.trains[0].controllerId='999';
   const current=await snapshot(page);
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:Buffer.from(JSON.stringify(bad))})).status()).toBe(400);
   const badRevenue=structuredClone(saved);badRevenue.mixed.accounts.transactions.at(-1).revenue='50000001';
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:Buffer.from(JSON.stringify(badRevenue))})).status()).toBe(400);
-  expect(await snapshot(peer)).toEqual(current);
+  await assertExact(await snapshot(peer),current,"await snapshot(peer)");
   expect((await page.request.get('/api/bootstrap?protocolVersion=6&contentVersion=mixed-railway-content-1')).status()).toBe(426);
   await peer.reload();await ready(peer);
-  expect(messages[1].filter(m=>m.type==='join').at(-1).snapshot.mixed).toEqual(saved.mixed);
+  await assertExact((await observed[1].ready()).mixed,saved.mixed,"(await observed[1].ready()).mixed");
   await expect(page.locator('canvas')).toHaveAttribute('data-instance','fleet-preserved');expect(errors).toEqual([]);
  }finally{await peerContext.close();}
 });
 
-test('production fleet transport moves one coherent consist for two browser peers and continues after HTTP reopen',async({page,browser,baseURL})=>{
+test('production fleet transport moves one coherent consist for two browser peers and continues after HTTP reopen',async({page,browser,baseURL,sessions})=>{
  const input=browserFixture('moving');
  const save=JSON.parse(readFileSync(input!,'utf8')),initial=await snapshot(page);
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:Buffer.from(JSON.stringify(save))})).ok()).toBe(true);
- const context=await browser.newContext({baseURL,locale:'ja-JP'}),peer=await context.newPage(),errors:string[]=[],messages:any[][]=[[],[]];
- let commandSocket:WebSocketRoute|undefined;const connections=[0,0];
+ const context=await browser.newContext({baseURL,locale:'ja-JP'}),peer=await context.newPage(),errors:string[]=[],observed: ObservedSession[]=[];
  for(const [i,p] of [page,peer].entries()){
   p.on('pageerror',error=>errors.push(String(error)));
-  await p.routeWebSocket('**/api/session?*',route=>{
-   connections[i]++;const server=route.connectToServer();if(i===0)commandSocket=server;
-   server.onMessage(message=>{messages[i].push(JSON.parse(String(message)));route.send(message);});
-   route.onMessage(message=>server.send(message));
-  });
+  observed[i]=await sessions.observe(p,i===0?'owner':'peer');
  }
  try{
   await page.goto('/');await peer.goto('/');
   for(const p of [page,peer]){await ready(p,p===peer?'ja':'en');await expect(p.locator('canvas')).toHaveAttribute('data-presentation','ready');}
   const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','moving-preserved'));
   let sheets=0;page.on('request',r=>{if(r.url().includes('/content/')&&r.url().endsWith('.png'))sheets++;});
-  for(const rows of messages)await expect.poll(()=>rows.filter(m=>m.type==='join').length).toBe(1);
-  const joined=messages.map(rows=>rows.find(m=>m.type==='join').snapshot);expect(joined[0]).toEqual(joined[1]);
-  const first=joined[0].mixed.fleet.trains[0],ids=first.cars.map((c:any)=>c.id);
+  for(const session of observed)await session.ready();
+  const joined=await Promise.all(observed.map(session=>session.ready()));await assertExact(joined[0],joined[1],'peer join checkpoint');
+  const first=requireMixedState(joined[0],'fleet').mixed.fleet.trains[0],ids=first.cars.map((c:any)=>c.id);
   expect(first.cars.map((c:any)=>c.state.location)).toEqual([{x:24,y:18,z:2},{x:24,y:19,z:2},{x:24,y:20,z:2}]);
   // Literal straight N/S car pose: frame 0 at voxel origin +(0,-9).
   const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -239,7 +232,7 @@ test('production fleet transport moves one coherent consist for two browser peer
    const q={x:16*(p.x-center+p.y)+pose.expected.offset[0]+sample!.a+.5,y:8*(p.y-p.x+center)-16*p.z+pose.expected.offset[1]+sample!.b+.5};
    const pan=await canvas.evaluate((el,q)=>{const r=el.getBoundingClientRect(),[x,y]=el.dataset.camera!.split(',').map(Number),z=Number(el.dataset.zoom);return Math.abs(q.x-x)*z>r.width/3||Math.abs(q.y-y)*z>r.height/3?{deltaX:(q.x-x)*z,deltaY:(q.y-y)*z,deltaMode:0}:undefined;},q);
    if(pan){const before=await canvas.getAttribute('data-camera');await canvas.dispatchEvent('wheel',pan);await expect(canvas).not.toHaveAttribute('data-camera',before!);await expect(canvas).toHaveAttribute('data-presentation','ready');}
-   await target.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+   await waitForMapDraw(target);
    await expect(canvas).toHaveAttribute('data-refinement','ready');
    const point=await canvas.evaluate((el,q)=>{const r=el.getBoundingClientRect(),[x,y]=el.dataset.camera!.split(',').map(Number),z=Number(el.dataset.zoom);return {x:r.x+r.width/2+(q.x-x)*z,y:r.y+r.height/2+(q.y-y)*z};},q);
    await target.mouse.click(point.x,point.y);await expect(target.getByTestId('train-car-id')).toHaveText(c.id);
@@ -249,41 +242,41 @@ test('production fleet transport moves one coherent consist for two browser peer
   }
   await pickCar(joined[0]);await pickCar(joined[0],page,1);await pickCar(joined[0]);await pickCar(joined[1],peer);
   const beforePixels=await canvas.evaluate(el=>el.toDataURL());
-  async function steps(tick:number){
+  async function steps(tick:number){return test.step("Advance to the movement boundary",async()=>{
    for(let n=0;n<2;n++){
     const requestId=`move-step-${tick}-${n}`,epoch=(await snapshot(page)).worldEpoch;
-    commandSocket!.send(JSON.stringify({type:'command',requestId,expectedWorldEpoch:epoch,payload:{kind:'step'}}));
-    await expect.poll(()=>messages[0].find(m=>m.requestId===requestId)?.type).toBe('accepted');
+    expect((await observed[0].command({type:'command',requestId,expectedWorldEpoch:epoch,payload:{kind:'step'}})).type).toBe('accepted');
+    await sessions.checkpoint(observed[0],`moving minute ${tick-1+n}`);
     await expect.poll(async()=>(await snapshot(page)).tick).toBe(String(tick-1+n));
    }
-   for(const rows of messages)await expect.poll(()=>rows.filter(m=>m.type==='delta').at(-1)?.tick).toBe(String(tick));
-   const a=messages[0].filter(m=>m.type==='delta').at(-1),b=messages[1].filter(m=>m.type==='delta').at(-1);
-   expect(a).toEqual(b);const train=a.mixed.fleet.trains[0];expect(train.cars.map((c:any)=>c.id)).toEqual(ids);
+   const a=requireMixedState(await sessions.checkpoint(observed[0],`moving boundary ${tick}`),'fleet','queue'),b=observed[1].latest()!;
+   await assertExact(a,b,'moving peer checkpoint');const train=a.mixed.fleet.trains[0];expect(train.cars.map((c:any)=>c.id)).toEqual(ids);
    const slots=a.mixed.voxels.filter((v:any)=>v.traffic?.car);expect(slots).toHaveLength(3);
-   for(const car of train.cars)expect(slots.find((v:any)=>v.traffic.car.carId===car.id).position).toEqual(car.state.location);
+   for(const car of train.cars)expect(required(slots.find((v:any)=>v.traffic.car.carId===car.id),'car voxel').position).toEqual(car.state.location);
    return a;
-  }
+  });}
   const moved=await steps(102);expect(moved.mixed.fleet.trains[0].moveCount).toBe(1);
   await expect.poll(()=>canvas.evaluate(el=>el.toDataURL())).not.toBe(beforePixels);await pickCar({...joined[0],...moved});
   await pickCar({...joined[1],...moved},peer);
   await canvas.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/moving-fleet-straight.png`});
   expect(sheets).toBe(0);await expect(canvas).toHaveAttribute('data-instance','moving-preserved');
-  expect(moved.mixed.fleet.trains[0].cars.map((c:any)=>c.state.location)).toEqual([{x:24,y:17,z:2},{x:24,y:18,z:2},{x:24,y:19,z:2}]);
+  await assertExact(moved.mixed.fleet.trains[0].cars.map((c:any)=>c.state.location),[{x:24,y:17,z:2},{x:24,y:18,z:2},{x:24,y:19,z:2}],"moved.mixed.fleet.trains[0].cars.map((c:any)=>c.state.location)");
   expect(BigInt(moved.cash)).toBe(BigInt(joined[0].cash)-120000n);
   expect(moved.mixed.accounts.transactions.at(-1)).toMatchObject({operation:'trainMove',expenditure:'120000',absoluteMinute:'102'});
   expect(moved.mixed.queue.pending).toHaveLength(1);expect(moved.mixed.queue.pending[0].dueMinute).toBe('104');
-  const saved=await(await page.request.get('/api/saves/download')).json();expect(saved.mixed).toEqual(moved.mixed);
+  const saved=await(await page.request.get('/api/saves/download')).json();await assertExact(saved.mixed,moved.mixed,"saved.mixed");
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+moved.worldEpoch,{data:Buffer.from(JSON.stringify(saved))})).ok()).toBe(true);
-  for(const rows of messages)await expect.poll(()=>rows.filter(m=>m.type==='snapshot').at(-1)?.worldEpoch).toBe(String(BigInt(moved.worldEpoch)+1n));
-  for(const rows of messages)expect(rows.filter(m=>m.type==='snapshot').at(-1).mixed).toEqual(saved.mixed);
-  const second=await steps(104);expect(second.mixed.fleet.trains[0].cars[0].state.location).toEqual({x:24,y:16,z:2});
+  await observed[0].publication({worldEpoch:String(BigInt(moved.worldEpoch)+1n),revision:'0',tick:'0'});
+  await sessions.checkpoint(observed[0],'moving save reopened');
+  for(const session of observed)await assertExact(session.latest()!.mixed,saved.mixed,"session.latest()!.mixed");
+  const second=await steps(104);await assertExact(second.mixed.fleet.trains[0].cars[0].state.location,{x:24,y:16,z:2},"second.mixed.fleet.trains[0].cars[0].state.location");
   const curve=await steps(106);expect(curve.mixed.fleet.trains[0].cars[0].state).toMatchObject({location:{x:25,y:15,z:2},heading:1});
   await pickCar({...joined[0],...curve});
   await expect(canvas).toHaveAttribute('data-presentation','ready');
   await canvas.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/moving-fleet-curve.png`});
-  expect(connections).toEqual([1,1]);
-  await peer.reload();await expect.poll(()=>messages[1].filter(m=>m.type==='join').length).toBe(2);
-  expect(messages[1].filter(m=>m.type==='join').at(-1).snapshot.mixed).toEqual(curve.mixed);
+  expect(observed.map(session=>session.observation.generation)).toEqual([1,1]);
+  await peer.reload();await expect.poll(()=>observed[1].count('join')).toBe(2);
+  await assertExact((await observed[1].ready()).mixed,curve.mixed,"(await observed[1].ready()).mixed");
   expect(errors).toEqual([]);
  }finally{await context.close();}
 });

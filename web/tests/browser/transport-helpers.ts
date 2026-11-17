@@ -1,6 +1,4 @@
 import { expect, type Page, type Response } from '@playwright/test';
-import { test } from '@playwright/test';
-import { SessionFixture } from './session.ts';
 import type { Join } from '../../src/generated/contracts.ts';
 
 export const protocolVersion: Join['protocolVersion'] = 11;
@@ -32,33 +30,8 @@ export async function pausedCanonicalScene(page: Page, current: { worldEpoch: st
   await expect(page.getByTestId('clock-state')).toHaveText('Paused');
 }
 
-/** Both decoders must publish the replacement before another UI action. */
-export async function replaceSave(page: Page, data: Buffer | object, epoch: string, peers: readonly Page[] = [page]) {
-  const response = await page.request.post(`/api/saves/upload?expectedWorldEpoch=${epoch}`, { data });
-  expect(response.ok(), await response.text()).toBe(true);
-  for (const peer of peers) {
-    await expect(peer.locator('canvas.world-canvas')).toHaveAttribute('data-world-epoch', String(BigInt(epoch) + 1n));
-    await expect(peer.locator('canvas.world-canvas')).toHaveAttribute('data-presentation', 'ready');
-  }
-}
-export async function restartCheckpoint(server: { restart?: () => Promise<void> }, peers: readonly { page: Page; secret?: string; language?: string }[]) {
-  if (!server.restart) throw new Error('Checkpoint restart requires a managed world server');
-  await server.restart();
-  for (const { page, secret, language = 'en' } of peers) {
-    await authenticate(page, secret);
-    await page.reload();
-    await expect(page.getByTestId('connection')).toHaveText(language === 'ja' ? 'ゲームに接続済み' : 'Connected to game');
-    await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-presentation', 'ready');
-  }
-}
-
 export function previewResponse(page: Page, path: string): Promise<Response> {
   return page.waitForResponse(response => new URL(response.url()).pathname === path && response.request().method() === 'POST');
-}
-
-/** Intercept once per page, preserving the real server and client decoders. */
-export async function collectSession(page: Page) {
-  return new SessionFixture(test.info()).observe(page);
 }
 
 export function delayedResponse() {

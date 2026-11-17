@@ -7,6 +7,11 @@ export interface TestObservationWindow {
   __freetrainObserveApplied?: boolean;
   __freetrainAppliedSession?: () => AppliedSession;
 }
+/** Resolves after reactive changes and the corresponding ready map draw.
+ * It observes rendering and never requests or forces a draw. */
+export interface MapDrawObservation {
+  __freetrainWaitForDraw?: () => Promise<void>;
+}
 export function installTestObservation(read: () => AppliedSession): () => void {
   const target = window as Window & TestObservationWindow;
   if (!target.__freetrainObserveApplied) return () => {};

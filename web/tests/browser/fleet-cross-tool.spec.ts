@@ -1,3 +1,4 @@
+import { assertExact, waitForExact } from './assertions.ts';
 import {readFileSync,mkdirSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {canonicalState as state,openPanel,closePanel,ready,previewRemovalLine,confirmRemoval} from './browser-helpers.ts';
@@ -95,8 +96,8 @@ for(const locale of ['en','ja'] as const)test(`${locale} real moving fleet survi
  }
  await p.locator('.transport button').first().click();await expect.poll(async()=>(await state(p)).paused).toBe(true);
  await expect(canvas).toHaveAttribute('data-presentation','ready');await expect(canvas).toHaveAttribute('data-instance','moving-cross-tool');
- const after=await state(p);consistent(after);expect(after.mixed.fleet.trains[0].cars.map((c:any)=>c.id).sort()).toEqual(ids.sort());
- expect(after.mixed.accounts.transactions.filter((t:any)=>!['trainMove'].includes(t.operation))).toEqual(initial.mixed.accounts.transactions);
+ const after=await state(p);consistent(after);await assertExact(after.mixed.fleet.trains[0].cars.map((c:any)=>c.id).sort(),ids.sort(),"after.mixed.fleet.trains[0].cars.map((c:any)=>c.id).sort()");
+ await assertExact(after.mixed.accounts.transactions.filter((t:any)=>!['trainMove'].includes(t.operation)),initial.mixed.accounts.transactions,"after.mixed.accounts.transactions.filter((t:any)=>!['trainMove'].includes(t.operation))");
  expect(await p.evaluate(()=>(window as any).__decodes)).toBe(decodes);
  const saved=await save(p);mkdirSync(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!+'/fleet-cross-tool',{recursive:true});
  await p.screenshot({path:process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!+`/fleet-cross-tool/${locale}.png`});
@@ -105,7 +106,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} real moving fleet survi
   await expect(p.getByTestId('participant-role')).toHaveText(role);
   for(const task of tasks)await expect(button(p,text[task]))[secret==='observer-test'?'toBeDisabled':'toBeEnabled']();
  }
- await p.request.post('/api/access',{data:{secret:''}});expect(await save(p)).toEqual(saved);expect(errors).toEqual([]);
+ await p.request.post('/api/access',{data:{secret:''}});await assertExact(await save(p),saved,"await save(p)");expect(errors).toEqual([]);
 });
 
 test('cold join to a running purchased fleet gates all input until assets and the first live draw are ready',async({page:p,browser,baseURL})=>{
@@ -115,6 +116,7 @@ test('cold join to a running purchased fleet gates all input until assets and th
  const assets=new Promise<void>(r=>releaseAssets=r),join=new Promise<void>(r=>releaseJoin=r);
  try{
   await peer.route('**/assets/*.png',async route=>{await assets;await route.continue();});
+ // transport-test: Exercise observer authority, lost receipts and explicit command replay.
   await peer.routeWebSocket('**/api/session?*',route=>{
    const server=route.connectToServer();let delivery=Promise.resolve();
    server.onMessage(m=>{delivery=delivery.then(async()=>{await join;route.send(m);});});
@@ -136,16 +138,16 @@ test('peer movement rejects a changed construction quote on confirmation and fre
   await peer.request.post('/api/access',{data:{secret:'operator-test'}});await peer.goto('/');await ready(peer);
   await track(p,en,29,26,27,30);await expect(button(p,en.confirmTrack)).toBeEnabled();
   await step(peer);await expect(button(p,en.confirmTrack)).toBeEnabled();
-  const moved=await state(p),bytes=await save(p);consistent(moved);expect(moved.mixed.fleet.trains[0].cars[0].state.location).toEqual({x:29,y:27,z:1});
+  const moved=await state(p),bytes=await save(p);consistent(moved);await assertExact(moved.mixed.fleet.trains[0].cars[0].state.location,{x:29,y:27,z:1},"moved.mixed.fleet.trains[0].cars[0].state.location");
   await button(p,en.confirmTrack).click();await expect(p.locator('.command-feedback')).toHaveText(en.staleRevision);
-  await expect(p.getByTestId('rail-status')).toContainText(en.railStale);await expect(button(p,en.confirmTrack)).toBeDisabled();expect(await save(p)).toEqual(bytes);
-  await track(p,en,29,26,27,30);await expect(button(p,en.confirmTrack)).toBeDisabled();expect(await save(p)).toEqual(bytes);
+  await expect(p.getByTestId('rail-status')).toContainText(en.railStale);await expect(button(p,en.confirmTrack)).toBeDisabled();await assertExact(await save(p),bytes,"await save(p)");
+  await track(p,en,29,26,27,30);await expect(button(p,en.confirmTrack)).toBeDisabled();await assertExact(await save(p),bytes,"await save(p)");
   await previewRemovalLine(p,[28,27],[30,27]);await confirmRemoval(p);
   const after=await state(p);consistent(after);expect(after.cash).toBe(moved.cash);
-  expect(after.mixed.fleet).toEqual(moved.mixed.fleet);expect(after.mixed.queue).toEqual(moved.mixed.queue);
+  await assertExact(after.mixed.fleet,moved.mixed.fleet,"after.mixed.fleet");await assertExact(after.mixed.queue,moved.mixed.queue,"after.mixed.queue");
   expect(after.mixed.voxels.some((v:any)=>v.position.x===30&&v.position.y===27)).toBe(false);
   for(const x of [27,28,29])expect(after.mixed.voxels.find((v:any)=>v.position.x===x&&v.position.y===27)?.traffic.car).toBeTruthy();
-  await expect.poll(async()=>(await state(peer)).mixed).toEqual(after.mixed);
+  await waitForExact(async()=>(await state(peer)).mixed,after.mixed,"async()=>(await state(peer)).mixed");
  }finally{await context.close();}
 });
 
@@ -167,7 +169,7 @@ test('late fleet previews cannot resurrect sold selection or old-world ghosts',a
    expect((await p.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);
    await expect.poll(async()=>(await state(p)).worldEpoch).not.toBe(s.worldEpoch);await ready(p);releaseSecond();
    await expect(p.getByTestId('deployment-car')).toHaveCount(0);await expect(p.locator('.world-canvas')).toHaveAttribute('data-fleet-ghost-cars','0');
-   expect(await save(p)).toEqual(bytes);consistent(await state(p));
+   await assertExact(await save(p),bytes,"await save(p)");consistent(await state(p));
   }finally{releaseSecond();}
  }finally{release();await context.close();}
 });
@@ -176,6 +178,7 @@ test('lost fleet acknowledgement and reconnect never replay; explicit receipt re
  test.setTimeout(90000);let socket:WebSocketRoute|undefined,drop=()=>{},offline=false,lose=false,commands=0,last:any;
  const receipts:any[]=[];
  await p.route('**/api/bootstrap?*',route=>offline?route.fulfill({status:503}):route.continue());
+ // transport-test: Exercise observer authority, lost receipts and explicit command replay.
  await p.routeWebSocket('**/api/session?*',route=>{
   const server=route.connectToServer();socket=server;drop=()=>{server.close();route.close();};
   route.onMessage(m=>{const d=JSON.parse(String(m));if(d.payload?.kind==='deployFleet'){commands++;last=d;}server.send(m);});
@@ -184,13 +187,13 @@ test('lost fleet acknowledgement and reconnect never replay; explicit receipt re
  await setup(p);await owned(p);commands=0;const before=await state(p),train=before.mixed.fleet.trains[0];
  await button(p,en.fleetReverse).click();lose=true;await button(p,en.fleetReverseConfirm).click();
  await expect.poll(()=>receipts.some(r=>r.requestId===last?.requestId&&r.type==='accepted')).toBe(true);
- const committed=await save(p);expect((await state(p)).mixed.fleet.trains[0].cars.map((c:any)=>c.id)).toEqual(train.cars.map((c:any)=>c.id).reverse());
+ const committed=await save(p);await assertExact((await state(p)).mixed.fleet.trains[0].cars.map((c:any)=>c.id),train.cars.map((c:any)=>c.id).reverse(),"(await state(p)).mixed.fleet.trains[0].cars.map((c:any)=>c.id)");
  offline=true;drop();await expect(p.getByRole('dialog')).toBeVisible();await expect(p.locator('.world-canvas')).toHaveAttribute('data-scene','demo');
  await p.keyboard.press('Enter');await p.keyboard.press('r');expect(commands).toBe(1);
  offline=false;lose=false;await ready(p);await expect(p.getByTestId('deployment-car')).toHaveCount(0);
- expect(commands).toBe(1);expect(await save(p)).toEqual(committed);
+ expect(commands).toBe(1);await assertExact(await save(p),committed,"await save(p)");
  const n=receipts.length;socket!.send(JSON.stringify(last));await expect.poll(()=>receipts.length).toBe(n+1);
- expect(receipts.at(-1).type).toBe('accepted');expect(await save(p)).toEqual(committed);
+ expect(receipts.at(-1).type).toBe('accepted');await assertExact(await save(p),committed,"await save(p)");
  socket!.send(JSON.stringify({...last,requestId:'old-fleet-query-new-id'}));await expect.poll(()=>receipts.at(-1)?.requestId).toBe('old-fleet-query-new-id');
- expect(receipts.at(-1).code).toBe('staleRevision');expect(await save(p)).toEqual(committed);consistent(await state(p));
+ expect(receipts.at(-1).code).toBe('staleRevision');await assertExact(await save(p),committed,"await save(p)");consistent(await state(p));
 });

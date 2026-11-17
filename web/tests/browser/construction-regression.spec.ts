@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
 import { closePanel,openPanel,ready,canonicalState as state } from './browser-helpers.ts';
@@ -48,12 +49,12 @@ for(const locale of ['en','ja'] as const)test(`all construction tasks: roles, to
    await expect(canvas).toHaveAttribute('data-camera',camera!);
    expect(await canvas.evaluate(el=>(el as any).regressionIdentity)).toBe(true);expect(await canvas.boundingBox()).toEqual(bounds);expect(await canvas.getAttribute('data-camera')).toBe(camera);
   }
-  expect(await p.evaluate(()=>(window as any).decodes)).toBe(decodes);expect(await save(p)).toEqual(before);
+  expect(await p.evaluate(()=>(window as any).decodes)).toBe(decodes);await assertExact(await save(p),before,"await save(p)");
   // Enter Settings with a legal draft: targeting is cancelled before changing locale.
   await button(p,text.trackTask).click();await target(p,27,1,text);await expect(button(p,text.confirmTrack)).toBeEnabled();
   await openPanel(p,'settings',locale);await expect(p.getByTestId('rail-route')).toHaveCount(0);
   await p.getByLabel(text.language,{exact:true}).selectOption(locale==='ja'?'en':'ja');await closePanel(p);
-  const next=locale==='ja'?en:ja;await expect(button(p,next.confirmTrack)).toBeDisabled();expect(await save(p)).toEqual(before);
+  const next=locale==='ja'?en:ja;await expect(button(p,next.confirmTrack)).toBeDisabled();await assertExact(await save(p),before,"await save(p)");
   // Role replacement starts a fresh connection; every mutation task remains gated.
   for(const [secret,role] of [['operator-test',next.operator],['observer-test',next.observer]]){
    expect((await p.request.post('/api/access',{data:{secret}})).ok()).toBe(true);await p.reload();await ready(p,locale==='ja'?'en':'ja');await expect(p.getByTestId('participant-role')).toHaveText(role);
@@ -64,6 +65,7 @@ for(const locale of ['en','ja'] as const)test(`all construction tasks: roles, to
 
 test('concurrent support edit invalidates a route; delayed receipt cannot clear a newer task or replay',async({page:p,browser})=>{
  let held:(string|Buffer)[]=[];let delay=false,commands=0;let release=()=>{};
+ // transport-test: Exercise command replay and explicit transport disconnection.
  await p.routeWebSocket('**/api/session?*',route=>{
   const server=route.connectToServer();release=()=>{delay=false;for(const m of held.splice(0))route.send(m);};
   route.onMessage(m=>{if(JSON.parse(String(m)).payload?.kind==='editRailway')commands++;server.send(m);});
@@ -126,6 +128,7 @@ test('running shared time survives every construction task, held-input reset and
 
 test('disconnect during a detached preview clears targeting and never replays after reconnect',async({page:p})=>{
  let disconnect=()=>{},connections=0;
+ // transport-test: Exercise command replay and explicit transport disconnection.
  await p.routeWebSocket('**/api/session?*',route=>{connections++;const server=route.connectToServer();disconnect=()=>{server.close();route.close();};});
  await p.goto('/');await ready(p);const original=await save(p);let release=()=>{};const gate=new Promise<void>(r=>release=r);let held=false;
  try{
@@ -133,7 +136,7 @@ test('disconnect during a detached preview clears targeting and never replays af
   await p.route('**/api/railway/preview?*',async route=>{const response=await route.fetch();held=true;await gate;await route.fulfill({response});});
   await target(p);await expect.poll(()=>held).toBe(true);const previous=connections;disconnect();await expect.poll(()=>connections).toBeGreaterThan(previous);await ready(p);release();
   if(await button(p,en.trackTask).getAttribute('aria-pressed')!=='true')await button(p,en.trackTask).click();
-  await expect(button(p,en.confirmTrack)).toBeDisabled();await expect(p.getByTestId('rail-route')).toHaveCount(0);expect(await save(p)).toEqual(before);
+  await expect(button(p,en.confirmTrack)).toBeDisabled();await expect(p.getByTestId('rail-route')).toHaveCount(0);await assertExact(await save(p),before,"await save(p)");
   await p.unroute('**/api/railway/preview?*');await target(p,30);await expect(button(p,en.confirmTrack)).toBeEnabled();await button(p,en.confirmTrack).click();await expect(p.getByTestId('rail-route')).toHaveCount(0);
   expect((await state(p)).mixed.accounts.transactions).toHaveLength(1);
  }finally{release();await restore(p,original);}
@@ -147,6 +150,6 @@ test('role replacement during preview cannot retain or submit the Owner draft',a
   await target(p);await expect.poll(()=>held).toBe(true);
   expect((await p.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await p.reload();await ready(p);release();
   await expect(p.getByTestId('participant-role')).toHaveText(en.observer);await expect(button(p,en.trackTask)).toBeDisabled();await expect(p.getByTestId('rail-route')).toHaveCount(0);
-  await p.request.post('/api/access',{data:{secret:''}});expect(await save(p)).toEqual(before);
+  await p.request.post('/api/access',{data:{secret:''}});await assertExact(await save(p),before,"await save(p)");
  }finally{release();await p.request.post('/api/access',{data:{secret:''}});await restore(p,original);}
 });

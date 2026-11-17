@@ -25,15 +25,15 @@ async function run(label: string, args: string[], expected: number, workers: num
   for (const result of summary.results) { equal(result.status, 'passed', result.title); equal(result.retry, 0, result.title); }
   console.log(`${label}: ${expected} passed, zero skips/retries; ${directory}`);
 }
-await run('application-harness', ['--config', 'tests/browser-harness/session.config.ts'], 2, 1, 0);
+await run('application-harness', ['--config', 'tests/browser-harness/session.config.ts'], 3, 1, 0);
 await run('legacy-adapters', ['station-building-domain.spec.ts', 'passenger-feedback.spec.ts', 'passenger-service.spec.ts'], 5, 1, 0);
 // Independent run roots, fresh fixture generation and managed workers on every
 // invocation. The two worker-count series may run concurrently; cases within
 // each series keep the configured worker limit and ordinary per-file ordering.
 const series = await Promise.allSettled([1, 2].map(async workers => {
-  for (let iteration = 1; iteration <= 10; iteration++) await run(`workers-${workers}-run-${iteration}`, ['station-continuation.spec.ts', 'station-controller.spec.ts'], 10, workers, iteration);
+  for (let iteration = 1; iteration <= 10; iteration++) await run(`workers-${workers}-run-${iteration}`, ['station-continuation.spec.ts', 'station-controller.spec.ts', '--grep', 'complete journey|P6-22'], 10, workers, iteration);
 }));
 record();
 for (const result of series) if (result.status === 'rejected') throw result.reason;
 equal(runs.length, 22);
-console.log(`Session acceptance passed: 200 station cases, 5 adapter regressions and 2 negative controls; ${join(root, 'acceptance.json')}`);
+console.log(`Session acceptance passed: 200 station cases, 5 migrated regressions and 3 observation controls; ${join(root, 'acceptance.json')}`);

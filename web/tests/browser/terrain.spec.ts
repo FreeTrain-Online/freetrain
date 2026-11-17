@@ -1,3 +1,5 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
 import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
@@ -38,7 +40,7 @@ test('real terrain save replacement renders sea/cut/forest, picks independently,
   const tree=await point(page,0,-58);await page.mouse.click(tree.x,tree.y);await expect(page.getByTestId('selected-object')).toContainText('Terrain · 2 · 1, 0, 2');
 
   const captured=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(captured.toString()).packedTerrain.occupantCount).toBe(3);
-  await page.reload();await ready(page);await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-assets','ready');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
+  await page.reload();await ready(page);await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-assets','ready');await assertExact(await(await page.request.get('/api/saves/download')).body(),captured,"await(await page.request.get('/api/saves/download')).body()");
   expect(errors).toEqual([]);
  }finally{await replace(page,original);}
 });
@@ -69,7 +71,7 @@ test('late night-sheet decoding cannot replace a newer day view or its hit targe
   await page.getByLabel('Night',{exact:true}).check();await expect.poll(()=>waiting).toBeGreaterThan(0);await expect(canvas).toHaveAttribute('data-assets','ready');await expect(canvas).toHaveAttribute('data-presentation','pending');
   await page.getByLabel('Night',{exact:true}).uncheck();await expect(canvas).toHaveAttribute('data-presentation','ready');await expect.poll(()=>canvas.evaluate(el=>el.toDataURL())).toBe(before);
   const received=page.waitForResponse(r=>r.url().includes('/content/bundled-v2/')&&r.url().endsWith('.png'));release();await received;
-  await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
+  await waitForMapDraw(page);
   await expect(canvas).toHaveAttribute('data-terrain-variant','spring/day');expect(await canvas.evaluate(el=>el.toDataURL())).toBe(before);
   await closePanel(page);const q=await point(page,0,-58);await page.mouse.click(q.x,q.y);await expect(page.getByTestId('terrain-surface')).toHaveText('Forest');
  }finally{release();await replace(page,original);}
@@ -111,14 +113,16 @@ test('synthetic full-terrain landscape renders behind the connection gate and gi
   await expect.poll(()=>canvas.evaluate(el=>el.toDataURL())).not.toBe(firstFrame);
   await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));});
   const hiddenTrain=await canvas.getAttribute('data-demo-train');
-  await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+  // Intentional absence window: the hidden page must not paint over two frames.
+  // A ready-draw wait cannot complete while visibility deliberately suspends painting.
+  await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
   await expect(canvas).toHaveAttribute('data-demo-train',hiddenTrain!);
   await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:false});document.dispatchEvent(new Event('visibilitychange'));});
   await expect(canvas).not.toHaveAttribute('data-demo-train',hiddenTrain!);
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+  await waitForMapDraw(page);
   const stillTrain=await canvas.getAttribute('data-demo-train'),stillFrame=await canvas.evaluate(el=>el.toDataURL());
-  await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+  await waitForMapDraw(page);
   await expect(canvas).toHaveAttribute('data-demo-train',stillTrain!);expect(await canvas.evaluate(el=>el.toDataURL())).toBe(stillFrame);
   const decoded = images;
 
@@ -149,9 +153,9 @@ test('empty-world preview cancellation, exact owner confirmation, zero rails, se
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
   await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await ready(page);await ready(watcher);
   await expect.poll(async()=> (await state(watcher)).worldEpoch).not.toBe(before.worldEpoch);
-  await expect(canvas).toHaveAttribute('data-instance','empty-preserved');const after=await state(page);expect(after.tracks).toEqual([]);expect(after.entities).toEqual([]);expect(after.terrain.name).toBe('Empty railway');
+  await expect(canvas).toHaveAttribute('data-instance','empty-preserved');const after=await state(page);await assertExact(after.tracks,[],"after.tracks");await assertExact(after.entities,[],"after.entities");expect(after.terrain.name).toBe('Empty railway');
   const captured=await(await page.request.get('/api/saves/download')).body();
-  await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
+  await page.reload();await ready(page);await assertExact(await(await page.request.get('/api/saves/download')).body(),captured,"await(await page.request.get('/api/saves/download')).body()");
   await replace(page,original);await replace(page,captured);expect((await state(page)).terrain.name).toBe('Empty railway');
  }finally{await replace(page,original);await other.close();}
 });
@@ -192,7 +196,7 @@ test('maximum admitted empty world renders and reopens',async({page})=>{
   // Independent source H/V projection of stored centre H32,V32 at Z63: (1040,-744).
   expect(await page.locator('canvas').evaluate(el=>(el as HTMLCanvasElement).dataset.camera!.split(',').slice(0,2).map(Number))).toEqual([1040,-744]);
   const captured=await(await page.request.get('/api/saves/download')).body();const data=JSON.parse(captured.toString());expect(savedGround(data)).toHaveLength(4096);expect(data.rails).toEqual([]);
-  await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
+  await page.reload();await ready(page);await assertExact(await(await page.request.get('/api/saves/download')).body(),captured,"await(await page.request.get('/api/saves/download')).body()");
  }finally{await replace(page,original);}
 });
 
@@ -221,7 +225,7 @@ test('heightmap browser preview is detached, confirms exact terrain to both clie
    const ctx=canvas.getContext('2d')!;ctx.drawImage(image,0,0);return Array.from(ctx.getImageData(0,0,2,2).data);
   })).toEqual([0,0,0,255,255,255,255,255,0,0,0,255,255,255,255,255]);
 await expect(page.getByRole('img',{name:'North-up terrain overview of the retained candidate',exact:true})).toBeVisible();
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Cancel',exact:true}).click();
 
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
@@ -230,8 +234,8 @@ await expect(page.getByRole('img',{name:'North-up terrain overview of the retain
   const captured=await(await page.request.get('/api/saves/download')).body(),saved=JSON.parse(captured.toString());
   expect(savedGround(saved)).toEqual([0,1,2,3,1,2,3,4,0,1,2,3,1,2,3,4]);expect(saved.rails).toEqual([]);
   await closePanel(page);
-  await page.reload();await ready(page);await expect(canvas).toHaveAttribute('data-assets','ready');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
-  await replace(page,original);await replace(page,captured);expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(savedGround(saved));
+  await page.reload();await ready(page);await expect(canvas).toHaveAttribute('data-assets','ready');await assertExact(await(await page.request.get('/api/saves/download')).body(),captured,"await(await page.request.get('/api/saves/download')).body()");
+  await replace(page,original);await replace(page,captured);await assertExact((await state(page)).terrain.cells.map((c:any)=>c.ground),savedGround(saved),"(await state(page)).terrain.cells.map((c:any)=>c.ground)");
  }finally{await replace(page,original);await other.close();}
 });
 test('heightmap Japanese narrow form reports image failures, invalidates drafts and cancels in-flight uploads',async({browser})=>{
@@ -250,7 +254,7 @@ test('heightmap Japanese narrow form reports image failures, invalidates drafts 
   let release=()=>{};const held=new Promise<void>(r=>{release=r;});await page.route('**/api/worlds/heightmap/preview?*',async route=>{await held;await route.continue().catch(()=>{});});
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();
   await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeEnabled();
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
  }finally{await replace(page,original);await context.close();}
 });
 
@@ -265,7 +269,7 @@ test('seeded relief controls preview reproducibly, commit exact mountains to bot
   await page.getByLabel('Levels (Z)',{exact:true}).fill('32');await page.getByLabel('World name',{exact:true}).fill('Seeded mountain railway');
   async function preview(){const response=page.waitForResponse(r=>r.url().includes('/worlds/generated/preview'));await page.getByRole('button',{name:'Preview world',exact:true}).click();const result=await(await response).json();await expect(page.getByTestId('empty-world-preview')).toBeVisible();return result;}
   const first=await preview();expect(first.ground).toHaveLength(1024);expect(new Set(first.ground).size).toBeGreaterThan(4);
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
   await page.getByRole('button',{name:'Cancel',exact:true}).click();const second=await preview();expect(second.candidateHash).toBe(first.candidateHash);expect(second.ground).toEqual(first.ground);
   await page.getByLabel('Generation seed',{exact:true}).fill('42');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   const varied=await preview();expect(varied.ground).not.toEqual(first.ground);
@@ -276,11 +280,11 @@ test('seeded relief controls preview reproducibly, commit exact mountains to bot
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
   await ready(page);await ready(watcher);await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-assets','ready');await expect(canvas).toHaveAttribute('data-instance','relief-preserved');
   await expect.poll(async()=>(await state(watcher)).worldEpoch).not.toBe(before.worldEpoch);
-  const committed=await state(page);expect(committed.terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);expect(committed.tracks).toEqual([]);
+  const committed=await state(page);await assertExact(committed.terrain.cells.map((c:any)=>c.ground),final.ground,"committed.terrain.cells.map((c:any)=>c.ground)");expect(committed.tracks).toEqual([]);
   const captured=await(await page.request.get('/api/saves/download')).body();expect(captured.length).toBe(final.saveBytes);
   await closePanel(page);await ready(page);await expect(page.getByTestId('reference-world')).toHaveText('Terrain world');
-  await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
-  await replace(page,original);await replace(page,captured);expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
+  await page.reload();await ready(page);await assertExact(await(await page.request.get('/api/saves/download')).body(),captured,"await(await page.request.get('/api/saves/download')).body()");
+  await replace(page,original);await replace(page,captured);await assertExact((await state(page)).terrain.cells.map((c:any)=>c.ground),final.ground,"(await state(page)).terrain.cells.map((c:any)=>c.ground)");
  }finally{await replace(page,original);await context.close();}
 });
 
@@ -302,7 +306,7 @@ test('Japanese narrow seeded relief form validates ranges, changes presets, inva
   await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();seen=true;await held;await route.fulfill({response}).catch(()=>{});});
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect.poll(()=>seen).toBe(true);await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();
   await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeEnabled();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
  }finally{release();await replace(page,original);await context.close();}
 });
 
@@ -325,7 +329,7 @@ test('coast directions, realized preview, impossible diagnostics and exact islan
   await page.getByLabel('Coast layout',{exact:true}).selectOption('island');
   await page.getByLabel('Stored width (H)',{exact:true}).fill('16');await page.getByLabel('Stored length (V)',{exact:true}).fill('16');await page.getByLabel('Target sea coverage (%)',{exact:true}).fill('5');
   await page.getByRole('button',{name:'Preview world',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText('cannot');
-  await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
   await page.getByLabel('Stored width (H)',{exact:true}).fill('32');await page.getByLabel('Stored length (V)',{exact:true}).fill('27');await page.getByLabel('Target sea coverage (%)',{exact:true}).fill('40');
   const final=await preview();expect(final.geography.metrics.seaComponents).toBe(1);expect(final.geography.metrics.seaSides).toBe(15);
   await page.getByLabel('Generation seed',{exact:true}).fill('42');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
@@ -335,10 +339,10 @@ test('coast directions, realized preview, impossible diagnostics and exact islan
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
   await ready(page);await ready(watcher);await expect.poll(async()=>(await state(watcher)).worldEpoch).not.toBe(before);
   await expect(page.locator('canvas')).toHaveAttribute('data-instance','coast-preserved');
-  expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
+  await assertExact((await state(page)).terrain.cells.map((c:any)=>c.ground),final.ground,"(await state(page)).terrain.cells.map((c:any)=>c.ground)");
   const saved=await(await page.request.get('/api/saves/download')).body();await closePanel(page);await ready(page);
-  await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
-  await replace(page,original);await replace(page,saved);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
+  await page.reload();await ready(page);await assertExact(await(await page.request.get('/api/saves/download')).body(),saved,"await(await page.request.get('/api/saves/download')).body()");
+  await replace(page,original);await replace(page,saved);await assertExact(await(await page.request.get('/api/saves/download')).body(),saved,"await(await page.request.get('/api/saves/download')).body()");
  }finally{await replace(page,original);await context.close();}
 });
 
@@ -370,7 +374,7 @@ test('lakes and rivers preview exact geometry, preserve drafts and publish to bo
   await page.getByLabel('Lake count (0–8)',{exact:true}).fill('0');
   await page.getByLabel('River direction',{exact:true}).selectOption('northSouth');
   const first=await preview();expect(first.geography.metrics).toMatchObject({lakeComponents:0,riverCount:1,seaComponents:1,seaSides:5});
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
   await expect(page.getByTestId('water-metrics')).toContainText('Enclosed lakes: 0');
   await page.getByLabel('Channel width (cells)',{exact:true}).fill('8');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   const wide=await preview();expect(wide.geography.seaMask).not.toBe(first.geography.seaMask);
@@ -386,12 +390,12 @@ test('lakes and rivers preview exact geometry, preserve drafts and publish to bo
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
   await ready(page);await ready(watcher);await expect.poll(async()=>(await state(watcher)).worldEpoch).not.toBe(before);
   await expect(page.locator('canvas')).toHaveAttribute('data-instance','water-preserved');
-  expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
+  await assertExact((await state(page)).terrain.cells.map((c:any)=>c.ground),final.ground,"(await state(page)).terrain.cells.map((c:any)=>c.ground)");
   const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);const document=JSON.parse(saved.toString());expect(document.saveVersion).toBe(11);
   const provenance=JSON.parse(document.packedTerrain.provenance.requestJson);expect(provenance.Options.Lakes.Count).toBe(0);expect(provenance.Options.Rivers.Width).toBe(8);expect(provenance.Options.Rivers.Direction).toBe(1);expect(provenance.Options.Rivers).not.toHaveProperty('Count');expect(provenance.Options.Rivers).not.toHaveProperty('Outlet');
   await closePanel(page);
-  await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
-  await replace(page,original);await replace(page,saved);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
+  await page.reload();await ready(page);await assertExact(await(await page.request.get('/api/saves/download')).body(),saved,"await(await page.request.get('/api/saves/download')).body()");
+  await replace(page,original);await replace(page,saved);await assertExact(await(await page.request.get('/api/saves/download')).body(),saved,"await(await page.request.get('/api/saves/download')).body()");
  }finally{await replace(page,original);await context.close();}
 });
 
@@ -405,7 +409,7 @@ test('Japanese narrow directional rivers work without lakes, show impossible rim
   await page.getByLabel('川幅（セル）',{exact:true}).fill('9');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();await page.getByLabel('川幅（セル）',{exact:true}).fill('8');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeEnabled();await page.getByLabel('川幅（セル）',{exact:true}).fill('1');
   await page.getByLabel('川の方向',{exact:true}).selectOption('none');await page.getByLabel('湖の数（0〜8）',{exact:true}).fill('8');
   await page.getByLabel('格納幅（H）',{exact:true}).fill('16');await page.getByLabel('格納奥行（V）',{exact:true}).fill('16');
-  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText(ja.lakeImpossible);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText(ja.lakeImpossible);await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
   await page.getByLabel('格納幅（H）',{exact:true}).fill('64');await page.getByLabel('格納奥行（V）',{exact:true}).fill('64');await page.getByLabel('湖の数（0〜8）',{exact:true}).fill('0');
   await page.getByLabel('川の方向',{exact:true}).selectOption('northSouth');
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('water-metrics')).toContainText('湖：0');
@@ -414,7 +418,7 @@ test('Japanese narrow directional rivers work without lakes, show impossible rim
   await page.getByLabel('蛇行（0〜100）',{exact:true}).fill('80');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();seen=true;await held;await route.fulfill({response}).catch(()=>{});});
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect.poll(()=>seen).toBe(true);await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
  }finally{release();await context.close();}
 });
 
@@ -434,22 +438,22 @@ test('forest controls reserve connected level land, show realized cover and conf
   await page.getByLabel('Forest clustering (0–100)',{exact:true}).fill('100');const clustered=await preview();expect(clustered.geography.forestMask).not.toBe(first.geography.forestMask);
   for(const tree of ['Pine','Camphor','Maple','Ginkgo','Beech'])await page.getByRole('checkbox',{name:tree,exact:true}).uncheck();
   await page.getByLabel('Forest ground appearance',{exact:true}).selectOption('grass');const final=await preview();
-  expect(final.ground).toEqual(bare.ground);expect(final.geography.startingMask).toBe(bare.geography.startingMask);
+  await assertExact(final.ground,bare.ground,"final.ground");expect(final.geography.startingMask).toBe(bare.geography.startingMask);
   await expect(page.getByTestId('forest-metrics')).toContainText('Reserved: 64');
   await page.getByTestId('forest-metrics').scrollIntoViewIfNeeded();
-  const before=(await state(page)).worldEpoch;expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  const before=(await state(page)).worldEpoch;await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Cancel',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
   await ready(page);await ready(watcher);await expect.poll(async()=>(await state(watcher)).worldEpoch).not.toBe(before);await expect(page.locator('canvas')).toHaveAttribute('data-instance','forest-preserved');
   const actual=(await state(page)).terrain;expect(actual.occupants.filter((o:any)=>o.forest).length).toBe(final.geography.forests.forestCells);
-  expect((await state(watcher)).terrain.occupants).toEqual(actual.occupants);
+  await assertExact((await state(watcher)).terrain.occupants,actual.occupants,"(await state(watcher)).terrain.occupants");
   expect(actual.occupants.filter((o:any)=>o.forest).every((o:any)=>o.forest.definition.contributionId==='{FBD0CD06-016A-4037-AB15-02040218CBAA}-g')).toBe(true);
   const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);
   await closePanel(page);await ready(page);
   const pixels=await page.locator('canvas').evaluate(c=>c.toDataURL());await openPanel(page,'view');await page.getByLabel('Winter ground',{exact:true}).check();await expect(page.locator('canvas')).toHaveAttribute('data-terrain-variant','winter/day');await closePanel(page);
-  await expect.poll(()=>page.locator('canvas').evaluate(c=>c.toDataURL())).not.toBe(pixels);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
-  await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
-  await replace(page,original);await replace(page,saved);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
+  await expect.poll(()=>page.locator('canvas').evaluate(c=>c.toDataURL())).not.toBe(pixels);await assertExact(await(await page.request.get('/api/saves/download')).body(),saved,"await(await page.request.get('/api/saves/download')).body()");
+  await page.reload();await ready(page);await assertExact(await(await page.request.get('/api/saves/download')).body(),saved,"await(await page.request.get('/api/saves/download')).body()");
+  await replace(page,original);await replace(page,saved);await assertExact(await(await page.request.get('/api/saves/download')).body(),saved,"await(await page.request.get('/api/saves/download')).body()");
  }finally{await replace(page,original);await context.close();}
 });
 
@@ -464,14 +468,14 @@ test('Japanese narrow forests validate species and starting-area failure, invali
   await page.getByLabel('森林の選択率（0〜90%）',{exact:true}).fill('91');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();await page.getByLabel('森林の選択率（0〜90%）',{exact:true}).fill('35');
   await page.getByLabel('格納奥行（V）',{exact:true}).fill('27');await page.getByLabel('高さ（Z）',{exact:true}).fill('32');
   await page.getByLabel('海岸の配置',{exact:true}).selectOption('island');await page.getByLabel('連続した平坦な開始区域（セル）',{exact:true}).fill('216');
-  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText(ja.startingAreaImpossible);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText(ja.startingAreaImpossible);await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
   await page.getByLabel('連続した平坦な開始区域（セル）',{exact:true}).fill('16');await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('forest-metrics')).toContainText('開始区域：16');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.getByLabel('森林の地面表示',{exact:true}).scrollIntoViewIfNeeded();
   await page.getByLabel('森林のまとまり（0〜100）',{exact:true}).fill('100');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   const held=new Promise<void>(r=>release=r);let seen=false;await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();seen=true;await held;await route.fulfill({response}).catch(()=>{});});
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect.poll(()=>seen).toBe(true);await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
  }finally{release();await context.close();}
 });
 
@@ -496,12 +500,12 @@ test('generation UX previews both compass projections, regenerates deterministic
   await page.getByRole('button',{name:'New seed',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);expect(await page.getByLabel('Generation seed',{exact:true}).inputValue()).not.toBe('0');
   await page.getByLabel('Generation seed',{exact:true}).fill('0');const final=await preview();expect(final.candidateHash).toBe(first.candidateHash);
   const create=page.getByRole('button',{name:'Create world',exact:true});await create.click();await page.keyboard.press('Escape');await expect(create).toBeFocused();await expect(overview).toBeVisible();
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
   await create.click();const sent=page.waitForRequest(r=>r.url().includes('/worlds/empty/commit'));
   await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
   expect((await sent).postDataJSON()).toMatchObject({id:final.id,candidateHash:final.candidateHash,requestHash:final.requestHash});
   await ready(page);await expect(canvas).toHaveAttribute('data-instance','generation-ux');
-  const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
+  const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);await assertExact((await state(page)).terrain.cells.map((c:any)=>c.ground),final.ground,"(await state(page)).terrain.cells.map((c:any)=>c.ground)");
  }finally{await replace(page,original);}
 });
 
@@ -525,11 +529,12 @@ test('generation UX cancellation releases controls immediately and late completi
   releaseSecond();await expect(page.getByTestId('empty-world-preview')).toBeVisible();await expect(preview).toBeEnabled();
   await page.getByLabel('Generation seed',{exact:true}).fill('43');await preview.click();await expect(page.getByTestId('creation-feedback')).toContainText('Another world preview');
   await page.getByRole('button',{name:'Retry preview',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();await expect(page.getByTestId('creation-feedback')).toHaveText('');
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),original,"await(await page.request.get('/api/saves/download')).body()");
  }finally{releaseFirst();releaseSecond();}
 });
 
 for(const change of ['revision','epoch','disconnect','content'] as const)test(`generation UX discards pending results across ${change} changes`,async({page,browser})=>{
+ // transport-test: Disconnect the live socket during a terrain edit.
  let drop=()=>{};await page.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();drop=()=>{server.close();route.close();};});
  await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
  let release=()=>{},seen=false;const held=new Promise<void>(r=>release=r);

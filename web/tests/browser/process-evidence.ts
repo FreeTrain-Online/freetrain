@@ -54,6 +54,7 @@ export async function attachProcessEvidence(
   info: TestInfo,
   directory: string,
   offsets: Map<string, number>,
+  outputDirectory = 'processes',
 ) {
   const files = existsSync(directory) ? readdirSync(directory) : [];
   const active = new Set<string>();
@@ -81,14 +82,14 @@ export async function attachProcessEvidence(
       bytes.length === start &&
       !active.has(name.replace(/\.(stdout|stderr)\.log$/, ''))
     ) continue;
-    const path = info.outputPath('processes', name);
-    mkdirSync(info.outputPath('processes'), { recursive: true });
+    const path = info.outputPath(outputDirectory, name);
+    mkdirSync(info.outputPath(outputDirectory), { recursive: true });
     writeFileSync(path, bytes.subarray(start));
     await info.attach(`process-${name}`, { path, contentType: 'text/plain' });
     manifest.push({ source, path, start, end: bytes.length });
   }
-  const path = info.outputPath('processes', 'association.json');
-  mkdirSync(info.outputPath('processes'), { recursive: true });
+  const path = info.outputPath(outputDirectory, 'association.json');
+  mkdirSync(info.outputPath(outputDirectory), { recursive: true });
   writeFileSync(
     path,
     JSON.stringify(
@@ -108,3 +109,17 @@ export async function attachProcessEvidence(
     contentType: 'application/json',
   });
 }
+
+/** Preserve independently owned capacity processes without changing their lifecycle. */
+export function captureProcess(child: import('node:child_process').ChildProcess, label: string, workerIndex: number) {
+  const directory = processEvidenceDirectory(workerIndex);
+  let evidence = independentEvidence.get(directory);
+  if (!evidence) { evidence = new ProcessEvidence(directory); independentEvidence.set(directory, evidence); }
+  const logs = evidence.start(label, child.spawnfile);
+  child.stdout?.on('data', data => appendFileSync(logs.stdout, data));
+  child.stderr?.on('data', data => appendFileSync(logs.stderr, data));
+  child.on('error', error => logs.event('startup-failed', { error: String(error) }));
+  child.on('exit', (code, signal) => logs.event('exit', { code, signal }));
+  return child;
+}
+const independentEvidence = new Map<string, ProcessEvidence>();

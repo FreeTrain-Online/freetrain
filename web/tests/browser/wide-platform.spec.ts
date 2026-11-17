@@ -1,5 +1,8 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { restartWorldServer } from './session.ts';
+import { assertExact } from './assertions.ts';
 import {readFileSync} from 'node:fs';
-import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
+import { test, expect, type Page } from './fixtures.ts';
 import {ready,canonicalState as state,closePanel,exposeMapPoint} from './browser-helpers.ts';
 test.use({hasTouch:true});
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -28,24 +31,24 @@ for(const ja of [false,true])test(`wide platforms ${ja?'JA narrow touch':'EN key
   const confirm=page.getByRole('button',{name:ja?'広いホームの建設を確定':'Confirm wide platform',exact:true});
   for(const [x,y,z,direction,secondLane] of [[25,25,2,ja?0:2,false],[30,30,4,ja?4:6,true]] as const){
    const before=await save(page),q=await quote(page,ja,x,y,z,direction,secondLane);expect(q.legal,q.reason).toBe(true);expect(q.cost).toBe(z===2?'2000000':'6000000');expect(q.positions).toHaveLength(secondLane?12:8);
-   expect(await save(page)).toEqual(before);await expect(confirm).toBeEnabled();await page.getByRole('button',{name:ja?'ホームのプレビューを表示':'Show platform preview',exact:true}).click();await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-station-ghost-ready','true');
+   await assertExact(await save(page),before,"await save(page)");await expect(confirm).toBeEnabled();await page.getByRole('button',{name:ja?'ホームのプレビューを表示':'Show platform preview',exact:true}).click();await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-station-ghost-ready','true');
    await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-terrain-cut',String(z));
-   await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+   await waitForMapDraw(page);
    await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/wide-platform-${ja?'ja':'en'}-${z}-preview.png`});
    await confirm.click();await expect.poll(async()=>(await state(peer)).mixed?.stationGraph?.platforms.length).toBe(z===2?1:2);
    await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-presentation','ready');
    const p=(await state(page)).mixed.stationGraph.platforms.at(-1);expect(p.hostId).toBe(null);expect(p.roof).toBe(false);expect(p.kind).toBe('wide');expect(p.lane0).toBe(true);expect(p.lane1).toBe(secondLane);expect(p.direction).toBe(direction);
    expect(p.yards.map((y:any)=>y.lane)).toEqual(secondLane?[0,0,0,0,1,1,1,1]:[0,0,0,0]);expect(p.yards.every((y:any)=>!y.roof)).toBe(true);expect((await state(page)).entities.filter((e:any)=>e.id===p.id)).toHaveLength(1);
   }
-  const before=await save(page),occupied=await quote(page,ja,25,25,2,ja?0:2,true);expect(occupied.legal).toBe(false);expect(occupied.reason).toBe('obstacle');await expect(confirm).toBeDisabled();expect(await save(page)).toEqual(before);
-  let s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:before})).ok()).toBe(true);await ready(page,ja?'ja':'en');expect(await save(page)).toEqual(before);
-  await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await page.reload();await peer.reload();await ready(page,ja?'ja':'en');await ready(peer);expect(await save(page)).toEqual(before);
+  const before=await save(page),occupied=await quote(page,ja,25,25,2,ja?0:2,true);expect(occupied.legal).toBe(false);expect(occupied.reason).toBe('obstacle');await expect(confirm).toBeDisabled();await assertExact(await save(page),before,"await save(page)");
+  let s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:before})).ok()).toBe(true);await ready(page,ja?'ja':'en');await assertExact(await save(page),before,"await save(page)");
+  await restartWorldServer(worldServer);expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await page.reload();await peer.reload();await ready(page,ja?'ja':'en');await ready(peer);await assertExact(await save(page),before,"await save(page)");
   await task(page,ja);
   // Pick a visible elevated platform sprite: its opaque source pixels must lead
   // to the platform component inspector, independent of the rail below it.
   await page.getByRole('button',{name:ja?'確認':'Inspect',exact:true}).click();
   await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-presentation','ready');
-  await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+  await waitForMapDraw(page);
   const current=(await state(page)).mixed.stationGraph.platforms.at(-1),yard={location:current.location};
   const frame=catalog.renderRecipes.find((r:any)=>r.id===`system:fat-${current.direction/2%2}`).frames[0],mask=catalog.masks[frame.masks['spring/day']];
   let sample:{x:number;y:number}|undefined;
@@ -58,7 +61,7 @@ for(const ja of [false,true])test(`wide platforms ${ja?'JA narrow touch':'EN key
   for(const [name,value] of [[ja?'ホーム X':'Platform X',30],[ja?'ホーム Y':'Platform Y',30],[ja?'ホームの高さ':'Platform level',4]] as const)await page.getByLabel(name,{exact:true}).fill(String(value));
   await page.locator('.platform-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();
   const removal=page.getByRole('button',{name:ja?'撤去を確定':'Confirm removal',exact:true});await expect(removal).toBeEnabled();await expect(page.getByTestId('platform-cost')).toContainText('¥0');
-  await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();await expect(removal).toBeDisabled();expect(await save(page)).toEqual(before);
+  await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();await expect(removal).toBeDisabled();await assertExact(await save(page),before,"await save(page)");
   await page.locator('.platform-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();await removal.click();
   await expect.poll(async()=>(await state(peer)).mixed.stationGraph.platforms.length).toBe(1);s=await state(page);
   expect(s.mixed.voxels.filter((v:any)=>v.position.z===4&&v.traffic?.rail)).toHaveLength(8);expect(s.mixed.voxels.filter((v:any)=>v.position.z===4&&v.traffic?.platform)).toHaveLength(0);
@@ -72,39 +75,39 @@ for(const ja of [false,true])test(`wide platforms ${ja?'JA narrow touch':'EN key
   await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();
   await page.getByLabel(ja?'始点の高さを自動検出':'Auto-detect start level',{exact:true}).check();
   await page.getByRole('button',{name:ja?'地図でホームの位置を選択':'Pick platform position on map',exact:true}).click();
-  await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+  await waitForMapDraw(page);
   const tile=await page.locator('canvas.world-canvas').evaluate(el=>{const r=el.getBoundingClientRect(),[cx,cy]=el.dataset.camera!.split(',').map(Number),zoom=Number(el.dataset.zoom);return {x:r.x+r.width/2+(16*(30-19+30)+16-cx)*zoom,y:r.y+r.height/2+(8*(30-30+19)-64+8-cy)*zoom};});
   if(ja){const exposed=await exposeMapPoint(page,tile);await page.touchscreen.tap(exposed.x,exposed.y);}else await page.mouse.click(tile.x,tile.y);
   await expect(confirm).toBeEnabled();await confirm.click();await expect.poll(async()=>(await state(peer)).mixed.stationGraph.platforms.length).toBe(2);
-  const rebuilt=(await state(page)).mixed.stationGraph.platforms.at(-1);expect(rebuilt.location).toEqual({x:30,y:30,z:4});expect(rebuilt.yards.map((y:any)=>y.trafficOwnerId).sort()).toEqual(restoredOwners);
+  const rebuilt=(await state(page)).mixed.stationGraph.platforms.at(-1);expect(rebuilt.location).toEqual({x:30,y:30,z:4});await assertExact(rebuilt.yards.map((y:any)=>y.trafficOwnerId).sort(),restoredOwners,"rebuilt.yards.map((y:any)=>y.trafficOwnerId).sort()");
   expect(errors).toEqual([]);
 
  }finally{await context.close();}
 });
-test('platform authority stale quotes late cancel and replacement never publish old confirmations',async({page,browser,baseURL})=>{
+test('platform authority stale quotes late cancel and replacement never publish old confirmations',async({page,browser,baseURL,sessions})=>{
  test.setTimeout(90000);const context=await browser.newContext({baseURL}),peer=await context.newPage(),observerContext=await browser.newContext({baseURL}),observer=await observerContext.newPage();
- let socket:WebSocketRoute|undefined;const replies:any[]=[];await observer.routeWebSocket('**/api/session?*',r=>{socket=r.connectToServer();socket.onMessage(m=>{replies.push(JSON.parse(String(m)));r.send(m);});r.onMessage(m=>socket!.send(m));});
+ const observedSession=await sessions.observe(observer,'observer');
  try{
   await page.goto('/');await ready(page);await empty(page);await ready(page);
   expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);await task(peer);
   expect((await observer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await observer.goto('/');await ready(observer);await expect(observer.getByRole('button',{name:'Stations',exact:true})).toBeDisabled();
-  const q=await quote(peer);const bytes=await save(page);socket!.send(JSON.stringify({type:'command',requestId:'observer-platform',expectedWorldEpoch:q.query.expectedWorldEpoch,payload:{kind:'editWidePlatform',query:q.query,expectedCost:q.cost}}));await expect.poll(()=>replies.find(m=>m.requestId==='observer-platform')?.code).toBe('notAuthorized');expect(await save(page)).toEqual(bytes);
+  const q=await quote(peer);const bytes=await save(page);expect((await observedSession.command({type:'command',requestId:'observer-platform',expectedWorldEpoch:q.query.expectedWorldEpoch,payload:{kind:'editWidePlatform',query:q.query,expectedCost:q.cost}})).code).toBe('notAuthorized');await assertExact(await save(page),bytes,"await save(page)");
   await page.getByRole('button',{name:'Single step',exact:false}).click();await expect.poll(async()=>(await state(peer)).tick).toBe(String(BigInt(q.query.expectedMinute)+1n));const confirm=peer.getByRole('button',{name:'Confirm wide platform',exact:true});await expect(confirm).toBeEnabled();
   let release!:()=>void,seen=false;const held=new Promise<void>(r=>release=r);
   await peer.route('**/api/station/wide-platform/preview?*',async r=>{const response=await r.fetch();seen=true;await held;await r.fulfill({response});});
   await peer.locator('.platform-task form').getByRole('button',{name:'Check placement',exact:true}).click();await expect.poll(()=>seen).toBe(true);
   await peer.getByRole('button',{name:'Cancel preview',exact:true}).click();release();await expect(confirm).toBeDisabled();
   await peer.unroute('**/api/station/wide-platform/preview?*');await quote(peer);await expect(confirm).toBeEnabled();
-  const before=await save(page),s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:before})).ok()).toBe(true);await ready(peer);await expect(peer.locator('.platform-task')).toHaveCount(0);expect(await save(page)).toEqual(before);
+  const before=await save(page),s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:before})).ok()).toBe(true);await ready(peer);await expect(peer.locator('.platform-task')).toHaveCount(0);await assertExact(await save(page),before,"await save(page)");
  }finally{await context.close();await observerContext.close();}
 });
 test('underground wide platform uses the explicit level, source underground quote and cut preview through exact reopen',async({page})=>{
  await page.goto('/');await ready(page);await empty(page);await ready(page);await task(page);
- const before=await save(page),q=await quote(page,false,25,25,1,2,true);expect(q.legal,q.reason).toBe(true);expect(q.cost).toBe('4000000');expect(await save(page)).toEqual(before);
+ const before=await save(page),q=await quote(page,false,25,25,1,2,true);expect(q.legal,q.reason).toBe(true);expect(q.cost).toBe('4000000');await assertExact(await save(page),before,"await save(page)");
  await page.getByRole('button',{name:'Show platform preview',exact:true}).click();await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-terrain-cut','1');await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-station-ghost-ready','true');
- await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+ await waitForMapDraw(page);
  await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/wide-platform-underground-preview.png`});
  await page.getByRole('button',{name:'Confirm wide platform',exact:true}).click();await expect.poll(async()=>(await state(page)).mixed?.stationGraph?.platforms.length).toBe(1);
  const s=await state(page);expect(s.mixed.stationGraph.platforms[0].location.z).toBe(1);expect(s.mixed.voxels.every((v:any)=>v.position.z===1)).toBe(true);expect(s.mixed.stationGraph.platforms[0].yards).toHaveLength(8);
- const bytes=await save(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);await ready(page);expect(await save(page)).toEqual(bytes);
+ const bytes=await save(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);await ready(page);await assertExact(await save(page),bytes,"await save(page)");
 });

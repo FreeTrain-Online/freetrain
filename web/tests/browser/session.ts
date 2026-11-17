@@ -1,11 +1,25 @@
-import { expect, type Page, type TestInfo, type WebSocketRoute } from '@playwright/test';
-import type { Command, Join, SessionOffer, Snapshot, WireMessage } from '../../src/generated/contracts.ts';
+import { test, expect, type Page, type TestInfo, type WebSocketRoute } from '@playwright/test';
+import type { Command, Join, Mixed, SessionOffer, Snapshot, WireMessage } from '../../src/generated/contracts.ts';
 import type { TestObservationWindow } from '../../src/lib/test-observation.ts';
 import { assertCanonicalState } from './assertions.ts';
 import type { Receipt, StateTarget } from './session-observation.ts';
 import { canonicalJSON, createObservation, parseMessageValue, reached } from './session-runtime.ts';
 
 const compatibility = 'protocolVersion=11&contentVersion=prototype-content-1&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+export type MixedSnapshot<K extends keyof Mixed = never> = Snapshot & { mixed: Mixed & Required<Pick<Mixed, K>> };
+/** Mixed worlds legitimately omit unrelated domain sections. Require only the
+ * sections a caller will dereference; exact comparisons still visit all fields. */
+export function requireMixedState<K extends keyof Mixed = never>(state: Snapshot | undefined, ...sections: K[]): MixedSnapshot<K> {
+  if (!state?.mixed) throw new Error('Expected a mixed checkpoint');
+  for (const section of sections) {
+    if (state.mixed[section] === undefined) throw new Error(`Expected mixed.${section} in checkpoint ${state.worldEpoch}/${state.revision}/${state.tick}`);
+  }
+  return state as MixedSnapshot<K>;
+}
+export function required<T>(value: T | undefined, description: string): T {
+  if (value === undefined) throw new Error(`Missing ${description} in the checkpoint`);
+  return value;
+}
 export type BootstrapObservation = { kind: 'metadata'; offer: SessionOffer } | { kind: 'snapshot'; join: Join; snapshot: Snapshot };
 export async function sessionBootstrap(page: Page): Promise<BootstrapObservation> {
   const response = await page.request.get(`/api/bootstrap?${compatibility}`);
@@ -16,35 +30,59 @@ export async function sessionBootstrap(page: Page): Promise<BootstrapObservation
   throw new Error(`Unexpected bootstrap ${message.type}`);
 }
 
+export async function restartWorldServer(server: { restart?: () => Promise<void> }) {
+  const restart = server.restart?.bind(server);
+  if (!restart) throw new Error('Checkpoint restart requires a managed world server');
+  await test.step('Restart the checkpoint server', restart);
+}
+
 export class ObservedSession {
   readonly observation = createObservation();
   private socket?: WebSocketRoute;
+  private client?: WebSocketRoute;
   private raw: { message: WireMessage; bytes: number }[] = [];
   private rawBytes = 0;
   private sent: { serial: number; requestId: string }[] = [];
   private serial = 0;
+  private received = 0;
+  private receipts = new Map<string, { serial: number; receipt: Receipt }>();
+  private counts = new Map<WireMessage['type'], number>();
+  private effects: Extract<WireMessage, { type: 'departureBell' }>[] = [];
+  count(type: WireMessage['type']): number { return this.counts.get(type) ?? 0; }
+  get bells(): readonly Extract<WireMessage, { type: 'departureBell' }>[] { return this.effects; }
   constructor(readonly page: Page, readonly peer: string, private info: TestInfo) {}
   /** Raw compact wire ring; never use it as a materialized snapshot. Full payloads
    * live in the managed diagnostics attachments. */
   get messages(): readonly WireMessage[] { return this.raw.map(event => event.message); }
   latest(): Snapshot | undefined { const state = this.observation.latest(); return state && canonicalJSON(state); }
-  async install() {
+  /** Dedicated transport/effect tests may alter delivery while observation still
+   * decodes the original server stream. Feature tests use unmodified delivery. */
+  async install(delivery?: (message: WireMessage, forward: () => void) => void) {
     await this.page.addInitScript(() => { (window as Window & TestObservationWindow).__freetrainObserveApplied = true; });
     await this.page.routeWebSocket('**/api/session?*', route => {
       const generation = this.observation.beginConnection();
+      this.receipts.clear();
       this.sent = [];
       this.raw = []; this.rawBytes = 0;
       const server = this.socket = route.connectToServer();
+      this.client = route;
       server.onMessage(payload => {
         const text = typeof payload === 'string' ? payload : payload.toString('utf8');
         this.observation.enqueue(text, generation);
         // Diagnostic retention is bounded in both count and total bytes.
         try {
           const message = JSON.parse(text) as WireMessage, bytes = Buffer.byteLength(text);
+          this.counts.set(message.type, this.count(message.type) + 1);
+          if (message.type === 'accepted' || message.type === 'rejected') {
+            this.receipts.set(message.requestId, { serial: ++this.received, receipt: message });
+            if (this.receipts.size > 256) this.receipts.delete(this.receipts.keys().next().value!);
+          }
+          if (message.type === 'departureBell') { this.effects.push(message); if (this.effects.length > 64) this.effects.shift(); }
           if (bytes <= 512 * 1024) { this.raw.push({ message, bytes }); this.rawBytes += bytes; }
           while (this.raw.length > 32 || this.rawBytes > 512 * 1024) this.rawBytes -= this.raw.shift()!.bytes;
         } catch { /* The production parser records the fatal diagnostic. */ }
-        route.send(payload);
+        if (delivery) delivery(JSON.parse(text) as WireMessage, () => route.send(payload));
+        else route.send(payload);
       });
       route.onMessage(payload => {
         try {
@@ -85,21 +123,34 @@ export class ObservedSession {
     this.observation.check();
     if (!this.socket || !this.observation.ready) throw new Error('Session is not ready for a command');
     // Request correlation is registered before send; it does not depend on history offsets.
-    const receipt = this.waitReceipt(command.requestId);
+    const baseline = this.received;
+    const receipt = this.wait(() => this.receipts.get(command.requestId), value => !!value && value.serial > baseline,
+      `Missing command receipt requestId=${command.requestId}`);
+    receipt.catch(() => {});
     this.socket.send(JSON.stringify(command));
-    return receipt;
+    const response = (await receipt)!.receipt;
+    await this.observation.settled();
+    if (response.type === 'accepted') await this.publication(response);
+    return response;
   }
   async acceptedAction(action: () => Promise<unknown>): Promise<StateTarget> {
+    const receipt = await this.actionReceipt(action);
+    if (receipt.type === 'rejected') throw new Error(`Command rejection: peer=${this.peer} requestId=${receipt.requestId} code=${receipt.code}`);
+    await this.publication(receipt);
+    return receipt;
+  }
+  async actionReceipt(action: () => Promise<unknown>): Promise<Receipt> {
     const baseline = this.serial;
     // Capture command identity before the UI action can produce a receipt.
     const command = this.wait(() => this.sent.find(item => item.serial > baseline), Boolean, 'UI action sent no command');
     // Catch the pre-registered wait if the UI action itself fails.
     command.catch(() => {});
     await action();
-    const receipt = await this.waitReceipt((await command)!.requestId);
-    if (receipt.type === 'rejected') throw new Error(`Command rejection: peer=${this.peer} requestId=${receipt.requestId} code=${receipt.code}`);
-    await this.publication(receipt);
-    return receipt;
+    return this.waitReceipt((await command)!.requestId);
+  }
+  injectWire(message: WireMessage) {
+    if (!this.client) throw new Error('No connected browser for transport injection');
+    this.client.send(JSON.stringify(message));
   }
   async converge(target: Snapshot, phase: string, timeout = 15000): Promise<void> {
     const wire = await this.publication(target);
@@ -124,10 +175,10 @@ export class ObservedSession {
 export class SessionFixture {
   private sessions = new Map<Page, ObservedSession>();
   constructor(private info: TestInfo) {}
-  async observe(page: Page, peer = `peer-${this.sessions.size}`): Promise<ObservedSession> {
+  async observe(page: Page, peer = `peer-${this.sessions.size}`, delivery?: (message: WireMessage, forward: () => void) => void): Promise<ObservedSession> {
     const existing = this.sessions.get(page); if (existing) return existing;
     const session = new ObservedSession(page, peer, this.info);
-    this.sessions.set(page, session); await session.install(); return session;
+    this.sessions.set(page, session); await session.install(delivery); return session;
   }
   async converge(target: Snapshot, phase: string, peers = [...this.sessions.values()]) {
     if (!target.paused) throw new Error(`Exact checkpoint requires a paused scene: ${phase}`);
@@ -141,6 +192,13 @@ export class SessionFixture {
     // field, after reaching the HTTP watermark; never compare mixed encodings.
     const target = bootstrap.kind === 'snapshot' ? await owner.publication(bootstrap.snapshot) : await owner.ready();
     return this.converge(target, phase);
+  }
+  async assertCheckpoint(owner: ObservedSession, select: (state: Snapshot) => unknown, expected: unknown, phase: string) {
+    return test.step(phase, async () => {
+      const target = await this.checkpoint(owner, phase);
+      await assertCanonicalState(select(target), expected, { ...target, phase, peer: owner.peer }, this.info);
+      return target;
+    });
   }
   async replaceSave(owner: ObservedSession, data: Buffer, phase: string) {
     const before = await owner.ready();
@@ -158,8 +216,7 @@ export class SessionFixture {
     return this.converge(target, phase);
   }
   async restartCheckpoint(server: { restart?: () => Promise<void> }, peers: readonly { session: ObservedSession; secret?: string }[], phase: string) {
-    if (!server.restart) throw new Error('Checkpoint restart requires a managed world server');
-    await server.restart();
+    await restartWorldServer(server);
     for (const { session, secret = '' } of peers) {
       const response = await session.page.request.post('/api/access', { data: { secret } });
       if (!response.ok()) throw new Error(`Restart authentication HTTP ${response.status()}`);

@@ -1,3 +1,5 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,extended,test,type Page } from './fixtures.ts';
 import { closePanel,openPanel,ready,canonicalState as state } from './browser-helpers.ts';
@@ -21,8 +23,8 @@ async function track(p:Page){
 async function locale(p:Page,ja:boolean){await openPanel(p,'settings',ja?'en':'ja');await p.getByLabel(ja?'Language':'言語',{exact:true}).selectOption(ja?'ja':'en');await closePanel(p);await ready(p,ja?'ja':'en');}
 async function click(p:Page,x:number,y:number,z:number){const q=await p.locator('canvas').evaluate((el,a)=>{const c=el as HTMLCanvasElement,r=c.getBoundingClientRect(),[cx,cy]=c.dataset.camera!.split(',').map(Number),zoom=Number(c.dataset.zoom);return{x:r.x+r.width/2+(16*(a.x+a.y-20)+16-cx)*zoom,y:r.y+r.height/2+(8*(-a.x+a.y+20)-16*a.z+8-cy)*zoom};},{x,y,z});await p.mouse.click(q.x,q.y);}
 async function canvasHash(p:Page){
+ await waitForMapDraw(p);
  return p.locator('canvas').evaluate(async el=>{
-  await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
   const blob=await new Promise<Blob>(resolve=>(el as HTMLCanvasElement).toBlob(b=>resolve(b!)));
   return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer())),v=>v.toString(16).padStart(2,'0')).join('');
  });
@@ -47,23 +49,23 @@ for(const ja of [false,true])test(`speed-limit level sections, three speeds, ove
   const t=text(ja),canvas=page.locator('canvas');await canvas.evaluate(el=>el.dataset.instance='speed-canvas');const camera=await canvas.getAttribute('data-camera'),bare=await state(page);
   await page.getByRole('button',{name:t.task,exact:true}).click();
   for(const speed of ['low','medium','fast'] as const){
-   await page.getByLabel(t.speed,{exact:true}).selectOption(speed);const before=await save(page);await range(page,ja);await expect(page.getByRole('button',{name:t.confirm,exact:true})).toBeEnabled();expect(await save(page)).toEqual(before);
+   await page.getByLabel(t.speed,{exact:true}).selectOption(speed);const before=await save(page);await range(page,ja);await expect(page.getByRole('button',{name:t.confirm,exact:true})).toBeEnabled();await assertExact(await save(page),before,"await save(page)");
    if(ja&&!extended()){const primary=page.getByRole('button',{name:t.confirm,exact:true});await expect(primary).toBeInViewport();await primary.focus();await page.keyboard.press('Enter');await expect(page.getByTestId('rail-route')).toHaveCount(0);}else await confirm(page,ja);
-   const built=await state(page);expect(built.mixed.speedLimits[speed]).toHaveLength(4);expect(built.mixed.voxels).toEqual(bare.mixed.voxels);expect(built.mixed.accounts).toEqual(bare.mixed.accounts);expect(built.tick).toBe(bare.tick);
+   const built=await state(page);expect(built.mixed.speedLimits[speed]).toHaveLength(4);await assertExact(built.mixed.voxels,bare.mixed.voxels,"built.mixed.voxels");await assertExact(built.mixed.accounts,bare.mixed.accounts,"built.mixed.accounts");expect(built.tick).toBe(bare.tick);
    if(ja&&!extended()){await expect(canvas).toHaveAttribute('data-presentation','ready');expect(await sourcePixels(page,speed,{x:30,y:27,z:1})).toBeGreaterThan(8);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);return;}
    await expect.poll(async()=>JSON.stringify((await state(peer)).mixed)).toBe(JSON.stringify(built.mixed));expect(await sourcePixels(page,speed,{x:30,y:27,z:1})).toBeGreaterThan(8);
    await range(page,ja);await expect(page.getByRole('button',{name:t.confirm,exact:true})).toBeDisabled();await expect(page.getByTestId('speed-membership')).toContainText(ja?{low:'低速',medium:'中速',fast:'高速'}[speed]:{low:'Low',medium:'Medium',fast:'Fast'}[speed]);
    await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();
    const shown=await canvasHash(page),saved=await save(page);
-   await openPanel(page,'view',ja?'ja':'en');await page.getByLabel(ja?'速度制限を表示':'Show speed limits',{exact:true}).uncheck();await expect(canvas).toHaveAttribute('data-presentation','ready');await expect.poll(()=>canvasHash(page)).not.toBe(shown);expect(await save(page)).toEqual(saved);
+   await openPanel(page,'view',ja?'ja':'en');await page.getByLabel(ja?'速度制限を表示':'Show speed limits',{exact:true}).uncheck();await expect(canvas).toHaveAttribute('data-presentation','ready');await expect.poll(()=>canvasHash(page)).not.toBe(shown);await assertExact(await save(page),saved,"await save(page)");
    await page.getByLabel(ja?'速度制限を表示':'Show speed limits',{exact:true}).check();await closePanel(page);await expect.poll(()=>canvasHash(page)).toBe(shown);
 
-   await replace(page,saved,ja);expect(await save(page)).toEqual(saved);await page.reload();await ready(page,ja?'ja':'en');expect(await save(page)).toEqual(saved);
+   await replace(page,saved,ja);await assertExact(await save(page),saved,"await save(page)");await page.reload();await ready(page,ja?'ja':'en');await assertExact(await save(page),saved,"await save(page)");
    await page.getByRole('button',{name:t.task,exact:true}).click();await page.getByLabel(t.action,{exact:true}).selectOption('remove');await range(page,ja);await confirm(page,ja);expect((await state(page)).mixed.speedLimits).toBeUndefined();
    await range(page,ja);await expect(page.getByTestId('speed-membership')).toContainText(ja?'制限なし':'No limit');await expect(page.getByRole('button',{name:t.confirm,exact:true})).toBeEnabled();await page.getByLabel(t.action,{exact:true}).selectOption('lay');
   }
   // Separate authored world never inherits membership; restoring a limited world restores exactly.
-  await range(page,ja);await confirm(page,ja);const limited=await save(page);await empty(page,ja);expect((await state(page)).mixed).toBeUndefined();await replace(page,limited,ja);expect(await save(page)).toEqual(limited);
+  await range(page,ja);await confirm(page,ja);const limited=await save(page);await empty(page,ja);expect((await state(page)).mixed).toBeUndefined();await replace(page,limited,ja);await assertExact(await save(page),limited,"await save(page)");
  }finally{await peer.close();await replace(page,original,ja);}
 });
 test('speed-limit four-position slopes in all cardinal directions, wrong-direction rejection, member removal and demolition cleanup',async({page})=>{
@@ -74,8 +76,8 @@ test('speed-limit four-position slopes in all cardinal directions, wrong-directi
    for(const [name,n] of [['Slope X',30],['Slope Y',27],['Base / selected level',1]] as const)await page.getByLabel(name,{exact:true}).fill(String(n));
    await page.getByLabel('Uphill direction',{exact:true}).selectOption(String(d));await page.getByRole('button',{name:'Preview slope',exact:true}).click();await page.getByRole('button',{name:'Confirm slope change',exact:true}).click();await expect(page.getByTestId('slope-base')).toHaveCount(0);
    await page.getByRole('button',{name:'Speed limits',exact:true}).click();await page.getByLabel('Section shape',{exact:true}).selectOption({label:'Slope section'});await page.getByLabel('Uphill direction',{exact:true}).selectOption(String(d));await range(page);await confirm(page);
-   const built=await state(page),dx=[0,1,0,-1][d/2],dy=[-1,0,1,0][d/2];expect(built.mixed.speedLimits.low).toEqual([0,1,2,3].map(i=>({x:30+i*dx,y:27+i*dy,z:1+Math.floor(i/2)})));
-   const saved=await save(page);await replace(page,saved);expect(await save(page)).toEqual(saved);await page.getByRole('button',{name:'Speed limits',exact:true}).click();await page.getByLabel('Section shape',{exact:true}).selectOption({label:'Slope section'});await page.getByLabel('Track action',{exact:true}).selectOption('remove');await page.getByLabel('Uphill direction',{exact:true}).selectOption(String((d+2)%8));await range(page,false,[30+3*dx,27+3*dy,2]);await expect(page.getByRole('button',{name:'Confirm speed-limit change',exact:true})).toBeDisabled();
+   const built=await state(page),dx=[0,1,0,-1][d/2],dy=[-1,0,1,0][d/2];await assertExact(built.mixed.speedLimits.low,[0,1,2,3].map(i=>({x:30+i*dx,y:27+i*dy,z:1+Math.floor(i/2)})),"built.mixed.speedLimits.low");
+   const saved=await save(page);await replace(page,saved);await assertExact(await save(page),saved,"await save(page)");await page.getByRole('button',{name:'Speed limits',exact:true}).click();await page.getByLabel('Section shape',{exact:true}).selectOption({label:'Slope section'});await page.getByLabel('Track action',{exact:true}).selectOption('remove');await page.getByLabel('Uphill direction',{exact:true}).selectOption(String((d+2)%8));await range(page,false,[30+3*dx,27+3*dy,2]);await expect(page.getByRole('button',{name:'Confirm speed-limit change',exact:true})).toBeDisabled();
    await page.getByLabel('Uphill direction',{exact:true}).selectOption(String(d));await range(page,false,[30+3*dx,27+3*dy,2]);await confirm(page);expect((await state(page)).mixed.speedLimits).toBeUndefined();
    await page.getByLabel('Track action',{exact:true}).selectOption('lay');await range(page);await confirm(page);
    await page.getByRole('button',{name:'Slope',exact:true}).click();await page.getByLabel('Track action',{exact:true}).selectOption('remove');for(const [name,n] of [['Slope X',30],['Slope Y',27],['Base / selected level',1]] as const)await page.getByLabel(name,{exact:true}).fill(String(n));await page.getByLabel('Uphill direction',{exact:true}).selectOption(String(d));await page.getByRole('button',{name:'Preview slope',exact:true}).click();await page.getByRole('button',{name:'Confirm slope change',exact:true}).click();await expect(page.getByTestId('slope-base')).toHaveCount(0);expect((await state(page)).mixed.speedLimits).toBeUndefined();
@@ -85,8 +87,8 @@ test('speed-limit four-position slopes in all cardinal directions, wrong-directi
 test('speed-limit L/Escape, map selection, stale quote, Observer and narrow controls',async({page,browser})=>{
  await page.goto('/');await ready(page);const original=await save(page),viewer=await browser.newPage();
  try{
-  await empty(page);const untouched=await save(page);await page.getByRole('button',{name:'Speed limits',exact:true}).click();await page.getByLabel('Track action',{exact:true}).selectOption('remove');await range(page);await confirm(page);expect((await state(page)).mixed).toBeUndefined();expect(await save(page)).toEqual(untouched);await track(page);const canvas=page.locator('canvas'),before=await save(page),camera=await canvas.getAttribute('data-camera');await canvas.focus();await page.keyboard.press('l');await expect(page.getByRole('button',{name:'Speed limits',exact:true})).toHaveAttribute('aria-pressed','true');
-  await click(page,30,27,1);await click(page,33,27,1);await expect(page.getByRole('button',{name:'Confirm speed-limit change',exact:true})).toBeEnabled();await canvas.focus();await page.keyboard.press('Escape');await expect(page.getByTestId('rail-route')).toHaveCount(0);expect(await save(page)).toEqual(before);await expect(canvas).toHaveAttribute('data-camera',camera!);
+  await empty(page);const untouched=await save(page);await page.getByRole('button',{name:'Speed limits',exact:true}).click();await page.getByLabel('Track action',{exact:true}).selectOption('remove');await range(page);await confirm(page);expect((await state(page)).mixed).toBeUndefined();await assertExact(await save(page),untouched,"await save(page)");await track(page);const canvas=page.locator('canvas'),before=await save(page),camera=await canvas.getAttribute('data-camera');await canvas.focus();await page.keyboard.press('l');await expect(page.getByRole('button',{name:'Speed limits',exact:true})).toHaveAttribute('aria-pressed','true');
+  await click(page,30,27,1);await click(page,33,27,1);await expect(page.getByRole('button',{name:'Confirm speed-limit change',exact:true})).toBeEnabled();await canvas.focus();await page.keyboard.press('Escape');await expect(page.getByTestId('rail-route')).toHaveCount(0);await assertExact(await save(page),before,"await save(page)");await expect(canvas).toHaveAttribute('data-camera',camera!);
   await range(page);const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:before})).ok()).toBe(true);await ready(page);await expect(page.getByTestId('rail-route')).toHaveCount(0);
   await page.getByRole('button',{name:'Speed limits',exact:true}).click();await page.setViewportSize({width:430,height:850});await range(page);await expect(page.getByRole('button',{name:'Confirm speed-limit change',exact:true})).toBeEnabled();
   expect((await viewer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await viewer.goto('/');await ready(viewer);await expect(viewer.getByRole('button',{name:'Speed limits',exact:true})).toBeDisabled();

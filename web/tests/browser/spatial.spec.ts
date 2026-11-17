@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,test } from './fixtures.ts';
 import { bootstrap,clickTile,ready,worldReplacementFixture } from './browser-helpers.ts';
@@ -26,7 +27,7 @@ test('aligned targets use server-checked geometry without spending or changing t
   await expect(page.getByTestId('preview-heading')).toHaveText('Direction: South · Distance in cells: 5');
   await expect(canvas).toHaveAttribute('data-instance','spatial-preserved');
 
-  expect(await bootstrap(page)).toEqual(before);
+  await assertExact(await bootstrap(page),before,"await bootstrap(page)");
   await page.getByRole('button',{name:'Cancel preview',exact:true}).click();
   await expect(page.getByTestId('snap-anchor')).toHaveCount(0);
   await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeDisabled();
@@ -59,7 +60,7 @@ test('client/server geometry disagreement blocks confirmation and preserves the 
   await page.getByRole('button',{name:'Build track',exact:true}).click();await clickTile(page,{x:22,y:16,z:1});
   await expect(page.getByTestId('geometry-status')).toContainText('could not be checked');
   await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeDisabled();
-  expect(await bootstrap(page)).toEqual(before);
+  await assertExact(await bootstrap(page),before,"await bootstrap(page)");
 });
 
 test('an unrecognized required pack blocks reveal at the compatibility gate',async({page})=>{

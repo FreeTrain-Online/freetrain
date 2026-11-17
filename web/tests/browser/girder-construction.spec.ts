@@ -1,3 +1,5 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,extended,test,type Browser,type Page } from './fixtures.ts';
 import { sourcePixelCounts } from './pixel-helpers.ts';
@@ -34,7 +36,7 @@ test('bare-ground map picks create an isolated elevated viaduct and changing its
   await expect(page.getByTestId('rail-status')).toContainText('route is legal');
   await expect(page.getByLabel('Track level',{exact:true})).toHaveValue('2');
   const confirmButton=page.getByRole('button',{name:'Confirm girder change',exact:true});
-  await expect(confirmButton).toBeEnabled();expect(await save(page)).toEqual(before);
+  await expect(confirmButton).toBeEnabled();await assertExact(await save(page),before,"await save(page)");
   // Coordinate entry also chooses clearance without a slope or an existing railway.
   await page.getByRole('button',{name:'Cancel preview',exact:true}).click();
   for(const [label,value] of [['Start X',30],['Start Y',27],['End X',34],['End Y',27]] as const)await page.getByLabel(label,{exact:true}).fill(String(value));
@@ -59,14 +61,14 @@ test('all eight girder directions retain exact source art, default piers, actual
   for(const [x,y,variants] of [[30,23,[3,3,3,3,3]],[34,23,[1,1,1,1,1]],[34,27,[0,0,0,0,0]],[34,31,[2,2,2,2,2]],[30,31,[3,3,3,3,3]],[26,31,[1,1,1,1,1]],[26,27,[0,0,0,0,0]],[26,23,[2,2,2,2,2]]] as const){
    await empty(page);await page.getByRole('button',{name:'Girder viaduct',exact:true}).click();const before=await save(page);
    await target(page,[30,27],[x,y]);await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-cost')).toContainText('90,000,000');
-   expect(await save(page)).toEqual(before);
+   await assertExact(await save(page),before,"await save(page)");
    await confirm(page);const s=await state(page),rails=s.mixed.voxels.filter((v:any)=>v.traffic?.rail),piers=s.mixed.voxels.filter((v:any)=>v.kind==='pier');
    const dx=Math.sign(x-30),dy=Math.sign(y-27);expect(Array.from({length:5},(_,i)=>rails.find((v:any)=>v.position.x===30+i*dx&&v.position.y===27+i*dy).traffic.rail.variant)).toEqual(variants);
    expect(piers).toHaveLength(10);expect(rails.every((v:any)=>v.traffic.rail.definition.recipeId===girder)).toBe(true);
    expect((await pixels(page,rails)).every(n=>n>10)).toBe(true);expect((await pixels(page,piers)).some(n=>n>10)).toBe(true);
 
    if(extended()||x===30&&y===23){
-    const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);
+    const captured=await save(page);await replace(page,captured);await assertExact(await save(page),captured,"await save(page)");
     await cut(page,2);
     expect((await pixels(page,(await state(page)).mixed.voxels.filter((v:any)=>v.kind==='pier'))).some(n=>n>10)).toBe(true);
     await cut(page,5);await page.getByRole('button',{name:'Girder viaduct',exact:true}).click();await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,[30,27],[x,y]);
@@ -84,12 +86,12 @@ test('map picks, ground rejection, snapped diagonal, cancellation and two-peer p
   const canvas=page.locator('canvas'),before=await save(page);
   await page.getByLabel('Track level',{exact:true}).fill('1');
   await click(page,30,27,1);await click(page,31,27,1);await expect(page.getByTestId('rail-status')).toContainText('above its local ground');
-  await expect(page.getByRole('button',{name:'Confirm girder change',exact:true})).toBeDisabled();expect(await save(page)).toEqual(before);
+  await expect(page.getByRole('button',{name:'Confirm girder change',exact:true})).toBeDisabled();await assertExact(await save(page),before,"await save(page)");
   await page.getByLabel('Track level',{exact:true}).fill('3');await target(page,[30,27],[34,29]);
   await expect(page.getByTestId('rail-route')).toContainText('30, 27, 3 → 34, 31, 3');
-  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();expect(await save(page)).toEqual(before);
+  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();await assertExact(await save(page),before,"await save(page)");
   await canvas.evaluate(el=>(el as any).__girderIdentity=true);await target(page,[30,27],[34,29]);await confirm(page);
-  await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');expect(await state(peer)).toEqual(await state(page));expect(await canvas.evaluate(el=>(el as any).__girderIdentity)).toBe(true);
+  await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');await assertExact(await state(peer),await state(page),"await state(peer)");expect(await canvas.evaluate(el=>(el as any).__girderIdentity)).toBe(true);
   const captured=await save(page);await target(page,[30,27],[34,29]);await expect(page.getByTestId('rail-cost')).toContainText('90,000,000');await confirm(page);
   expect((await state(page)).mixed.accounts.transactions).toHaveLength(2);
   await replace(page,captured);await page.getByRole('button',{name:'Girder viaduct',exact:true}).click();await target(page,[30,27],[31,27],2);
@@ -115,7 +117,7 @@ test('straight and compatible junction identities survive, curves and incompatib
    if(legal){
     await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-cost')).toContainText('72,000,000');await confirm(page);
     const awaitState=await state(page);expect(old.every((v:any)=>(awaitState.mixed.voxels as any[]).some((n:any)=>JSON.stringify(v)===JSON.stringify(n)))).toBe(true);
-   }else{await expect(page.getByRole('button',{name:'Confirm girder change',exact:true})).toBeDisabled();expect(await save(page)).toEqual(before);}
+   }else{await expect(page.getByRole('button',{name:'Confirm girder change',exact:true})).toBeDisabled();await assertExact(await save(page),before,"await save(page)");}
   }
   await replace(page,base);await page.getByRole('button',{name:'Girder viaduct',exact:true}).click();await target(page,[30,27],[32,27],4);
   await expect(page.getByTestId('rail-cost')).toContainText('New piers: 0');await confirm(page);
@@ -136,7 +138,7 @@ test('Japanese narrow DPR2 girder task retains costs, keyboard shortcut, cancel 
   await expect(page.getByRole('button',{name:'ガード高架の変更を確定',exact:true})).toHaveClass('primary');
   await page.getByLabel('始点 X',{exact:true}).focus();await page.keyboard.press('Enter');
   await expect(page.getByTestId('rail-route')).toHaveCount(0);await expect(page.locator('.command-feedback')).toContainText('サーバーで確定');
-  const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);
+  const captured=await save(page);await replace(page,captured);await assertExact(await save(page),captured,"await save(page)");
  }finally{await replace(page,original);await ctx.close();}
 });
 
@@ -144,6 +146,7 @@ async function wire(browser:Browser,q:any,secret?:string,duplicate=false){
  const p=await browser.newPage();let finish!:(m:any)=>void;const receipt=new Promise<any>(r=>finish=r);
  try{
   if(secret)expect((await p.request.post('/api/access',{data:{secret}})).ok()).toBe(true);
+ // transport-test: Duplicate construction receipts to test replay behavior.
   await p.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();let n=0;
    server.onMessage(message=>{const m=JSON.parse(String(message));route.send(message);
     if(m.type==='join'){const c=JSON.stringify({type:'command',requestId:'girder-receipt',expectedWorldEpoch:q.expectedWorldEpoch,payload:{kind:'editRailway',query:q}});server.send(c);if(duplicate)server.send(c);}
@@ -161,9 +164,9 @@ test('late girder previews cannot replace edited drafts, Observer commits reject
   await empty(page);await page.getByRole('button',{name:'Girder viaduct',exact:true}).click();
   let delayed=false;const held=new Promise<void>(resolve=>release=resolve);
   await page.route('**/api/railway/preview?*',async route=>{const response=await route.fetch();if(!delayed){delayed=true;await held;}await route.fulfill({response});});
-  await target(page);await expect.poll(()=>delayed).toBe(true);await page.getByLabel('End X',{exact:true}).fill('35');release();await page.unrouteAll({behavior:'wait'});await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));await expect(page.getByRole('button',{name:'Confirm girder change',exact:true})).toBeDisabled();
+  await target(page);await expect.poll(()=>delayed).toBe(true);await page.getByLabel('End X',{exact:true}).fill('35');release();await page.unrouteAll({behavior:'wait'});await waitForMapDraw(page);await expect(page.getByRole('button',{name:'Confirm girder change',exact:true})).toBeDisabled();
   await target(page);const s=await state(page),q={expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.terrain.geometryRevision,expectedContentVersion:s.contentVersion,from:{x:30,y:27,z:3},to:{x:34,y:27,z:3},action:'lay',routing:'closest',infrastructure:'girder'};
-  const before=await save(page);expect((await wire(browser,q,'observer-test')).code).toBe('notAuthorized');expect(await save(page)).toEqual(before);
+  const before=await save(page);expect((await wire(browser,q,'observer-test')).code).toBe('notAuthorized');await assertExact(await save(page),before,"await save(page)");
   expect((await wire(browser,q,undefined,true)).type).toBe('accepted');await expect(page.getByTestId('rail-status')).toContainText('changed');expect((await state(page)).mixed.accounts.transactions).toHaveLength(1);
   expect((await wire(browser,q)).code).toBe('staleRevision');
  }finally{release();await replace(page,original);}

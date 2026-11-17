@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,extended,test,type Page } from './fixtures.ts';
 import { sourcePixelCounts } from './pixel-helpers.ts';
@@ -30,12 +31,12 @@ for(const ja of [false,true])test(`stationary source lifecycle, detached preview
   const selector=page.locator('#building-catalog .catalog');await expect(selector.locator('.catalog-item')).toHaveCount(9);await expect(selector.locator('[data-catalog-variant]')).toHaveCount(54);
   const tall=types.find((t:any)=>t.height===2);await selector.getByRole('button',{name:`${ja?tall.groupJa:tall.groupEn} · ${tall.variant}`,exact:true}).click();
   await expect(page.locator('.track-task canvas')).toHaveCount(0);await expect(page.locator('#building-catalog .catalog-active img')).toBeVisible();
-  const before=await save(page);await target(page,ja);const confirm=page.getByRole('button',{name:ja?'アクセサリの操作を確定':'Confirm accessory action',exact:true});await expect(confirm).toBeEnabled();await expect(page.getByTestId('rail-cost')).toContainText('0');expect(await save(page)).toEqual(before);
+  const before=await save(page);await target(page,ja);const confirm=page.getByRole('button',{name:ja?'アクセサリの操作を確定':'Confirm accessory action',exact:true});await expect(confirm).toBeEnabled();await expect(page.getByTestId('rail-cost')).toContainText('0');await assertExact(await save(page),before,"await save(page)");
   if(ja&&!extended()){await expect(confirm).toBeInViewport();await confirm.focus();await page.keyboard.press('Enter');}else await confirm.click();
   await expect(page.getByTestId('rail-route')).toHaveCount(0);let built=await state(page);expect(built.mixed.voxels).toHaveLength(2);expect(built.mixed.voxels.every((v:any)=>v.construction.state===0)).toBe(true);expect(built.mixed.accounts.transactions).toHaveLength(0);
   if(ja&&!extended()){expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);return;}
   await expect.poll(async()=>JSON.stringify((await state(peer)).mixed)).toBe(JSON.stringify(built.mixed));
-  const bytes=await save(page);await replace(page,bytes);expect(await save(page)).toEqual(bytes);await tool.click();
+  const bytes=await save(page);await replace(page,bytes);await assertExact(await save(page),bytes,"await save(page)");await tool.click();
   await page.getByRole('button',{name:ja?'運転':'Run',exact:false}).click();
   await expect.poll(async()=>(await state(page)).mixed.voxels.some((v:any)=>v.construction?.state>0),{timeout:20000}).toBe(true);
   await page.getByRole('button',{name:ja?'一時停止':'Pause',exact:false}).click();await expect(map(page)).toHaveAttribute('data-presentation','ready');
@@ -60,7 +61,7 @@ test('all 54 completed variants form a live source-art gallery, with actual-type
  test.setTimeout(120_000);await page.goto('/');await ready(page);const original=await save(page),viewer=await browser.newPage();
  try{
   await empty(page);const fixture=gallery(JSON.parse((await save(page)).toString()));await replace(page,Buffer.from(JSON.stringify(fixture)));await expect(map(page)).toHaveAttribute('data-presentation','ready');
-  const saved=await save(page);await replace(page,saved);expect(await save(page)).toEqual(saved);
+  const saved=await save(page);await replace(page,saved);await assertExact(await save(page),saved,"await save(page)");
   // Verify visible opaque samples against each prepared source rectangle on the actual world canvas.
   const counts=await sourcePixelCounts(page,catalog,fixture.spatial.entities,'stationary');
   expect(counts).toHaveLength(54);for(const n of counts)expect(n).toBeGreaterThan(2);
@@ -76,7 +77,7 @@ test('all 54 completed variants form a live source-art gallery, with actual-type
   const after=await state(page);expect(after.mixed.voxels.some((v:any)=>v.ownerId===tall.id)).toBe(false);expect(after.mixed.accounts.transactions[0].genre).toBe('{2A666F1A-9F40-4F67-98F4-DEAC1E55296D}');
   await page.setViewportSize({width:1280,height:900});await page.getByLabel('Track action',{exact:true}).selectOption('lay');await page.getByLabel('Auto-detect start level',{exact:true}).check();
   const point=await map(page).evaluate(el=>{const c=el as HTMLCanvasElement,r=c.getBoundingClientRect(),[cx,cy]=c.dataset.camera!.split(',').map(Number),zoom=Number(c.dataset.zoom);return{x:r.x+r.width/2+(16*(30+27-20)+16-cx)*zoom,y:r.y+r.height/2+(8*(-30+27+20)-16+8-cy)*zoom};});
-  const unchanged=await save(page);await page.mouse.click(point.x,point.y);await expect(confirm).toBeEnabled();await map(page).focus();await page.keyboard.press('Escape');await expect(page.getByTestId('rail-route')).toHaveCount(0);expect(await save(page)).toEqual(unchanged);
+  const unchanged=await save(page);await page.mouse.click(point.x,point.y);await expect(confirm).toBeEnabled();await map(page).focus();await page.keyboard.press('Escape');await expect(page.getByTestId('rail-route')).toHaveCount(0);await assertExact(await save(page),unchanged,"await save(page)");
   expect((await viewer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await viewer.goto('/');await ready(viewer);await expect(viewer.getByRole('button',{name:'Railway accessories',exact:true})).toBeDisabled();
  }finally{await viewer.close();await replace(page,original);}
 });

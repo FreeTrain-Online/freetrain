@@ -14,6 +14,7 @@ test('cold Run and resume fill once, then move continuously through startup deli
  expect(uploaded.ok(),await uploaded.text()).toBe(true);
  const publications:{time:number;tick:string;steps:number;moves:number[]}[]=[];
  let stalled=0;
+ // transport-test: Delay ordered movement publications to measure rendering under delivery stalls.
  await page.routeWebSocket('**/api/session?*',route=>{
   const server=route.connectToServer();let delivery=Promise.resolve();
   server.onMessage(message=>{
@@ -85,6 +86,7 @@ test('running speed changes keep visible poses and settle after one refill in bo
  const uploaded=await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:JSON.stringify(save)});
  expect(uploaded.ok(),await uploaded.text()).toBe(true);
  let stalled=2;
+ // transport-test: Delay ordered movement publications to measure rendering under delivery stalls.
  await page.routeWebSocket('**/api/session?*',route=>{
   const server=route.connectToServer();let delivery=Promise.resolve();
   server.onMessage(message=>{

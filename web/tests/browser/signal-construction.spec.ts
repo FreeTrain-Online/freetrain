@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,extended,test,type Page } from './fixtures.ts';
 import { sourcePixelCounts } from './pixel-helpers.ts';
@@ -25,21 +26,21 @@ for(const ja of [false,true])test(`signal types, directions, replacement, restor
   for(const type of ja&&!extended()?types.slice(0,1):types)for(const d of ja&&!extended()?[2]:[0,2,4,6]){
    await page.getByLabel(text.action,{exact:true}).selectOption('lay');const name=ja?(type===types[0]?'三灯式':'入替信号'):(type===types[0]?'Three-aspect signal':'Shunting signal');await page.locator('#building-catalog').getByRole('group',{name:`${name} · ${text.dir}`,exact:true}).getByRole('button',{name:(ja?['北 (0)','東 (2)','南 (4)','西 (6)']:['North (0)','East (2)','South (4)','West (6)'])[d/2],exact:true}).click();
    for(const [name,value] of [[ja?'始点 X':'Start X',30],[ja?'始点 Y':'Start Y',27],[ja?'線路の高さ':'Track level',1]] as const)await page.getByLabel(name,{exact:true}).fill(String(value));
-   const before=await save(page);await page.getByRole('button',{name:ja?'経路をプレビュー':'Preview route',exact:true}).click();await expect(page.getByRole('button',{name:text.confirm,exact:true})).toBeEnabled();expect(await save(page)).toEqual(before);
+   const before=await save(page);await page.getByRole('button',{name:ja?'経路をプレビュー':'Preview route',exact:true}).click();await expect(page.getByRole('button',{name:text.confirm,exact:true})).toBeEnabled();await assertExact(await save(page),before,"await save(page)");
    const primary=page.getByRole('button',{name:text.confirm,exact:true});
    if(ja&&!extended()){await expect(primary).toBeInViewport();await primary.focus();await page.keyboard.press('Enter');}else await primary.click();
    await expect(page.getByTestId('rail-route')).toHaveCount(0);
-   const built=await state(page),v=built.mixed.voxels[0];expect(v.traffic.rail.definition.contributionId).toBe(type);expect(v.traffic.rail.direction).toBe(d);expect(v.traffic.rail.pattern).toBe(d%4===0?10:4);expect(built.mixed.accounts.transactions).toEqual([]);
+   const built=await state(page),v=built.mixed.voxels[0];expect(v.traffic.rail.definition.contributionId).toBe(type);expect(v.traffic.rail.direction).toBe(d);expect(v.traffic.rail.pattern).toBe(d%4===0?10:4);await assertExact(built.mixed.accounts.transactions,[],"built.mixed.accounts.transactions");
    await expect.poll(async()=>JSON.stringify((await state(peer)).mixed)).toBe(JSON.stringify(built.mixed));
    await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');expect((await pixels(page,[v]))[0]).toBeGreaterThan(3);
    if(extended()||!ja&&type===types[0]&&d===0){
-    const bytes=await save(page);await replace(page,bytes);expect(await save(page)).toEqual(bytes);await page.getByRole('button',{name:ja?'信号':'Signals',exact:true}).click();
+    const bytes=await save(page);await replace(page,bytes);await assertExact(await save(page),bytes,"await save(page)");await page.getByRole('button',{name:ja?'信号':'Signals',exact:true}).click();
    }
    // A signal cannot replace another signal; source requires prior removal.
    for(const [name,value] of [[ja?'始点 X':'Start X',30],[ja?'始点 Y':'Start Y',27],[ja?'線路の高さ':'Track level',1]] as const)await page.getByLabel(name,{exact:true}).fill(String(value));
    await page.getByRole('button',{name:ja?'経路をプレビュー':'Preview route',exact:true}).click();await expect(page.getByRole('button',{name:text.confirm,exact:true})).toBeDisabled();
    await page.getByLabel(text.action,{exact:true}).selectOption('remove');await page.getByRole('button',{name:ja?'経路をプレビュー':'Preview route',exact:true}).click();await expect(page.getByRole('button',{name:text.confirm,exact:true})).toBeEnabled();await page.getByRole('button',{name:text.confirm,exact:true}).click();await expect(page.getByTestId('rail-route')).toHaveCount(0);
-   const removed=await state(page);expect(removed.mixed.voxels[0].traffic.rail.definition.contributionId).toBe(`system:pattern/${d%4===0?10:4}`);expect(removed.mixed.voxels[0].ownerId).toBe(v.ownerId);expect(removed.mixed.accounts.transactions).toEqual([]);
+   const removed=await state(page);expect(removed.mixed.voxels[0].traffic.rail.definition.contributionId).toBe(`system:pattern/${d%4===0?10:4}`);expect(removed.mixed.voxels[0].ownerId).toBe(v.ownerId);await assertExact(removed.mixed.accounts.transactions,[],"removed.mixed.accounts.transactions");
   }
  }finally{await peer.close();await replace(page,original);}
 });
@@ -49,7 +50,7 @@ test('signal point pick, F/Escape, observer and narrow controls',async({page,bro
   await empty(page);const canvas=page.locator('canvas');await canvas.focus();await page.keyboard.press('f');await expect(page.getByRole('button',{name:'Signals',exact:true})).toHaveAttribute('aria-pressed','true');
   const q=await canvas.evaluate(el=>{const c=el as HTMLCanvasElement,r=c.getBoundingClientRect(),[cx,cy]=c.dataset.camera!.split(',').map(Number),z=Number(c.dataset.zoom);return{x:r.x+r.width/2+(16*(30+27-20)+16-cx)*z,y:r.y+r.height/2+(8*(-30+27+20)-16+8-cy)*z};});
   await page.mouse.click(q.x,q.y);await expect(page.getByRole('button',{name:'Confirm signal change',exact:true})).toBeEnabled();const before=await save(page);
-  await canvas.focus();await page.keyboard.press('Escape');await expect(page.getByTestId('rail-route')).toHaveCount(0);expect(await save(page)).toEqual(before);
+  await canvas.focus();await page.keyboard.press('Escape');await expect(page.getByTestId('rail-route')).toHaveCount(0);await assertExact(await save(page),before,"await save(page)");
   await page.setViewportSize({width:430,height:850});await page.getByRole('button',{name:'Preview route',exact:true}).click();await expect(page.getByRole('button',{name:'Confirm signal change',exact:true})).toBeEnabled();
   expect((await viewer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await viewer.goto('/');await ready(viewer);await expect(viewer.getByRole('button',{name:'Signals',exact:true})).toBeDisabled();
  }finally{await viewer.close();await replace(page,original);}

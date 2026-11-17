@@ -3,30 +3,9 @@ import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { expect, type Page, type WebSocketRoute } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import type { WireMessage } from '../../src/generated/contracts.ts';
-import type { SessionObservation } from './session-observation.ts';
-import { createObservation, canonicalJSON } from './session-runtime.ts';
 import { panMapBy, projectMapPoint, renderedCamera } from './map-picking.ts';
 const sprites = JSON.parse(readFileSync('src/generated/sprites.json', 'utf8')).sprites as Record<string, { height: number; offset: number; mask: string[] }>;
 export const bootstrap = async (page: Page) => (await (await page.request.get(compatibilityURL('/api/bootstrap', ['prototype-content-1']))).json()).snapshot;
-const legacyPublications = new WeakMap<readonly WireMessage[], { count: number; observation: SessionObservation }>();
-/** Transitional adapter for increment 3 callers. Decode each event once using
- * the shared observer, including ordered async chunk assembly. New specs use sessions. */
-export async function latestCanonicalPublication(messages: readonly WireMessage[]) {
-  let cached = legacyPublications.get(messages);
-  if (!cached) {
-    const observation = createObservation(true); observation.beginConnection();
-    cached = { count: 0, observation }; legacyPublications.set(messages, cached);
-  }
-  // A legacy history can span several sockets. Let a reconnect's join replace
-  // its generation before enqueueing the next frame from that same history.
-  for (; cached.count < messages.length; cached.count++) {
-    cached.observation.enqueue(messages[cached.count]);
-    await cached.observation.settled();
-  }
-  await cached.observation.settled();
-  const state = cached.observation.latest(); return state && canonicalJSON(state);
-}
 export async function canonicalState(page:Page) {
   const response=await(await page.request.get(compatibilityURL('/api/bootstrap', ['reference-spatial-content-2', 'terrain-content-1', 'mixed-railway-content-1']))).json();
   if(response.snapshot)return response.snapshot;

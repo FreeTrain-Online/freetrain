@@ -1,3 +1,4 @@
+import { assertExact, waitForExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,test,type Browser,type Page } from './fixtures.ts';
 import { closePanel,openPanel,ready,canonicalState as state } from './browser-helpers.ts';
@@ -30,6 +31,7 @@ async function wire(browser:Browser,q:any,secret?:string,duplicate=false){
  const p=await browser.newPage();let finish!:(m:any)=>void;const receipt=new Promise<any>(r=>finish=r);
  try{
   if(secret)expect((await p.request.post('/api/access',{data:{secret}})).ok()).toBe(true);
+ // transport-test: Duplicate or drop acknowledgements to test command replay handling.
   await p.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();let n=0;
    server.onMessage(message=>{const m=JSON.parse(String(message));route.send(message);
     if(m.type==='join'){const c=JSON.stringify({type:'command',requestId:'slope-receipt',expectedWorldEpoch:q.expectedWorldEpoch,payload:{kind:'editSlope',query:q}});server.send(c);if(duplicate)server.send(c);}
@@ -79,20 +81,20 @@ test('map slope preview/cancel and flat-to-slope-to-elevated network synchronize
   const slopeButton=page.getByRole('button',{name:'Slope',exact:true});await expect(slopeButton).toHaveAttribute('aria-pressed','true');await expect(slopeButton).toHaveAttribute('aria-keyshortcuts','S');
   await page.keyboard.press('s');await expect(slopeButton).toHaveAttribute('aria-pressed','true');await click(page,30,27,1);
   await expect(page.getByTestId('slope-status')).toContainText('route is legal');await expect(canvas).toHaveAttribute('data-slope-ghost-cells','8');await expect(page.getByTestId('slope-cost')).toContainText('40,000,000');
-  expect(await save(page)).toEqual(bytes);
-  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();expect(await save(page)).toEqual(bytes);await expect(canvas).toHaveAttribute('data-slope-ghost-cells','0');
+  await assertExact(await save(page),bytes,"await save(page)");
+  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();await assertExact(await save(page),bytes,"await save(page)");await expect(canvas).toHaveAttribute('data-slope-ghost-cells','0');
   await target(page);await confirm(page);await expect(canvas).toHaveAttribute('data-ruleset','mixed-railway-1');await ready(peer);await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');
   await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toBeEnabled();await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toHaveAttribute('title','Modify terrain (G)');
   await canvas.focus();await page.keyboard.press('g');await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toHaveAttribute('aria-pressed','true');await page.keyboard.press('s');await expect(slopeButton).toHaveAttribute('aria-pressed','true');
-  let built=await state(page);expect(built.mixed.voxels).toHaveLength(8);expect(built.mixed.slopes).toHaveLength(1);expect(built.tick).toBe(before.tick);expect(built.terrain).toEqual(before.terrain);expect(await state(peer)).toEqual(built);
+  let built=await state(page);expect(built.mixed.voxels).toHaveLength(8);expect(built.mixed.slopes).toHaveLength(1);expect(built.tick).toBe(before.tick);await assertExact(built.terrain,before.terrain,"built.terrain");await assertExact(await state(peer),built,"await state(peer)");
   await track(page,[27,27],[30,27],1);await track(page,[33,27],[36,27],2);
   built=await state(page);const captured=await save(page);expect(built.mixed.accounts.transactions).toHaveLength(3);expect(built.mixed.voxels.filter((v:any)=>v.kind==='slopefiller')).toHaveLength(2);
   await expect(canvas).toHaveAttribute('data-instance','slope-canvas');await expect(canvas).toHaveAttribute('data-camera',camera!);
   await page.getByRole('button',{name:'Inspect',exact:true}).click();await expect(canvas).toHaveAttribute('data-slope-ghost-cells','0');await expect(canvas).toHaveAttribute('data-assets','ready');
 
   const counts=await sourcePixels(page,built.mixed.voxels.filter((v:any)=>v.traffic?.rail?.pattern>=28));expect(counts.filter(n=>n>8),JSON.stringify(counts)).toHaveLength(2);expect(counts.filter(n=>n===0),JSON.stringify(counts)).toHaveLength(2);
-  await replace(page,captured);await expect.poll(()=>save(page)).toEqual(captured);expect(await state(peer)).toEqual(await state(page));
-  await page.reload();await ready(page);expect(await save(page)).toEqual(captured);
+  await replace(page,captured);await waitForExact(()=>save(page),captured,"()=>save(page)");await assertExact(await state(peer),await state(page),"await state(peer)");
+  await page.reload();await ready(page);await assertExact(await save(page),captured,"await save(page)");
   await page.getByRole('button',{name:'Slope',exact:true}).click();await page.getByLabel('Track action',{exact:true}).selectOption('remove');
   // The upper paired filler at the lower end has no visible artwork but is a valid map target.
   await click(page,30,27,2);await expect(page.getByTestId('slope-base')).toContainText('30, 27, 1 → 2');await expect(page.getByLabel('Base / selected level',{exact:true})).toHaveValue('2');
@@ -116,7 +118,7 @@ test('all cardinal ramps show exact surface, underground and cut paired art with
    await page.getByRole('button',{name:'Inspect',exact:true}).click();await expect(page.locator('canvas')).toHaveAttribute('data-assets','ready');
    const counts=await sourcePixels(page,members.filter((v:any)=>v.traffic?.rail));expect(counts.filter(n=>n>8),JSON.stringify(counts)).toHaveLength(2);expect(counts.filter(n=>n===0),JSON.stringify(counts)).toHaveLength(2);
 
-   const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);
+   const captured=await save(page);await replace(page,captured);await assertExact(await save(page),captured,"await save(page)");
    await cut(page,1);
    await page.getByRole('button',{name:'Slope',exact:true}).click();await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,30,27,1,d);await expect(page.getByTestId('slope-status')).toContainText('route is legal');await confirm(page);expect((await state(page)).mixed.voxels).toHaveLength(0);
   }
@@ -128,7 +130,7 @@ test('elevated slope loss preview, mixed column art and invalid drafts preserve 
  try{
   await empty(page);await page.getByRole('button',{name:'Slope',exact:true}).click();await target(page,30,27,3,4);await expect(page.getByTestId('slope-cost')).toContainText('120,000,000');await expect(page.getByTestId('slope-cost')).toContainText('New piers: 8');await confirm(page);
   const bytes=await save(page);await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,30,29,4,4);await expect(page.getByTestId('slope-cost')).toContainText('32,000,000');await expect(page.getByTestId('slope-losses').locator('li')).toHaveCount(8);
-  await page.getByLabel('Uphill direction',{exact:true}).selectOption('2');await page.getByRole('button',{name:'Preview slope',exact:true}).click();await expect(page.getByTestId('slope-status')).toContainText('must match');expect(await save(page)).toEqual(bytes);
+  await page.getByLabel('Uphill direction',{exact:true}).selectOption('2');await page.getByRole('button',{name:'Preview slope',exact:true}).click();await expect(page.getByTestId('slope-status')).toContainText('must match');await assertExact(await save(page),bytes,"await save(page)");
   await target(page,30,29,4,4);await confirm(page);expect((await state(page)).mixed.voxels).toHaveLength(0);
   await page.getByLabel('Track action',{exact:true}).selectOption('lay');await target(page,30,27,5,2);await expect(page.getByTestId('slope-status')).toContainText('outside');await expect(page.locator('canvas')).toHaveAttribute('data-slope-ghost-cells','8');await expect(page.getByRole('button',{name:'Confirm slope change',exact:true})).toBeDisabled();
   // Author two different column grounds before construction: exact source selects art per column.
@@ -136,8 +138,8 @@ test('elevated slope loss preview, mixed column art and invalid drafts preserve 
   for(let i=0;i<4;i++){const x=30+i,y=27,h=Math.floor((x-20+y)/2),v=y-(x-20);cells[v*30+h]=0x40|([1,3,1,3][i]);}
   authored.packedTerrain.cells=cells.toString('base64');authored.packedTerrain.geometryRevision='1';authored.revision='1';await replace(page,Buffer.from(JSON.stringify(authored)));
   await page.getByRole('button',{name:'Slope',exact:true}).click();await target(page);await confirm(page);const mixed=await state(page);
-  expect(mixed.mixed.voxels.filter((v:any)=>v.traffic?.rail).sort((a:any,b:any)=>a.position.x-b.position.x).map((v:any)=>v.traffic.rail.pattern)).toEqual([32,49,34,51]);
-  const built=await save(page);await target(page);await expect(page.getByTestId('slope-status')).toContainText('blocks this route');expect(await save(page)).toEqual(built);await cut(page,1);
+  await assertExact(mixed.mixed.voxels.filter((v:any)=>v.traffic?.rail).sort((a:any,b:any)=>a.position.x-b.position.x).map((v:any)=>v.traffic.rail.pattern),[32,49,34,51],"mixed.mixed.voxels.filter((v:any)=>v.traffic?.rail).sort((a:any,b:any)=>a.position.x-b.position.x).map((v");
+  const built=await save(page);await target(page);await expect(page.getByTestId('slope-status')).toContainText('blocks this route');await assertExact(await save(page),built,"await save(page)");await cut(page,1);
  }finally{await replace(page,original);}
 });
 
@@ -159,12 +161,13 @@ test('Japanese narrow DPR2 slope task supports keyboard, map removal, Escape and
   await empty(page,true);await page.locator('canvas').focus();await page.keyboard.press('s');await expect(page.getByRole('button',{name:'勾配線路',exact:true})).toHaveAttribute('aria-pressed','true');await target(page,30,27,1,6,true);await expect(page.getByTestId('slope-status')).toContainText('施工可能');
   await expect(page.getByTestId('slope-cost')).toBeInViewport();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'勾配の変更を確定',exact:true})).toBeDisabled();
-  await target(page,30,27,1,6,true);await confirm(page,true);const bytes=await save(page);await page.reload();await ready(page,'ja');expect(await save(page)).toEqual(bytes);
+  await target(page,30,27,1,6,true);await confirm(page,true);const bytes=await save(page);await page.reload();await ready(page,'ja');await assertExact(await save(page),bytes,"await save(page)");
   await page.getByRole('button',{name:'勾配線路',exact:true}).click();await page.getByLabel('線路の操作',{exact:true}).selectOption('remove');await click(page,30,27,2);await expect(page.getByTestId('slope-base')).toContainText('30, 27, 1');await confirm(page,true);expect((await state(page)).mixed.voxels).toHaveLength(0);
  }finally{const s=await state(page);await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:original});await context.close();}
 });
 
 test('lost slope acknowledgement recovers without replay and blocks another confirmation',async({page})=>{
+ // transport-test: Duplicate or drop acknowledgements to test command replay handling.
  let dropped=false,commands=0;await page.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();route.onMessage(message=>{const m=JSON.parse(String(message));if(m.type==='command'&&m.payload.kind==='editSlope')commands++;server.send(message);});server.onMessage(message=>{const m=JSON.parse(String(message));if(m.type==='accepted'&&!dropped){dropped=true;server.close();route.close();return;}route.send(message);});});
  await page.goto('/');await ready(page);const original=await save(page);
  try{

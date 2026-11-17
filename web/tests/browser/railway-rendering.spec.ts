@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
 import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
@@ -16,7 +17,7 @@ test('mixed railway art matches prepared pixels, picks rail/pier IDs, cuts exact
  const canvas=page.locator('canvas');await canvas.evaluate(el=>el.dataset.instance='railway-preserved');
  try {
   await replace(page,save);for(const p of [page,peer]){await expect(p.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');await ready(p);}
-  const before=await canonicalState(page);expect(await canonicalState(peer)).toEqual(before);const captured=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(captured.toString())).toEqual(JSON.parse(save.toString()));
+  const before=await canonicalState(page);await assertExact(await canonicalState(peer),before,"await canonicalState(peer)");const captured=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(captured.toString())).toEqual(JSON.parse(save.toString()));
   await expect(canvas).toHaveAttribute('data-assets','ready');await expect(page.getByRole('button',{name:'Remove',exact:true})).toBeEnabled();
   const p=await point(page,16.5,-55.5);await page.mouse.click(p.x,p.y);await expect(page.getByTestId('selected-object')).toHaveText('Railway · 7 · 1, 0, 4');
   await expect(page.getByTestId('railway-definition')).toHaveText('exav-stable-bundled · system:pattern/1 · system:pattern/1');
@@ -41,8 +42,8 @@ test('mixed railway art matches prepared pixels, picks rail/pier IDs, cuts exact
   await page.getByLabel('Night',{exact:true}).uncheck();await page.getByLabel('Winter ground',{exact:true}).uncheck();await expect(canvas).toHaveAttribute('data-terrain-variant','spring/day');await expect(canvas).toHaveAttribute('data-presentation','ready');
   await expect.poll(()=>canvas.evaluate(el=>el.toDataURL())).toBe(hash);const decoded=sheets;
   await openPanel(page,'session');await openPanel(page,'help');expect(sheets).toBe(decoded);await expect(canvas).toHaveAttribute('data-instance','railway-preserved');
-  expect(await canonicalState(page)).toEqual(before);expect((await(await page.request.get('/api/saves/download')).body())).toEqual(captured);
-  await page.reload();await ready(page);expect((await(await page.request.get('/api/saves/download')).body())).toEqual(captured);expect(errors).toEqual([]);
+  await assertExact(await canonicalState(page),before,"await canonicalState(page)");await assertExact((await(await page.request.get('/api/saves/download')).body()),captured,"(await(await page.request.get('/api/saves/download')).body())");
+  await page.reload();await ready(page);await assertExact((await(await page.request.get('/api/saves/download')).body()),captured,"(await(await page.request.get('/api/saves/download')).body())");expect(errors).toEqual([]);
  }finally {await replace(page,original);await peerContext.close();}
 });
 
@@ -61,6 +62,7 @@ test('Japanese DPR2 railway inspector stays localized and failed railway media b
 test('a real clock publication carrying a validated mixed removal invalidates rail pixels and picks without a terrain revision',async({page})=>{
  await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
  try {
+ // transport-test: Observe publication metadata during rendering replacement.
   await replace(page,save);await page.routeWebSocket('**/api/session?*',route=>{
    const server=route.connectToServer();server.onMessage(message=>{
     const body=JSON.parse(String(message));

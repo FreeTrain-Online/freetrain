@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { expect,test,type Page } from './fixtures.ts';
 import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 const state=canonicalState;
@@ -35,6 +36,7 @@ test('held painting and Shift reversal keep terrain visible across every revisio
   await page.mouse.move(p.x,p.y);await page.mouse.down();await expect.poll(()=>revision(page)).toBeGreaterThanOrEqual(2);
   const other=await pixel(page,24,20);await page.mouse.move(other.x,other.y);const before=await revision(page);await expect.poll(()=>revision(page)).toBeGreaterThan(before);
   await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
+ // Intentional bounded absence window: verify no delayed writes/repeats after the observed cancellation or stop.
   await expect(page.locator('.command-feedback')).toContainText('Confirmed');const stopped=await revision(page);await page.waitForTimeout(350);expect(await revision(page)).toBe(stopped);
   const raised=await state(page);expect(raised.terrain.occupants.some((o:any)=>o.ne>0)).toBe(true);expect(raised.paused).toBe(true);
   const sum=(s:any)=>s.terrain.cells.reduce((n:number,c:any)=>n+16*c.ground,0)+s.terrain.occupants.reduce((n:number,o:any)=>n+o.ne+o.se+o.sw+o.nw,0);
@@ -46,7 +48,7 @@ test('held painting and Shift reversal keep terrain visible across every revisio
   await expect.poll(()=>revision(page)).toBeGreaterThan(stopped);await page.mouse.up();
   const frames=await page.locator('canvas').evaluate(c=>{c.dataset.paintMonitor='stopped';return {count:Number(c.dataset.paintFrames),blank:Number(c.dataset.blankFrames)};});
   expect(frames.count).toBeGreaterThan(3);expect(frames.blank).toBe(0);
-  await expect(page.locator('canvas')).toHaveAttribute('data-instance','paint-kept');const bytes=await save(page);await page.reload();await ready(page);expect(await save(page)).toEqual(bytes);
+  await expect(page.locator('canvas')).toHaveAttribute('data-instance','paint-kept');const bytes=await save(page);await page.reload();await ready(page);await assertExact(await save(page),bytes,"await save(page)");
  }finally{await restore(page,original);}
 });
 test('release cancels a delayed preview, Escape and focus loss stop held painting, and middle drag only pans',async({page})=>{
@@ -55,10 +57,13 @@ test('release cancels a delayed preview, Escape and focus loss stop held paintin
  try{
   await empty(page);await tool(page);const p=await pixel(page);let received=false;const gate=new Promise<void>(r=>release=r);
   await page.route('**/api/terrain/corner/preview?**',async route=>{received=true;const response=await route.fetch();await gate;await route.fulfill({response}).catch(()=>{});});
+ // Intentional bounded absence window: verify no delayed writes/repeats after the observed cancellation or stop.
   await page.mouse.move(p.x,p.y);await page.mouse.down();await expect.poll(()=>received).toBe(true);await page.mouse.up();release();await page.unrouteAll({behavior:'wait'});await page.waitForTimeout(250);expect(await revision(page)).toBe(0);
   await page.mouse.down();await expect.poll(()=>revision(page)).toBeGreaterThan(0);await page.keyboard.press('Escape');await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');await page.mouse.up();
+ // Intentional bounded absence window: verify no delayed writes/repeats after the observed cancellation or stop.
   const atEscape=await revision(page);await page.waitForTimeout(350);expect(await revision(page)).toBe(atEscape);
   await page.mouse.move(p.x+90,p.y);await page.mouse.down();await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
+ // Intentional bounded absence window: verify no delayed writes/repeats after the observed cancellation or stop.
   const before=await revision(page);await page.mouse.down({button:'middle'});await page.mouse.move(p.x+120,p.y+20);await page.mouse.up({button:'middle'});await page.waitForTimeout(250);expect(await revision(page)).toBe(before);
   await openPanel(page,'help');await closePanel(page);await expect(page.getByLabel('Terrain selection',{exact:true})).toHaveValue('paint');
  }finally{release();await restore(page,original);}

@@ -1,3 +1,5 @@
+import { restartWorldServer } from './session.ts';
+import { assertExact } from './assertions.ts';
 import {browserFixture} from './generated-fixtures.ts';
 import {test,expect,type Page} from './fixtures.ts';
 import {canonicalState as state,openPanel,closePanel,ready} from './browser-helpers.ts';
@@ -59,17 +61,17 @@ for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]]
  await selectGroup.selectOption(b.id);await groups.getByRole('button',{name:text.groupRename,exact:true}).click();dialog=page.getByRole('dialog',{name:text.groupRename,exact:true});
  await dialog.getByLabel(text.groupName,{exact:true}).fill('夜行・Night');
  const before=await(await page.request.get('/api/saves/download')).body();await dialog.press('Escape');await expect(dialog).toHaveCount(0);
- expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+ await assertExact(await(await page.request.get('/api/saves/download')).body(),before,"await(await page.request.get('/api/saves/download')).body()");
  await groups.getByRole('button',{name:text.groupRename,exact:true}).focus();await page.keyboard.press('Enter');dialog=page.getByRole('dialog',{name:text.groupRename,exact:true});
  await dialog.getByLabel(text.groupName,{exact:true}).fill('夜行・Night');await apply();
  await expect(groups.getByRole('button',{name:text.groupRename,exact:true})).toBeFocused();
- const saved=await state(page);expect(saved.tick).toBe(initial.tick);expect(saved.cash).toBe(initial.cash);expect(saved.mixed.queue).toEqual(initial.mixed.queue);expect(saved.mixed.voxels).toEqual(initial.mixed.voxels);
+ const saved=await state(page);expect(saved.tick).toBe(initial.tick);expect(saved.cash).toBe(initial.cash);await assertExact(saved.mixed.queue,initial.mixed.queue,"saved.mixed.queue");await assertExact(saved.mixed.voxels,initial.mixed.voxels,"saved.mixed.voxels");
  expect(saved.mixed.fleet.trains[0].groupId).toBe(b.id);expect(saved.mixed.fleet.groups.find((g:any)=>g.id===a.id).parentId).toBe(c.id);
  mkdirSync(evidence+'/groups',{recursive:true});await page.screenshot({path:evidence+`/groups/${locale}-${coarse?'coarse':'desktop'}.png`});
  const bytes=await(await page.request.get('/api/saves/download')).body();expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+saved.worldEpoch,{data:bytes})).ok()).toBe(true);
- await page.goto('/');await ready(page,locale);expect((await state(page)).mixed.fleet).toEqual(saved.mixed.fleet);
- await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
- expect((await state(page)).mixed.fleet).toEqual(saved.mixed.fleet);expect(errors).toEqual([]);
+ await page.goto('/');await ready(page,locale);await assertExact((await state(page)).mixed.fleet,saved.mixed.fleet,"(await state(page)).mixed.fleet");
+ await restartWorldServer(worldServer);expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
+ await assertExact((await state(page)).mixed.fleet,saved.mixed.fleet,"(await state(page)).mixed.fleet");expect(errors).toEqual([]);
 });
 });
 
@@ -105,5 +107,5 @@ test('nested groups can be created before the first train or named controller',a
  await page.goto('/');await ready(page);const initial=await state(page);expect(initial.mixed?.fleet).toBeUndefined();const groups=await manager(page);
  await groups.getByRole('button',{name:en.groupCreate,exact:true}).click();const dialog=page.locator('dialog.decision-dialog');
  await dialog.getByLabel(en.groupName,{exact:true}).fill('Before trains');await dialog.getByRole('button',{name:en.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
- const after=await state(page);expect(after.mixed.fleet.trains).toEqual([]);expect(after.mixed.fleet.groups).toHaveLength(2);expect(after.tick).toBe(initial.tick);expect(after.mixed.accounts.transactions).toEqual([]);
+ const after=await state(page);await assertExact(after.mixed.fleet.trains,[],"after.mixed.fleet.trains");expect(after.mixed.fleet.groups).toHaveLength(2);expect(after.tick).toBe(initial.tick);await assertExact(after.mixed.accounts.transactions,[],"after.mixed.accounts.transactions");
 });

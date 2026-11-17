@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import {test,expect} from './fixtures.ts';
 import {canonicalState,openPanel,ready} from './browser-helpers.ts';
 import {readFileSync} from 'node:fs';
@@ -49,7 +50,7 @@ for(const narrow of [false,true])test.describe(narrow?'coarse 390×844 200%':'de
   await capture('draft');
   await decision.getByRole('button',{name:text.keepEditing,exact:true}).click();
   await expect(page.getByLabel(text.stockName,{exact:true})).toHaveValue('未保存・Unsaved');
-  expect((await canonicalState(page)).mixed).toEqual(purchased.mixed);
+  await assertExact((await canonicalState(page)).mixed,purchased.mixed,"(await canonicalState(page)).mixed");
   await settings();
   decision=page.getByRole('dialog',{name:text.stockDirtyTitle,exact:true});
   await decision.getByRole('button',{name:text.discard,exact:true}).click();
@@ -58,7 +59,7 @@ for(const narrow of [false,true])test.describe(narrow?'coarse 390×844 200%':'de
   await page.getByRole('button',{name:new RegExp('^'+translated.ownedStock)}).click();
   await page.locator('.fleet-owned .catalog-item-main').first().click();
   await expect(page.getByLabel(translated.stockName,{exact:true})).toHaveValue(original);
-  expect((await canonicalState(page)).mixed).toEqual(purchased.mixed);
+  await assertExact((await canonicalState(page)).mixed,purchased.mixed,"(await canonicalState(page)).mixed");
   for(const [axis,value] of [['X',26],['Y',27],['Z',1]] as const)
    await page.locator('.deployment-controls').getByLabel(axis,{exact:true}).fill(String(value));
   await page.locator('.deployment-controls').getByLabel('Z',{exact:true}).press('Enter');

@@ -52,8 +52,8 @@ once through the pinned Vite API before workers start. Run-owned bundles are
 read into isolated page routes and removed at teardown; they are absent from
 `web/dist`. Editor runs without case selection prepare all five harness entries.
 `transport-helpers.ts` shares compatibility URLs, authentication, preview capture,
-receipt collection, a paused canonical scene, deliberate response holds, epoch-aware save replacement and
-checkpoint restart. Feature actions and assertions stay in their specs.
+a paused canonical scene and deliberate response holds. `sessions` owns receipt
+correlation, save replacement and checkpoint restart. Feature actions and assertions stay in their specs.
 
 The station construction peer witness retains real EN/JA decoder publication;
 `StationBuildingSessionTests` and `StationBuildingConstructionTests` own its
@@ -134,9 +134,8 @@ evidence, preventing their events from leaking into a subsequent test.
 for every process start/restart, plus a lifecycle timeline. Per-test `processes/`
 attachments contain log slices and `association.json` links to full worker logs.
 The reporter also associates logs when worker setup fails before test fixtures
-start. Run-owned originals retain worker teardown output. Optional/capacity
-configurations keep their own server and diagnostic settings; their migration
-belongs to increment 3 of the browser reliability checklist.
+start. Run-owned originals retain worker teardown output. Optional/capacity configurations keep their own server ownership and time budgets
+while sharing the diagnostic recorder and artifact policy.
 
 To validate the diagnostics themselves, with Chromium installed and a current
 client/server build, run from `web/`:
@@ -153,3 +152,79 @@ with the intended errors and verifies bounded output, full errors, two-page
 screenshots/traces, process logs and distinct artifact paths. The parent command
 passes only when those checks pass and prints its `acceptance.json` path.
 Normal assertion/reporter regression checks run with `deno task test`.
+
+### Session checkpoints, focused phases and local validation
+
+Use the `sessions` fixture before navigating each primary/peer page. `ready()`
+means the connection and presentation are available. After replacement, command,
+step or restart, use `replaceSave`, `minute`, `checkpoint`, `converge` or
+`restartCheckpoint`. These select one fixed paused publication and compare every
+peer's reconstructed traffic, browser-applied state and rendered revision.
+`assertCheckpoint(owner, select, expected, phase)` additionally checks an
+independent fixture subtree. Keep fixture/save oracles separate from decoding.
+`command()` waits for a fresh receipt even on request-ID replay; `actionReceipt()`
+correlates a real UI command, including expected rejections. Session effects use
+bounded event history and counters that survive reconnects. Mixed worlds may
+contain independent fleet, station or geometry sections. Use
+`requireMixedState(snapshot, 'fleet', 'queue')` when dereferencing those
+sections; the helper preserves the entire graph for exact comparisons.
+
+`waitForMapDraw(pageOrCanvas)` waits for reactive invalidation and the matching
+ready draw, including resize/refinement, without forcing a draw. Use
+`renderedTool`, `panMapBy` and `projectMapPoint` for exact picking targets. The
+shared station picker retains per-test screenshots and coordinate evidence.
+The ready-draw observation also tracks the rendered reduced-motion preference.
+For a deliberately hidden map, use an explicit absence-observation window:
+visibility suspends painting. Fixed absence/measurement windows remain explicit
+in the specs.
+
+The [migration inventory and coverage mapping](migration-inventory.md) lists
+before/after observers, assertions, restarts and waits for every spec and records
+the preserved locale/input/peer/persistence matrix. Each station/fleet continuation
+combination has independently prepared `rejected uploads`, `slot and download`,
+`reconnect` and `restart continuation` cases plus its `complete journey`.
+Controller editing remains in the focused EN/JA mouse/touch P6-22 journeys.
+
+From `web/`, build once and run the complete required suite locally:
+
+```sh
+deno task build
+set -o pipefail
+deno task test:browser:run --workers=1 --retries=0 2>&1 | tee ../tmp/browser-increment-3-local.log
+```
+
+One worker keeps resource use lower; use `--workers=2` for a separate isolation
+check. Avoid running another browser suite concurrently. The complete suite may
+take about 30 minutes. Focus a single boundary or repeat a case with:
+
+```sh
+deno task test:browser:run station-continuation.spec.ts --grep 'service ja reconnect' --workers=1 --retries=0 --repeat-each=3
+deno task test:browser:run fleet-continuation.spec.ts --grep 'ja restart continuation' --workers=1 --retries=0
+deno task test:browser:run station-controller.spec.ts --grep 'P6-22 ja' --workers=1 --retries=0
+```
+
+Every invocation prints a fresh `tmp/browser-run-*/` root. Inspect `summary.json`
+first for status, individual cases, retries and attachments, then `report.json`
+for full machine-readable results. Read `errors/*` and per-test
+`error-context.md`, `browser-timeline.ndjson`, `recent-browser-events.json`,
+`protocol-payloads.ndjson` and process association attachments for failures.
+Run-owned `processes/worker-N/` and `processes/configuration/` logs include setup,
+restart and teardown. Inspect a failed trace with the pinned Playwright CLI:
+
+```sh
+deno run -A npm:@playwright/test@1.64.1 show-trace /absolute/path/to/trace.zip
+```
+
+Optional/capacity configurations now use the same diagnostics and retain their
+own server ownership, selection and budgets. Select them explicitly with
+`--config playwright.optional.config.ts`, `playwright.capacity.config.ts`,
+`playwright.railway-capacity.config.ts`, `playwright.fleet-capacity.config.ts` or
+`playwright.station-capacity.config.ts`. Generate the documented capacity fixtures
+first and retain the printed artifact root alongside measurement evidence.
+`playwright.extended.config.ts` and the continuation tasks remain separate;
+none of these opt-in selections is implied by a default-suite pass.
+
+`deno task check:browser-tests` guards source authoring; it rejects local raw
+latest decoders, old history adapters, heat reconstruction and unbounded
+state/save comparisons. Raw routes require a nearby `transport-test:` rationale.
+Dedicated fault injection and raw representation assertions remain supported.

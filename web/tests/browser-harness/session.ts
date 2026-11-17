@@ -45,3 +45,16 @@ test('a peer at the target with incorrect state fails immediately with exact bou
   await expect(session.converge(target, 'corrupt applied cash')).rejects.toThrow(/Canonical state mismatch.*browser applied/);
   expect(Date.now() - start).toBeLessThan(1500);
 });
+
+test('duplicate command waits for a fresh server receipt rather than returning the cached receipt', async ({ page, sessions }) => {
+  const session = await sessions.observe(page, 'receipt-replay');
+  await page.goto('/'); await ready(page); const before = await session.ready();
+  const command = { type: 'command', requestId: 'same-step', expectedWorldEpoch: before.worldEpoch, payload: { kind: 'step' } } as const;
+  const first = await session.command(command);
+  expect(first.type).toBe('accepted');
+  const count = session.count('accepted'), target = await sessions.checkpoint(session, 'first accepted step');
+  const duplicate = await session.command(command);
+  expect(duplicate).toEqual(first);
+  expect(session.count('accepted')).toBe(count + 1);
+  await sessions.converge(target, 'duplicate command preserves exact state');
+});

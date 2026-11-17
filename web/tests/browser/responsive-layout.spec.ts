@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { appName } from '../../src/lib/app-identity.ts';
 import { writeFile } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
@@ -38,7 +39,7 @@ test('fixed viewport, persistent canvas and overlay-independent camera at target
     expect(await page.evaluate(() => (window as unknown as { mapDecodes: number }).mapDecodes)).toBe(decodes);
     await closePanel(page);
   }
-  expect(await bootstrap(page)).toEqual(before);
+  await assertExact(await bootstrap(page),before,"await bootstrap(page)");
   for (const [width, height] of [[1920, 1080], [1280, 720], [1024, 768], [800, 900], [640, 900], [360, 800], [800, 450], [640, 450], [360, 450]]) {
     await page.setViewportSize({ width, height });
     await openPanel(page, 'settings'); await page.getByLabel('Language', { exact: true }).selectOption('ja');

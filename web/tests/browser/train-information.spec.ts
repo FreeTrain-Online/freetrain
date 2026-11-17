@@ -1,4 +1,4 @@
-import { replaceSave, restartCheckpoint } from './transport-helpers.ts';
+import { assertExact } from './assertions.ts';
 import {renderingHarness} from './rendering-harnesses.ts';
 import {readFileSync,mkdirSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
@@ -25,7 +25,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} information, local labe
  const decodes=await page.evaluate(()=>(window as any).__decodes);
  await page.getByLabel(text.trainNamesVisible,{exact:true}).check();await page.getByLabel(text.trainNameFont,{exact:true}).selectOption('monospace');
  await page.getByLabel(text.trainNameSize,{exact:true}).fill('18');await page.getByLabel(text.trainNameSize,{exact:true}).press('Tab');await page.getByLabel(text.trainNameColor,{exact:true}).fill('#12abcd');
- expect(await page.evaluate(()=>(window as any).__decodes)).toBe(decodes);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(bytes);
+ expect(await page.evaluate(()=>(window as any).__decodes)).toBe(decodes);await assertExact(await(await page.request.get('/api/saves/download')).body(),bytes,"await(await page.request.get('/api/saves/download')).body()");
  mkdirSync(evidence+'/information',{recursive:true});await page.screenshot({path:evidence+`/information/${locale}.png`});
  await closePanel(page);await canvas.focus();const camera=await canvas.getAttribute('data-camera-state');
  for(let i=0;i<3;i++){
@@ -45,28 +45,28 @@ for(const locale of ['en','ja'] as const)test(`${locale} information, local labe
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:bytes})).ok()).toBe(true);
  await expect(canvas).toHaveAttribute('data-following-train','');await ready(page,locale);await openPanel(page,'view',locale);await expect(selector).toHaveValue('');await expect(page.getByLabel(text.trainNamesVisible,{exact:true})).toBeChecked();expect(errors).toEqual([]);
 });
-test('color templates, exact XML, retained drafts, shared apply, observer and checkpoint',async({page,browser,baseURL,worldServer})=>{
- test.setTimeout(90000);const initial=await setup(page);await openPanel(page,'settings');const editor=page.locator('.train-color-controls'),template=editor.getByLabel(en.trainColorTemplate,{exact:true});
+test('color templates, exact XML, retained drafts, shared apply, observer and checkpoint',async({page,browser,baseURL,worldServer,sessions})=>{
+ test.setTimeout(90000);const owner=await sessions.observe(page,'owner');const initial=await setup(page);await openPanel(page,'settings');const editor=page.locator('.train-color-controls'),template=editor.getByLabel(en.trainColorTemplate,{exact:true});
  await expect(template.locator('option')).toHaveCount(7);const saved=await(await page.request.get('/api/saves/download')).body();
  for(const option of await template.locator('option').evaluateAll(nodes=>nodes.map(n=>(n as HTMLOptionElement).value))){await template.selectOption(option);await expect(editor.getByRole('img',{name:en.trainColorDay,exact:true})).toBeVisible();await expect(editor.getByRole('img',{name:en.trainColorNight,exact:true})).toBeVisible();}
  await editor.getByLabel(en.trainColorBody,{exact:true}).fill('#a1b2c3');await expect(editor.getByLabel(en.trainColorXML,{exact:true})).toHaveValue(/base="161,178,195"/);
  const pending=page.waitForEvent('download');await editor.getByRole('button',{name:en.trainColorExport,exact:true}).click();const download=await pending;expect(download.suggestedFilename()).toBe('colorMap.xml');expect(readFileSync((await download.path())!,'utf8')).toContain('base="161,178,195"');
  await page.getByLabel(en.language,{exact:true}).selectOption('ja');await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='200%');await expect(editor.getByLabel(ja.trainColorBody,{exact:true})).toHaveValue('#a1b2c3');
- mkdirSync(evidence+'/information',{recursive:true});await editor.getByLabel(ja.trainColorBody,{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:evidence+'/information/colors-ja.png'});await closePanel(page);await openPanel(page,'settings','ja');await expect(editor.getByLabel(ja.trainColorBody,{exact:true})).toHaveValue('#a1b2c3');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);await page.getByLabel(ja.language,{exact:true}).selectOption('en');await page.setViewportSize({width:1280,height:900});await page.evaluate(()=>document.documentElement.style.fontSize='100%');
- const context=await browser.newContext({baseURL}),peer=await context.newPage();
+ mkdirSync(evidence+'/information',{recursive:true});await editor.getByLabel(ja.trainColorBody,{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:evidence+'/information/colors-ja.png'});await closePanel(page);await openPanel(page,'settings','ja');await expect(editor.getByLabel(ja.trainColorBody,{exact:true})).toHaveValue('#a1b2c3');await assertExact(await(await page.request.get('/api/saves/download')).body(),saved,"await(await page.request.get('/api/saves/download')).body()");await page.getByLabel(ja.language,{exact:true}).selectOption('en');await page.setViewportSize({width:1280,height:900});await page.evaluate(()=>document.documentElement.style.fontSize='100%');
+ const context=await browser.newContext({baseURL}),peer=await context.newPage();const observer=await sessions.observe(peer,'observer');
  try{
   expect((await peer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);await openPanel(peer,'settings');const remote=peer.locator('.train-color-controls');
   await remote.getByLabel(en.trainColorLine1,{exact:true}).fill('#123456');await expect(remote.getByRole('button',{name:en.trainColorApply,exact:true})).toBeDisabled();
-  await editor.getByRole('button',{name:en.trainColorApply,exact:true}).click();let dialog=page.getByRole('dialog',{name:en.trainColorApply,exact:true});await dialog.getByRole('button',{name:en.cancel,exact:true}).click();expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
+  await editor.getByRole('button',{name:en.trainColorApply,exact:true}).click();let dialog=page.getByRole('dialog',{name:en.trainColorApply,exact:true});await dialog.getByRole('button',{name:en.cancel,exact:true}).click();await assertExact(await(await page.request.get('/api/saves/download')).body(),saved,"await(await page.request.get('/api/saves/download')).body()");
   await editor.getByRole('button',{name:en.trainColorApply,exact:true}).click();dialog=page.getByRole('dialog',{name:en.trainColorApply,exact:true});await dialog.getByRole('button',{name:en.trainColorApply,exact:true}).click();await expect(dialog).toHaveCount(0);
   await expect(remote).toContainText(en.trainColorStale);await remote.getByRole('button',{name:en.resetDraft,exact:true}).click();await expect(remote.getByLabel(en.trainColorBody,{exact:true})).toHaveValue('#a1b2c3');
   const after=await state(page);await expect(page.locator('.world-canvas')).toHaveAttribute('data-presentation','ready');
   await expect.poll(()=>page.locator('.world-canvas').evaluate((canvas:any)=>{const ctx=canvas.getContext('2d'),pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;let n=0;for(let i=0;i<pixels.length;i+=4)if(pixels[i]===161&&pixels[i+1]===178&&pixels[i+2]===195)n++;return n;})).toBeGreaterThan(5);
-  expect(after.mixed.fleet.colorTest.body).toBe('#a1b2c3');expect(after.tick).toBe(initial.tick);expect(after.mixed.fleet.trains).toEqual(initial.mixed.fleet.trains);
+  expect(after.mixed.fleet.colorTest.body).toBe('#a1b2c3');expect(after.tick).toBe(initial.tick);await assertExact(after.mixed.fleet.trains,initial.mixed.fleet.trains,"after.mixed.fleet.trains");
   mkdirSync(evidence+'/information',{recursive:true});await page.screenshot({path:evidence+'/information/colors-en.png'});
-  const bytes=await(await page.request.get('/api/saves/download')).body();await replaceSave(page,bytes,after.worldEpoch);
-  await page.reload();await ready(page);await openPanel(page,'settings');await expect(editor.getByLabel(en.trainColorBody,{exact:true})).toHaveValue('#a1b2c3');
-  await restartCheckpoint(worldServer,[{page}]);expect((await state(page)).mixed.fleet.colorTest).toEqual(after.mixed.fleet.colorTest);
+  const bytes=await(await page.request.get('/api/saves/download')).body();await sessions.replaceSave(owner,bytes,'train color save replacement');
+  await owner.reconnect(()=>page.reload(),owner.latest()!,'train color reload');await ready(page);await openPanel(page,'settings');await expect(editor.getByLabel(en.trainColorBody,{exact:true})).toHaveValue('#a1b2c3');
+  await sessions.restartCheckpoint(worldServer,[{session:owner},{session:observer,secret:'observer-test'}],'train color checkpoint restart');await assertExact((await state(page)).mixed.fleet.colorTest,after.mixed.fleet.colorTest,"(await state(page)).mixed.fleet.colorTest");
  }finally{await context.close();}
 });
 

@@ -72,15 +72,11 @@ export default class BoundedReporter implements Reporter {
         'processes',
         `worker-${result.workerIndex}`,
       );
-      if (
-        !result.attachments.some((a) => a.name === 'process-association') &&
-        existsSync(processes)
-      ) {
-        const files = readdirSync(processes).map((name) => ({
-          name: `process-${name}`,
-          path: join(processes, name),
-          contentType: 'text/plain',
-        }));
+      const directories = [processes, join(this.root, 'processes', 'configuration')].filter(existsSync);
+      if (!result.attachments.some((a) => a.name === 'process-association') && directories.length) {
+        const files = directories.flatMap(directory => readdirSync(directory).map(name => ({
+          name: `process-${name}`, path: join(directory, name), contentType: 'text/plain',
+        })));
         result.attachments.push(...files);
         const path = join(
           this.root,
@@ -95,6 +91,7 @@ export default class BoundedReporter implements Reporter {
               title,
               workerIndex: result.workerIndex,
               directory: processes,
+              directories,
               files,
             },
             null,
@@ -158,9 +155,10 @@ export default class BoundedReporter implements Reporter {
     console.error(
       [
         `Browser runner error; complete error: ${path}`,
+        `Process logs: ${join(this.root, 'processes')}`,
         ...boundedLines(
           error.stack ?? error.message ?? error.value ?? String(error),
-          failureLineLimit - 1,
+          failureLineLimit - 2,
         ),
       ].join('\n'),
     );
@@ -180,6 +178,7 @@ export default class BoundedReporter implements Reporter {
           globalErrors: this.globalErrors,
           report: join(this.root, 'report.json'),
           artifacts: this.root,
+          processes: join(this.root, 'processes'),
         },
         null,
         2,

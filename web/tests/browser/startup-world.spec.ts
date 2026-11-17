@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { expect,test } from './fixtures.ts';
 import { openPanel, ready } from './browser-helpers.ts';
 
@@ -14,7 +15,7 @@ test('fresh service renders generated hills and trees and reopens the saved terr
   expect(request.source).toBe('generated');expect(request.Options.Relief.Kind).toBe(1);
   expect(new Set([...Buffer.from(save.packedTerrain.cells,'base64')].map(n=>n&63)).size).toBeGreaterThan(2);
   await page.reload();await ready(page);
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(bytes);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),bytes,"await(await page.request.get('/api/saves/download')).body()");
   expect(errors).toEqual([]);
 });
 

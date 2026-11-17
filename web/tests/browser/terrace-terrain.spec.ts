@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { expect,test,type Page } from './fixtures.ts';
 import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 const compat='protocolVersion=11&contentVersion=terrain-content-1';
@@ -43,9 +44,9 @@ test('terrace preview is read-only; fresh identity, saved corners, exact reopen,
  try{
   await empty(page);await slope(page);const before=await save(page);const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','terrace'));
   await terraceTarget(page);await expect(page.getByTestId('corner-status')).toContainText('change is legal');
-  await expect(page.locator('.corner-changes')).toContainText('1 [0,4,0,0] → 2 [0,4,0,0]');expect(await save(page)).toEqual(before);
+  await expect(page.locator('.corner-changes')).toContainText('1 [0,4,0,0] → 2 [0,4,0,0]');await assertExact(await save(page),before,"await save(page)");
   await confirm(page).click();await expect.poll(async()=>Buffer.from(JSON.parse((await save(page)).toString()).packedTerrain.cells,'base64')[610]).toBe(130);
-  const terrace=await save(page);await page.reload();await ready(page);expect(await save(page)).toEqual(terrace);await tool(page);
+  const terrace=await save(page);await page.reload();await ready(page);await assertExact(await save(page),terrace,"await save(page)");await tool(page);
   await terraceTarget(page,'removeTerrace');await expect(page.getByTestId('corner-status')).toContainText('change is legal');await confirm(page).click();
   await expect.poll(async()=>Buffer.from(JSON.parse((await save(page)).toString()).packedTerrain.cells,'base64')[610]).toBe(65);
   await terraceTarget(page,'placeCut');await confirm(page).click();await expect.poll(async()=>JSON.parse((await save(page)).toString()).packedTerrain.occupantCount).toBe(3);
@@ -65,7 +66,7 @@ test('terrace map ray selects backed-up voxel; Escape and panels clear review, p
   await terraceTarget(page,'removeTerrace');await openPanel(page,'help');await closePanel(page);await expect(confirm(page)).toBeDisabled();
   await page.getByLabel('Terrain selection',{exact:true}).selectOption('terrace');await terraceTarget(page,'removeTerrace');await peer.goto('/');await ready(peer);await tool(peer);await terraceTarget(peer,'removeTerrace');await confirm(peer).click();await expect(confirm(peer)).toBeDisabled();
   const changed=await save(page);await expect(confirm(page)).toBeEnabled();await confirm(page).click();
-  await expect(page.getByTestId('corner-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();expect(await save(page)).toEqual(changed);await expect(canvas).toHaveAttribute('data-instance','terrace');
+  await expect(page.getByTestId('corner-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();await assertExact(await save(page),changed,"await save(page)");await expect(canvas).toHaveAttribute('data-instance','terrace');
   await terraceTarget(page);await expect(confirm(page)).toBeEnabled();await confirm(page).click();await expect(confirm(page)).toBeDisabled();
   await expect.poll(async()=>Buffer.from(JSON.parse((await save(page)).toString()).packedTerrain.cells,'base64')[610]).toBe(130);
  }finally{await peer.close();await replace(page,original);}
@@ -88,11 +89,11 @@ async function batchTarget(page:Page,locale='en',start=[20,20,1],end=[21,21]){
 test('terrace rectangle normalizes reversed coordinates, previews all cells read-only and saves one atomic result',async({page})=>{
  await page.goto('/');await ready(page);const original=await save(page);
  try{
-  await empty(page);await tool(page);await page.getByRole('checkbox',{name:'Place terraces in a rectangle',exact:true}).check();const before=await save(page),s=await state(page);expect(s.terrain.occupants).toEqual([]);
-  await batchTarget(page,'en',[21,21,1],[20,20]);await expect(page.getByTestId('terrace-batch-count')).toHaveText('Terraces to place: 4');expect(await save(page)).toEqual(before);
+  await empty(page);await tool(page);await page.getByRole('checkbox',{name:'Place terraces in a rectangle',exact:true}).check();const before=await save(page),s=await state(page);await assertExact(s.terrain.occupants,[],"s.terrain.occupants");
+  await batchTarget(page,'en',[21,21,1],[20,20]);await expect(page.getByTestId('terrace-batch-count')).toHaveText('Terraces to place: 4');await assertExact(await save(page),before,"await save(page)");
   await confirm(page).click();await expect.poll(async()=>(await state(page)).terrain.occupants.filter((o:any)=>o.kind==='terrace').length).toBe(4);
   expect((await state(page)).terrain.geometryRevision).toBe(String(BigInt(s.terrain.geometryRevision)+1n));expect((await state(page)).paused).toBe(s.paused);
-  const batch=await save(page);await page.reload();await ready(page);expect(await save(page)).toEqual(batch);await tool(page);await page.getByRole('checkbox',{name:'Place terraces in a rectangle',exact:true}).check();
+  const batch=await save(page);await page.reload();await ready(page);await assertExact(await save(page),batch,"await save(page)");await tool(page);await page.getByRole('checkbox',{name:'Place terraces in a rectangle',exact:true}).check();
   await batchTarget(page);await expect(confirm(page)).toBeDisabled();await expect(page.getByTestId('terrace-batch-count')).toHaveText('Terraces to place: 0');
  }finally{await replace(page,original);}
 });
@@ -101,12 +102,12 @@ test('two map corners select terrace batch; Escape clears review and peer confli
  try{
   await empty(page);await slope(page);await page.getByRole('checkbox',{name:'Place terraces in a rectangle',exact:true}).check();const before=await save(page);const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','terrace-batch'));
   const a=await pixel(page,20,20),b=await pixel(page,21,21);await page.mouse.click(a.x,a.y);await expect(confirm(page)).toBeDisabled();await page.mouse.click(b.x,b.y);
-  await expect(page.getByTestId('terrace-batch-count')).toHaveText('Terraces to place: 4');expect(await save(page)).toEqual(before);
+  await expect(page.getByTestId('terrace-batch-count')).toHaveText('Terraces to place: 4');await assertExact(await save(page),before,"await save(page)");
 
   await page.keyboard.press('Escape');await expect(confirm(page)).toBeDisabled();await batchTarget(page);
   await peer.goto('/');await ready(peer);await tool(peer);await terraceTarget(peer);await confirm(peer).click();await expect(confirm(peer)).toBeDisabled();
   const changed=await save(page);await expect(confirm(page)).toBeEnabled();await confirm(page).click();
-  await expect(page.getByTestId('rectangle-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();expect(await save(page)).toEqual(changed);await expect(canvas).toHaveAttribute('data-instance','terrace-batch');
+  await expect(page.getByTestId('rectangle-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();await assertExact(await save(page),changed,"await save(page)");await expect(canvas).toHaveAttribute('data-instance','terrace-batch');
   await batchTarget(page);await expect(page.getByTestId('terrace-batch-count')).toHaveText('Terraces to place: 3');await confirm(page).click();await expect(confirm(page)).toBeDisabled();
   await expect.poll(async()=>(await state(page)).terrain.occupants.filter((o:any)=>o.kind==='terrace').length).toBe(4);
  }finally{await peer.close();await replace(page,original);}
@@ -122,11 +123,11 @@ test('Japanese narrow terrace batch supports end coordinates and one keyboard co
 test('bare ground map targeting places a terrace directly and removes it back to flat ground',async({page})=>{
  await page.goto('/');await ready(page);const original=await save(page);
  try{
-  await empty(page);await tool(page);expect((await state(page)).terrain.occupants).toEqual([]);const before=await save(page);
-  const p=await pixel(page,20,20);await page.mouse.click(p.x,p.y);await expect(page.getByTestId('corner-position')).toContainText('20, 20, 1');await expect(confirm(page)).toBeEnabled();expect(await save(page)).toEqual(before);
+  await empty(page);await tool(page);await assertExact((await state(page)).terrain.occupants,[],"(await state(page)).terrain.occupants");const before=await save(page);
+  const p=await pixel(page,20,20);await page.mouse.click(p.x,p.y);await expect(page.getByTestId('corner-position')).toContainText('20, 20, 1');await expect(confirm(page)).toBeEnabled();await assertExact(await save(page),before,"await save(page)");
   await confirm(page).click();await expect.poll(async()=>(await state(page)).terrain.occupants.filter((o:any)=>o.kind==='terrace').length).toBe(1);
-  const terrace=await save(page);await page.reload();await ready(page);expect(await save(page)).toEqual(terrace);await tool(page);await terraceTarget(page,'removeTerrace');await confirm(page).click();
+  const terrace=await save(page);await page.reload();await ready(page);await assertExact(await save(page),terrace,"await save(page)");await tool(page);await terraceTarget(page,'removeTerrace');await confirm(page).click();
   await expect.poll(async()=>Buffer.from(JSON.parse((await save(page)).toString()).packedTerrain.cells,'base64')[610]).toBe(65);
-  const current=await state(page);expect(current.terrain.occupants[0].kind).toBe('mountain');expect([current.terrain.occupants[0].ne,current.terrain.occupants[0].se,current.terrain.occupants[0].sw,current.terrain.occupants[0].nw]).toEqual([0,0,0,0]);
+  const current=await state(page);expect(current.terrain.occupants[0].kind).toBe('mountain');await assertExact([current.terrain.occupants[0].ne,current.terrain.occupants[0].se,current.terrain.occupants[0].sw,current.terrain.occupants[0].nw],[0,0,0,0],"[current.terrain.occupants[0].ne,current.terrain.occupants[0].se,current.terrain.occupants[0].sw,current.");
  }finally{await replace(page,original);}
 });

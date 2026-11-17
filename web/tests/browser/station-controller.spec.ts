@@ -1,46 +1,16 @@
+import { pickStationObject as pick } from './station-picking.ts';
+import { assertExact } from './assertions.ts';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
-import {canonicalState as state,ready,closePanel,openPanel,exposeMapPoint} from './browser-helpers.ts';
+import { canonicalState as state, ready, closePanel, openPanel } from './browser-helpers.ts';
 import {fit} from './layout-helpers.ts';
 import {assertSaveBytes,evidencePath} from './assertions.ts';
-import {panMapBy,projectMapPoint,renderedCamera,renderedTool} from './map-picking.ts';
+
 const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8'));
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
 const bytes=async(p:Page)=>(await p.request.get('/api/saves/download')).body();
 test.use({hasTouch:true,actionTimeout:15000});
-
-async function pick(page:Page,object:any,text:typeof en,touch:boolean,hasController=true){
- await closePanel(page);await page.getByRole('button',{name:text.referenceInspect,exact:true}).click();
- await renderedTool(page,'inspect');
- const recipe=object.kind?`system:thin-${object.direction}`:object.definition.recipeId;
- const frame=catalog.renderRecipes.find((r:any)=>r.id===recipe).frames.find((f:any)=>f.status==='ready');
- const mask=catalog.masks[frame.masks['spring/day']];let sample:any;
- for(let y=1;y<mask.length-1&&!sample;y++)for(let x=1;x<mask[y].length-1&&!sample;x++)
-  if(mask.slice(y-1,y+2).every((r:string)=>r.slice(x-1,x+2)==='111'))sample={x:x+.5,y:y+.5};
- expect(sample).toBeTruthy();const center=Math.floor(((await state(page)).map.height-1)/2);
- const location=object.kind?{...object.location,x:object.location.x+object.length-1}:object.location;
- const q={x:16*(location.x+frame.cell[0]-center+location.y+frame.cell[1])-frame.anchor[0]+sample.x,
-  y:8*(location.y+frame.cell[1]-location.x-frame.cell[0]+center)-16*(object.location.z+frame.cell[2])-frame.anchor[1]+sample.y};
- // Bring the exact painted opaque sample into view, then clear the narrow sheet.
- const before=await renderedCamera(page);
- const centered=await panMapBy(page,{x:(q.x-before.x)*before.zoom,y:(q.y-before.y)*before.zoom});
- await exposeMapPoint(page,(await projectMapPoint(page,q,centered)).point);
- const camera=await renderedCamera(page);
- const screenshot=evidencePath(test.info(),`pick-${object.id}`,'png');
- await page.screenshot({path:screenshot});await test.info().attach(`pick-${object.id}`,{path:screenshot,contentType:'image/png'});
- const details=evidencePath(test.info(),`pick-${object.id}`,'json');
- // Screenshot capture can yield to rendering. Compute the final coordinates
- // afterwards, directly before the one real mouse/touch input.
- const {point:p}=await projectMapPoint(page,q,camera);
- try{
-  if(touch)await page.touchscreen.tap(p.x,p.y);else await page.mouse.click(p.x,p.y);
-  await expect(page.getByTestId(object.kind?'platform-identity':'selected-object'),`Pick must select ${object.kind?'platform':'station'} ${object.id}`).toContainText(` · ${object.id} · `);
-  if(hasController)await expect(page.locator('.primary-panel .fleet-controller-manager')).toBeVisible();
- }finally{
-  writeFileSync(details,JSON.stringify({object,q,p,camera}));await test.info().attach(`pick-${object.id}-details`,{path:details,contentType:'application/json'});
- }
-}
 
 for(const locale of ['en','ja'] as const)test(`P6-22 ${locale} picked hosts share TAT settings, retain rule files and run real group reassignment with exact peers/restart`,async({page,browser,baseURL,worldServer,sessions})=>{
  test.setTimeout(240000);const text=locale==='ja'?ja:en,touch=locale==='ja';
@@ -50,15 +20,15 @@ for(const locale of ['en','ja'] as const)test(`P6-22 ${locale} picked hosts shar
  const context=await browser.newContext({baseURL}),peer=await context.newPage();
  const owner=await sessions.observe(page,'owner'),observer=await sessions.observe(peer,'operator');
  const exact=async(actual:Uint8Array,expected:Uint8Array,phase:string)=>assertSaveBytes(actual,expected,{phase,peer:'owner'});
- async function consistent(){return sessions.checkpoint(owner,'controller peer checkpoint');}
- async function upload(data:Buffer){await sessions.replaceSave(owner,data,'controller save replacement');await ready(page,locale);await ready(peer);}
- async function step(){return sessions.minute(owner,async()=>{const canvas=page.locator('canvas.world-canvas');await canvas.focus();await canvas.press('n');},'controller single minute');}
- async function until(predicate:(s:any)=>boolean,limit=160){let s=await state(page);for(let n=0;!predicate(s)&&n<limit;n++)s=await step();expect(predicate(s)).toBe(true);return s;}
+ async function consistent(){return test.step("Converge on one paused peer checkpoint",async()=>{return sessions.checkpoint(owner,'controller peer checkpoint');});}
+ async function upload(data:Buffer){return test.step("Replace the paused save",async()=>{await sessions.replaceSave(owner,data,'controller save replacement');await ready(page,locale);await ready(peer);});}
+ async function step(){return test.step("Advance one simulation minute",async()=>{return sessions.minute(owner,async()=>{const canvas=page.locator('canvas.world-canvas');await canvas.focus();await canvas.press('n');},'controller single minute');});}
+ async function until(predicate:(s:any)=>boolean,limit=160){return test.step("Continue to the source callback boundary",async()=>{let s=await state(page);for(let n=0;!predicate(s)&&n<limit;n++)s=await step();expect(predicate(s)).toBe(true);return s;});}
  async function manager(){await openPanel(page,'fleet',locale);await page.getByRole('button',{name:text.controllerManager,exact:true}).click();return page.locator('.fleet-controller-manager');}
  let id:string;
  const controller=async()=>(await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===id);
- async function configure(object:any){await pick(page,object,text,touch);const controls=page.locator('.primary-panel .fleet-controller-manager');await controls.getByLabel(text.controllerManager,{exact:true}).selectOption(id);await controls.getByRole('button',{name:text.controllerConfigure,exact:true}).click();return page.getByRole('dialog',{name:text.controllerConfigure,exact:true});}
- async function apply(dialog:any){await owner.acceptedAction(()=>dialog.getByRole('button',{name:text.controllerApply,exact:true}).click());await expect(dialog).toHaveCount(0);await consistent();}
+ async function configure(object:any){return test.step("Open the controller editor",async()=>{await pick(page,object,text,touch,true);const controls=page.locator('.primary-panel .fleet-controller-manager');await controls.getByLabel(text.controllerManager,{exact:true}).selectOption(id);await controls.getByRole('button',{name:text.controllerConfigure,exact:true}).click();return page.getByRole('dialog',{name:text.controllerConfigure,exact:true});});}
+ async function apply(dialog:any){return test.step("Apply the controller change",async()=>{await owner.acceptedAction(()=>dialog.getByRole('button',{name:text.controllerApply,exact:true}).click());await expect(dialog).toHaveCount(0);await consistent();});}
  try{
   await page.goto('/');await ready(page,locale);
   expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);
@@ -90,7 +60,7 @@ for(const locale of ['en','ja'] as const)test(`P6-22 ${locale} picked hosts shar
   await rules.getByLabel(text.ruleFileRead,{exact:true}).setInputFiles({name:'station.ftdd',mimeType:'application/octet-stream',buffer:readFileSync('tests/fixtures/timetable/single.ftdd')});
   await expect(rules.getByRole('list',{name:text.ruleFilePreview,exact:true}).getByRole('listitem')).toHaveCount(9);await exact(await bytes(page),before,'rule preview unchanged');
   await owner.acceptedAction(()=>rules.getByRole('button',{name:text.ruleFileAppend,exact:true}).click());await expect(rules.getByRole('button',{name:text.ruleFileAppend,exact:true})).toHaveCount(0);
-  expect((await controller()).harbors.find((h:any)=>h.location.x===host.location.x).rules).toEqual(JSON.parse(readFileSync('tests/fixtures/timetable/expected.json','utf8')));
+  await assertExact((await controller()).harbors.find((h:any)=>h.location.x===host.location.x).rules,JSON.parse(readFileSync('tests/fixtures/timetable/expected.json','utf8')),"(await controller()).harbors.find((h:any)=>h.location.x===host.location.x).rules");
   const downloadEvent=page.waitForEvent('download');await rules.getByRole('button',{name:text.ruleFileSave,exact:true}).click();const download=await downloadEvent;
   expect(download.suggestedFilename()).toBe('diagram.ftdd.json');expect(JSON.parse(readFileSync((await download.path())!,'utf8')).rules).toHaveLength(9);
   await rules.getByRole('button',{name:text.close,exact:true}).click();
@@ -119,7 +89,7 @@ for(const locale of ['en','ja'] as const)test(`P6-22 ${locale} picked hosts shar
   // A peer removes the real host while a local settings draft is open. The
   // picked editor disappears; the controller retains its committed location.
   await dialog.getByLabel(text.controllerMinutes,{exact:true}).fill('90');
-  await pick(peer,host,en,false);await peer.getByRole('button',{name:en.stationRemove,exact:true}).click();
+  if(!host)throw new Error('Missing controller host');await pick(peer,host,en,false,true);await peer.getByRole('button',{name:en.stationRemove,exact:true}).click();
   await observer.acceptedAction(()=>peer.getByRole('button',{name:en.confirmRemoval,exact:true}).click());
   await expect.poll(async()=>(await state(page)).mixed.stationGraph.buildings.some((b:any)=>b.id===host.id)).toBe(false);
   await expect(dialog).toHaveCount(0);expect((await controller()).harbors.find((h:any)=>h.location.x===host.location.x).minutes).toBe(40);await consistent();

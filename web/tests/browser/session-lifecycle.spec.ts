@@ -31,6 +31,7 @@ test('slow join and slow assets never reveal gameplay before a first live draw',
   let releaseAssets!: () => void, releaseJoin!: () => void;
   const assets = new Promise<void>(resolve => { releaseAssets = resolve; }), join = new Promise<void>(resolve => { releaseJoin = resolve; });
   await page.route('**/assets/*.png', async route => { await assets; await route.continue(); });
+ // transport-test: Exercise incompatible joins, disconnects and revoked access.
   await page.routeWebSocket('**/api/session?*', route => {
     const server = route.connectToServer(); server.onMessage(async message => { await join; route.send(message); });
   });
@@ -57,6 +58,7 @@ test('asset failure keeps sign-in available on a plain backdrop', async ({ page 
 test('disconnect clears targeting, blocks shortcuts and restores same-world camera without replay', async ({ page }) => {
   let drop!: () => void, offline = false, commandCount = 0;
   await page.route('**/api/bootstrap?*', route => offline ? route.fulfill({ status: 503 }) : route.continue());
+ // transport-test: Exercise incompatible joins, disconnects and revoked access.
   await page.routeWebSocket('**/api/session?*', route => {
     const server = route.connectToServer(); drop = () => { offline = true; server.close(); route.close(); };
     route.onMessage(message => { if (JSON.parse(String(message)).type === 'command') commandCount++; server.send(message); });
@@ -86,6 +88,7 @@ test('failed leave latches until revocation, then requires explicit empty-key re
   await expect(page.getByRole('status')).toHaveText('Leaving could not be confirmed. Retry Leave game to sign out.');
   await expect(page.getByRole('button', { name: 'Retry now', exact: true })).toHaveCount(0); await expect(page.getByRole('button', { name: 'Connect', exact: true })).toHaveCount(0);
   await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'demo');
+ // Intentional bounded absence window: verify no delayed writes/repeats after the observed cancellation or stop.
   const count = bootstraps; await page.waitForTimeout(600); expect(bootstraps).toBe(count);
   await page.getByRole('button', { name: 'Retry leave', exact: true }).click();
   await expect(page.getByLabel('Enter access key to join game', { exact: true })).toBeVisible(); await expect(page.locator('.command-bar')).toHaveCount(0);
@@ -118,6 +121,7 @@ test('rejected sign-in stays inline and version mismatch offers reload', async (
 test('lost authentication clears live identity and requires sign-in again', async ({ page }) => {
   let drop!: () => void, revoked = false;
   await page.route('**/api/bootstrap?*', route => revoked ? route.fulfill({ status: 401, json: { anonymousAccess: false } }) : route.continue());
+ // transport-test: Exercise incompatible joins, disconnects and revoked access.
   await page.routeWebSocket('**/api/session?*', route => { const server = route.connectToServer(); drop = () => { revoked = true; server.close(); route.close(); }; });
   await page.goto('/'); await ready(page); await selectTrain(page);
   drop();

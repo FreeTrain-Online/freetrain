@@ -1,4 +1,5 @@
-import { mkdirSync, mkdtempSync, readdirSync } from 'node:fs';
+import { validateBrowserSources } from './tests/browser/source-policy.ts';
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync } from 'node:fs';
 import {
   browserSpecs,
   validateSpecOwnership,
@@ -13,6 +14,8 @@ validateSpecOwnership(
   ),
   browserSpecs,
 );
+
+validateBrowserSources(Object.fromEntries(readdirSync(resolve(__dirname, 'tests/browser')).filter(file => file.endsWith('.spec.ts')).map(file => [file, readFileSync(resolve(__dirname, 'tests/browser', file), 'utf8')])));
 
 const artifactParent = resolve(__dirname, '../tmp');
 mkdirSync(artifactParent, { recursive: true });

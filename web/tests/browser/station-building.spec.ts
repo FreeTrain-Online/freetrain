@@ -1,6 +1,8 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { assertExact, waitForExact } from './assertions.ts';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
-import {canonicalState as state,ready,closePanel,openPanel} from './browser-helpers.ts';
+import { canonicalState as state, ready, closePanel } from './browser-helpers.ts';
 test.use({hasTouch:true});
 const profile=JSON.parse(readFileSync('src/generated/station-profile.json','utf8'));
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -17,7 +19,7 @@ async function point(p:Page,world:{x:number;y:number}){return p.locator('canvas.
 },world);}
 async function pick(p:Page,b:any,touch=false){
  await expect(p.locator('canvas.world-canvas')).toHaveAttribute('data-presentation','ready');
- await p.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
+ await waitForMapDraw(p);
  const recipe=catalog.renderRecipes.find((r:any)=>r.id===b.definition.recipeId),f=recipe.frames.find((f:any)=>f.cell[2]===1&&f.status==='ready');
  const mask=catalog.masks[f.masks['spring/day']];let row=-1,col=-1;
  for(let y=2;y<mask.length-2&&row<0;y++)for(let x=2;x<mask[y].length-2;x++)if(mask.slice(y-2,y+3).every((r:string)=>r.slice(x-2,x+3)==='11111')){row=y;col=x;break;}
@@ -72,7 +74,7 @@ test('station placement and removal near completed city buildings preserve deman
  const saved=await bytes(page);
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+removed.worldEpoch,{data:saved})).ok()).toBe(true);
  await expect.poll(async()=>(await state(page)).worldEpoch).not.toBe(removed.worldEpoch);
- expect((await state(page)).mixed).toEqual(removed.mixed);
+ await assertExact((await state(page)).mixed,removed.mixed,"(await state(page)).mixed");
 });
 
 for(const ja of [false,true])test(`playable station ${ja?'JA narrow touch':'EN desktop keyboard'} build name remove and exact save reopen with operator peer`,async({page,browser,baseURL})=>{
@@ -86,7 +88,7 @@ for(const ja of [false,true])test(`playable station ${ja?'JA narrow touch':'EN d
   expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer,ja?'en':'ja');
   await task(page,ja);await expect(page.locator('#building-catalog [data-catalog-variant]')).toHaveCount(35);
   const original=await bytes(page);await quote(page,ja,30,30);
-  expect(await bytes(page)).toEqual(original);await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-station-ghost-cells',String(type.sizeX*type.sizeY*type.height));
+  await assertExact(await bytes(page),original,"await bytes(page)");await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-station-ghost-cells',String(type.sizeX*type.sizeY*type.height));
   await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();
   if(ja){
    // Closing the upper catalog lets the task sheet grow. Pan the target
@@ -112,7 +114,7 @@ for(const ja of [false,true])test(`playable station ${ja?'JA narrow touch':'EN d
   await page.locator('canvas.world-canvas').focus();await page.keyboard.press('Enter');
   await expect.poll(async()=>(await state(page)).mixed?.stationGraph?.buildings.length).toBe(1);
   const built=await state(page),b=built.mixed.stationGraph.buildings[0];expect(b.location).toEqual({x:30,y:30,z:2});
-  await expect.poll(async()=>(await state(peer)).mixed?.stationGraph?.buildings).toEqual(built.mixed.stationGraph.buildings);
+  await waitForExact(async()=>(await state(peer)).mixed?.stationGraph?.buildings,built.mixed.stationGraph.buildings,"async()=>(await state(peer)).mixed?.stationGraph?.buildings");
   await page.locator('canvas.world-canvas').focus();await page.keyboard.press('i');await expect(page.getByRole('button',{name:ja?'確認':'Inspect',exact:true})).toHaveAttribute('aria-pressed','true');
   await pick(page,b,ja);await expect(page.getByTestId('confirmed-name')).toHaveText(b.name);
   const input=page.getByLabel(ja?'駅名':'Station name',{exact:true});await input.fill('Draft / 下書き');
@@ -123,13 +125,13 @@ for(const ja of [false,true])test(`playable station ${ja?'JA narrow touch':'EN d
   await page.getByRole('button',{name:ja?'パネルを閉じる':'Close panel',exact:true}).click();await dialog.getByRole('button',{name:ja?'駅名を適用':'Apply name',exact:true}).click();await expect(dialog).toHaveCount(0);
   await expect.poll(async()=>(await state(peer)).mixed.stationGraph.buildings[0].name).toBe('Central / 中央駅');
   const saved=await bytes(page),s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:saved})).ok()).toBe(true);await ready(page,ja?'ja':'en');
-  expect(await bytes(page)).toEqual(saved);await expect(page.locator('.primary-panel')).toHaveCount(0);
+  await assertExact(await bytes(page),saved,"await bytes(page)");await expect(page.locator('.primary-panel')).toHaveCount(0);
   await pick(page,b,ja);await expect(input).toHaveValue('Central / 中央駅');
   await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-playable-${ja?'ja':'en'}-properties.png`});
   await page.getByRole('button',{name:ja?'駅舎を撤去…':'Remove station building…',exact:true}).click();
   await expect(page.locator('.remove-task')).toBeVisible();await expect(page.locator('.station-task')).toHaveCount(0);
-  const confirm=page.getByRole('button',{name:ja?'撤去を確定':'Confirm removal',exact:true});await expect(confirm).toBeEnabled();expect(await bytes(page)).toEqual(saved);
-  await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();await expect(confirm).toBeDisabled();expect(await bytes(page)).toEqual(saved);
+  const confirm=page.getByRole('button',{name:ja?'撤去を確定':'Confirm removal',exact:true});await expect(confirm).toBeEnabled();await assertExact(await bytes(page),saved,"await bytes(page)");
+  await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();await expect(confirm).toBeDisabled();await assertExact(await bytes(page),saved,"await bytes(page)");
   if(!ja){await pick(page,b);await expect(confirm).toBeEnabled();}
   else{
    // Any occupied cell can target the building, including an upper storey.
@@ -147,6 +149,7 @@ test('station quotes and name drafts fence peer edits, Observer, late previews, 
  test.setTimeout(120000);
  let socket:WebSocketRoute|undefined,offline=false;
  await page.route('**/api/bootstrap?*',r=>offline?r.fulfill({status:503}):r.continue());
+ // transport-test: Force a disconnect while a construction decision is open.
  await page.routeWebSocket('**/api/session?*',r=>{const server=r.connectToServer();socket=r;server.onMessage(m=>r.send(m));r.onMessage(m=>server.send(m));});
  const context=await browser.newContext({baseURL}),peer=await context.newPage(),observerContext=await browser.newContext({baseURL}),observer=await observerContext.newPage();
  try{
@@ -167,16 +170,16 @@ test('station quotes and name drafts fence peer edits, Observer, late previews, 
   // A replaced world discards even a pending dirty decision, preserving the save.
   const saved=await bytes(page),s=await state(page);await input.fill('Replaced draft');await closePanel(page);await expect(page.locator('.decision-dialog')).toBeVisible();
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:saved})).ok()).toBe(true);
-  await expect(page.locator('.decision-dialog')).toHaveCount(0);await ready(page);await expect(page.locator('.primary-panel')).toHaveCount(0);expect(await bytes(page)).toEqual(saved);
+  await expect(page.locator('.decision-dialog')).toHaveCount(0);await ready(page);await expect(page.locator('.primary-panel')).toHaveCount(0);await assertExact(await bytes(page),saved,"await bytes(page)");
   await task(page);await quote(page,false,30,25);
   let release!:()=>void;const held=new Promise<void>(r=>{release=r;});let seen=false;
   await page.route('**/api/station/building/preview?*',async r=>{const response=await r.fetch();seen=true;await held;await r.fulfill({response});});
   await page.getByLabel('Station X',{exact:true}).fill('31');await page.locator('.station-task form').getByRole('button',{name:'Check placement',exact:true}).click();await expect.poll(()=>seen).toBe(true);
-  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();release();await expect(page.getByRole('button',{name:'Confirm station building',exact:true})).toBeDisabled();expect(await bytes(page)).toEqual(saved);
+  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();release();await expect(page.getByRole('button',{name:'Confirm station building',exact:true})).toBeDisabled();await assertExact(await bytes(page),saved,"await bytes(page)");
   await page.unroute('**/api/station/building/preview?*');
   await page.locator('canvas').focus();await page.keyboard.press('i');await pick(page,b);await input.fill('Offline draft');
   offline=true;socket!.close();await expect(page.getByRole('heading',{name:'Connection lost',exact:true})).toBeVisible();
-  offline=false;await ready(page);await pick(page,b);await expect(input).toHaveValue('Peer station');expect(await bytes(page)).toEqual(saved);
+  offline=false;await ready(page);await pick(page,b);await expect(input).toHaveValue('Peer station');await assertExact(await bytes(page),saved,"await bytes(page)");
  }finally{await context.close();await observerContext.close();}
 });
 
@@ -197,7 +200,7 @@ test('Remove tool retains station quotes across clock steps and cancels late rem
  await page.route('**/api/station/building/preview?*',async r=>{const response=await r.fetch();seen=true;await held;await r.fulfill({response});});
  await page.locator('.remove-task form').getByRole('button',{name:'Preview removal',exact:true}).click();await expect.poll(()=>seen).toBe(true);
  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();release();
- await expect(confirm).toBeDisabled();expect(await bytes(page)).toEqual(saved);
+ await expect(confirm).toBeDisabled();await assertExact(await bytes(page),saved,"await bytes(page)");
  await page.unroute('**/api/station/building/preview?*');
  await check.click();await expect(confirm).toBeEnabled();
  await page.locator('canvas').focus();await page.keyboard.press('Enter');
@@ -235,10 +238,10 @@ for(const mode of ['en-all','ja-one','ja-all'] as const)test(`P6-28 ${mode==='en
   expect(building.definition).toEqual(definition.reference);
   expect(built.entities.find((e:any)=>e.id===building.id).footprint).toHaveLength(definition.sizeX*definition.sizeY*definition.height);
   expect(built.mixed.queue.pending).toHaveLength(2);
-  const saved=await bytes(page);await replace(saved);expect(await bytes(page)).toEqual(saved);
+  const saved=await bytes(page);await replace(saved);await assertExact(await bytes(page),saved,"await bytes(page)");
   records.push({definition:definition.reference,building,timers:built.mixed.queue.pending});
   writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-family-${ja?'ja':'en'}-${records.length}.json`,saved);
-  await replace(baseline);expect(await bytes(page)).toEqual(baseline);
+  await replace(baseline);await assertExact(await bytes(page),baseline,"await bytes(page)");
  }
  expect(records).toHaveLength(mode==='ja-one'?1:35);
  writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-families-${mode}.json`,JSON.stringify(records,null,2));

@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { openPanel,ready } from './browser-helpers.ts';
 import { mkdtempSync,readFileSync,rmSync,truncateSync,writeFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
@@ -23,7 +24,7 @@ test('prototype and relabelled saves are rejected; writing is unavailable and wo
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'unsupported.json',mimeType:'application/json',buffer});
     await expect(page.getByTestId('save-feedback')).toContainText('Prototype saves cannot be loaded');
     await expect(page.locator('.decision-dialog')).toHaveCount(0);
-    expect(await bootstrap(page)).toEqual(before);
+    await assertExact(await bootstrap(page),before,"await bootstrap(page)");
   }
 });
 
@@ -32,13 +33,13 @@ test('malformed and oversized data report errors without replacing the live worl
   for(const [buffer,message] of [[Buffer.from('{broken'),'Invalid save data']] as const){
     await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'bad.json',mimeType:'application/json',buffer});
-    await expect(page.getByTestId('save-feedback')).toContainText(message);expect(await bootstrap(page)).toEqual(before);
+    await expect(page.getByTestId('save-feedback')).toContainText(message);await assertExact(await bootstrap(page),before,"await bootstrap(page)");
   }
   const directory=mkdtempSync(join(tmpdir(),'freetrain-oversized-')),path=join(directory,'large.json');
   try{
     writeFileSync(path,'x');truncateSync(path,256*1024*1024+1);
     await page.getByLabel('Upload save',{exact:true}).setInputFiles(path);
-    await expect(page.getByTestId('save-feedback')).toContainText('256 MiB');expect(await bootstrap(page)).toEqual(before);
+    await expect(page.getByTestId('save-feedback')).toContainText('256 MiB');await assertExact(await bootstrap(page),before,"await bootstrap(page)");
   }finally{rmSync(directory,{recursive:true,force:true});}
 });
 
@@ -58,6 +59,7 @@ test('ignored checkpoint diagnostic has a readable Japanese error and disables w
 
 test('bundled WAV and a transport sound fixture play once; reconnect never replays it', async ({ page }) => {
   let pushSound:((epoch:string)=>void)|undefined;
+ // transport-test: Inject a sound event to test gesture gating and reconnect deduplication.
   await page.routeWebSocket('**/api/session?*',route=>{route.connectToServer();pushSound=epoch=>route.send(JSON.stringify({type:'soundEvent',eventId:'audio-fixture-once',worldEpoch:epoch,kind:'stationArrived'}));});
   await page.addInitScript(() => {
     (window as unknown as { soundPlays: number }).soundPlays = 0;
@@ -108,5 +110,5 @@ test('replacement modal blocks the game, cancels without changes and preserves s
   await expect(dialog).toBeVisible(); await expect(page.locator('canvas')).toHaveAttribute('data-camera', camera!);
   await page.keyboard.press('Escape'); await expect(dialog).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Load slot', exact: true })).toBeFocused();
-  expect(await bootstrap(page)).toEqual(before);
+  await assertExact(await bootstrap(page),before,"await bootstrap(page)");
 });

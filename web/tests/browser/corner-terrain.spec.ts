@@ -1,3 +1,4 @@
+import { assertExact } from './assertions.ts';
 import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
 import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
@@ -28,13 +29,13 @@ test('corner EN coordinate preview is read-only, confirms exactly once, preserve
   await empty(page);const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','corner-canvas'));
   const before=await(await page.request.get('/api/saves/download')).body();
   await page.getByRole('button',{name:'Modify terrain',exact:true}).click();await target(page);
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),before,"await(await page.request.get('/api/saves/download')).body()");
   await expect(page.locator('.corner-changes li')).toHaveCount(4);
   await expect(page.locator('.tool-card')).toContainText('Cost: 0');
   await page.getByRole('button',{name:'Confirm terrain change',exact:true}).click();
   await expect.poll(async()=>JSON.parse((await(await page.request.get('/api/saves/download')).body()).toString()).packedTerrain.occupantCount).toBe(4);
   await expect(page.getByRole('button',{name:'Confirm terrain change',exact:true})).toBeDisabled();await expect(canvas).toHaveAttribute('data-instance','corner-canvas');
-  const after=await(await page.request.get('/api/saves/download')).body();await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(after);
+  const after=await(await page.request.get('/api/saves/download')).body();await page.reload();await ready(page);await assertExact(await(await page.request.get('/api/saves/download')).body(),after,"await(await page.request.get('/api/saves/download')).body()");
   await page.getByRole('button',{name:'Modify terrain',exact:true}).click();await page.getByLabel('Terrain action',{exact:true}).selectOption('lower');await target(page);
   await page.getByRole('button',{name:'Confirm terrain change',exact:true}).click();await expect.poll(async()=>JSON.parse((await(await page.request.get('/api/saves/download')).body()).toString()).packedTerrain.occupantCount).toBe(0);
   expect(errors).toEqual([]);
@@ -56,15 +57,17 @@ test('intersection selection stays fixed while held buttons raise and lower all 
   const p=await pixel(page,20,20,1,16,3);await page.mouse.click(p.x,p.y);
   await expect(page.locator('canvas')).toHaveAttribute('data-terrain-corner','20,20');
   await expect(page.locator('.corner-changes li')).toHaveCount(4);
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+  await assertExact(await(await page.request.get('/api/saves/download')).body(),before,"await(await page.request.get('/api/saves/download')).body()");
   const raise=page.getByRole('button',{name:'Raise corner',exact:true}),lower=page.getByRole('button',{name:'Lower corner',exact:true});
   await raise.click();await expect.poll(async()=>Number((await state(page)).terrain.geometryRevision)).toBe(1);
+ // Intentional bounded absence window: verify no delayed writes/repeats after the observed cancellation or stop.
   await page.waitForTimeout(300);expect(Number((await state(page)).terrain.geometryRevision)).toBe(1);
   await raise.hover();await page.mouse.down();
   await expect.poll(async()=>Number((await state(page)).terrain.geometryRevision)).toBeGreaterThanOrEqual(2);
   await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
   // A commit sent before release may finish after the hold becomes inactive.
   await expect.poll(()=>pending.size).toBe(0);
+ // Intentional bounded absence window: verify no delayed writes/repeats after the observed cancellation or stop.
   const raised=await state(page);await page.waitForTimeout(350);expect((await state(page)).terrain.geometryRevision).toBe(raised.terrain.geometryRevision);
   expect(raised.terrain.occupants).toHaveLength(4);
   expect(raised.terrain.occupants.every((o:any)=>o.ne+o.se+o.sw+o.nw>=2)).toBe(true);
@@ -74,6 +77,7 @@ test('intersection selection stays fixed while held buttons raise and lower all 
   await expect.poll(async()=>Number((await state(page)).terrain.geometryRevision)).toBeGreaterThan(Number(raised.terrain.geometryRevision));
   await page.keyboard.up(' ');await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
   await expect.poll(()=>pending.size).toBe(0);
+ // Intentional bounded absence window: verify no delayed writes/repeats after the observed cancellation or stop.
   const stopped=await state(page);await page.waitForTimeout(350);expect((await state(page)).terrain.geometryRevision).toBe(stopped.terrain.geometryRevision);
   await raise.hover();await page.mouse.down();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','true');
   await page.keyboard.press('Escape');await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
@@ -163,7 +167,7 @@ test('large terrain edits redraw locally and match a full render with overlappin
    await expect(canvas).toHaveAttribute('data-terrain-update','full');expect(await hash()).toBe(local);
   }
   const after=JSON.parse((await(await page.request.get('/api/saves/download')).body()).toString());expect(after.packedTerrain.occupantCount).toBe(1);
-  expect(Buffer.from(after.packedTerrain.occupants,'base64')).toEqual(data.subarray(49));
+  await assertExact(Buffer.from(after.packedTerrain.occupants,'base64'),data.subarray(49),"Buffer.from(after.packedTerrain.occupants,'base64')");
   await expect(canvas).toHaveAttribute('data-instance','local-terrain');expect(await canvas.getAttribute('data-camera')).toBe(camera);expect(errors).toEqual([]);
   console.log(JSON.stringify({configuration:process.env.FREETRAIN_ONLINE_TEST_SERVER_CONFIGURATION??'Release',dimensions:'400x600x24',timings}));
  }finally{await replace(page,original);}

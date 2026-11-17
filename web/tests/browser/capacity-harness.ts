@@ -1,3 +1,6 @@
+import { waitForMapDraw } from './map-picking.ts';
+import { assertSaveBytes } from './assertions.ts';
+import { restartWorldServer } from './session.ts';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
@@ -52,7 +55,7 @@ for(const mode of modes)test(`${phase} ${mode} legal resources, feedback, sustai
  const settled=async()=>{await ready(page);await expect(canvas).toHaveAttribute('data-assets','ready');await expect(canvas).toHaveAttribute('data-presentation','ready');await expect(canvas).toHaveAttribute('data-refinement','ready');};
  console.log(mode,'uploaded');const cold:number[]=[];
  for(let n=0;n<3;n++){const start=Date.now();await page.reload();await settled();cold.push(Date.now()-start);}
- expect(await saved()).toEqual(bytes);
+ await assertSaveBytes(await saved(),bytes,{phase:'capacity checkpoint',peer:'owner'});
  // Center on the first actual deployed car rather than the empty center of a large map.
  const initial=JSON.parse(bytes.toString()),target=initial.mixed.fleet.trains[0].cars[0].state.location;
  async function centerFleet(){
@@ -94,7 +97,7 @@ for(const mode of modes)test(`${phase} ${mode} legal resources, feedback, sustai
     // an unresolved command or count recovery as successful feedback.
     await page.evaluate(()=>(window as any).cap.delay=0);
     expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+(await metadata()).worldEpoch,{data:bytes,timeout:60000})).ok()).toBe(true);
-    await page.reload();await settled();expect(await saved()).toEqual(bytes);
+    await page.reload();await settled();await assertSaveBytes(await saved(),bytes,{phase:'capacity checkpoint',peer:'owner'});
     break samples;
    }
   }
@@ -115,7 +118,7 @@ for(const mode of modes)test(`${phase} ${mode} legal resources, feedback, sustai
    if(running)expect(state.mixed.accounts.transactions.some((t:any)=>t.operation==='stationUnload'&&BigInt(t.revenue)>0n)).toBe(true);}
 
   expect(state.mixed.fleet.trains).toHaveLength(fixture.trains);
-  if(running)expect(Math.min(...state.mixed.fleet.trains.map((t:any)=>t.moveCount))).toBeGreaterThan(0);else expect(await saved()).toEqual(bytes);
+  if(running)expect(Math.min(...state.mixed.fleet.trains.map((t:any)=>t.moveCount))).toBeGreaterThan(0);else await assertSaveBytes(await saved(),bytes,{phase:'capacity checkpoint',peer:'owner'});
   const view=await canvas.evaluate(c=>({camera:c.dataset.camera,zoom:c.dataset.zoom,width:c.width,height:c.height,dpr:devicePixelRatio}));
   windows.push({running,view,elapsedMs:Date.now()-start,frameMs:stats(trace.frames),paintMs:stats(trace.paint),trace,finalTick:state.clock?.absoluteMinute??state.tick,
    moves:state.mixed.fleet.trains.map((t:any)=>t.moveCount),transactions:state.mixed.accounts?.transactions?.length,stationStats:station?state.mixed.stationGraph.buildings.map((b:any)=>({id:b.id,passengers:b.passengers,exports:b.exports,imports:b.imports,trains:b.trains})):undefined});
@@ -124,8 +127,8 @@ for(const mode of modes)test(`${phase} ${mode} legal resources, feedback, sustai
  const images=await page.evaluate(()=>(window as any).cap.images);
  const final=await saved();const saveStart=Date.now();await openPanel(page,'saves');await page.getByLabel(text.saveSlot,{exact:true}).selectOption('slot2');await button('saveGame').click();await expect(page.getByTestId('save-feedback')).toHaveText(text.saved);const saveMs=Date.now()-saveStart;await closePanel(page);
  const context=await browser.newContext({baseURL}),peer=await context.newPage();const joinStart=Date.now();await peer.goto('/');await ready(peer);await expect(peer.locator('canvas')).toHaveAttribute('data-assets','ready');const joinMs=Date.now()-joinStart;await context.close();
- const restartStart=Date.now();await worldServer.restart!();await page.request.post('/api/access',{data:{secret:''}});await page.reload();await settled();const restartMs=Date.now()-restartStart;expect(await saved()).toEqual(final);
- await centerFleet();await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));await settled();await page.screenshot({path:join(output,mode+'.png'),fullPage:true});expect(errors).toEqual([]);
+ const restartStart=Date.now();await restartWorldServer(worldServer);await page.request.post('/api/access',{data:{secret:''}});await page.reload();await settled();const restartMs=Date.now()-restartStart;await assertSaveBytes(await saved(),final,{phase:'capacity checkpoint',peer:'owner'});
+ await centerFleet();await waitForMapDraw(page,60000);await settled();await page.screenshot({path:join(output,mode+'.png'),fullPage:true});expect(errors).toEqual([]);
  writeFileSync(join(output,mode+'.json'),JSON.stringify({mode,browser:browser.version(),viewport:page.viewportSize(),fixtureSha256:hash(bytes),uploadMs,stationPreviewMs:station?stationPreviewMs:undefined,coldMs:cold,
   feedback:{local:stats(feedback.local),rtt100:stats(feedback.rtt100),raw:feedback},feedbackFailures,windows,memorySamples,browserPeakRss,images,
   decodedImageRgbaEstimateBytes:Object.values(images).reduce((s:number,v:any)=>s+v.rgbaBytes,0),saveMs,joinMs,restartMs,finalSha256:hash(final),errors},null,2)+'\n');

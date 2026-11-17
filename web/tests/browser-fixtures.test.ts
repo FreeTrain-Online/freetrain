@@ -203,3 +203,22 @@ Deno.test('browser timing artifacts preserve setup and separate worker measureme
     rmSync(directory, { recursive: true, force: true });
   }
 });
+
+Deno.test('mixed checkpoint refinement accepts independent fleet station and geometry worlds', async () => {
+  const { requireMixedState } = await import('./browser/session.ts');
+  const { parseMessageValue } = await import('../src/lib/protocol.ts');
+  for (const [name, sections, absent] of [
+    ['fleet', ['fleet', 'queue'], 'stationGraph'],
+    ['stations', ['stationGraph', 'queue'], 'fleet'],
+    ['mixed', [], 'fleet'],
+  ] as const) {
+    const input = JSON.parse(readFileSync(new URL(`../../prototype/protocol/fixtures/snapshot-${name}.json`, import.meta.url), 'utf8'));
+    const state = parseMessageValue(input);
+    if (state.type !== 'snapshot') throw new Error('Expected snapshot fixture');
+    equal(state.mixed?.[absent], undefined);
+    equal(requireMixedState(state, ...sections), state);
+    deepStrictEqual(requireMixedState(state).mixed, input.mixed);
+    throws(() => requireMixedState(state, absent), new RegExp(`Expected mixed.${absent}`));
+  }
+  throws(() => requireMixedState(undefined), /Expected a mixed checkpoint/);
+});
