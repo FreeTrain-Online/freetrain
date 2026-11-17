@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import type * as Runtime from './session-observation.ts';
@@ -11,6 +11,8 @@ import type * as Runtime from './session-observation.ts';
 export function prepareSessionRuntime(root: string) {
   const path = join(root, 'session-observer.cjs');
   if (!existsSync(path)) {
+    // CI can supply an artifact root that has not been created yet.
+    mkdirSync(root, { recursive: true });
     const code = execFileSync('deno', ['run', '-A', 'scripts/bundle-rendering-tests.ts', 'tests/browser/session-observation.ts', 'cjs'], { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
     if (!code.trim()) throw new Error('Empty session observation runtime');
     writeFileSync(path, code);
