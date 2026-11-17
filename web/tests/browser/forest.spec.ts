@@ -20,7 +20,7 @@ for(const ja of [false,true])test(`P7-17 forest ${ja?'JA phone touch':'EN keyboa
   await page.goto('/');await ready(page,locale);const initial=await state(page);
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync(browserFixture('forest'))})).ok()).toBe(true);await ready(page,locale);
   await peer.goto('/');await ready(peer);await page.getByRole('button',{name:t.landTask,exact:true}).click();
-  await page.getByLabel(t.landAction,{exact:true}).selectOption('cover');const catalog=page.getByLabel(t.groundType,{exact:true});expect(await catalog.locator('option').count()).toBe(43);
+  await page.getByLabel(t.landAction,{exact:true}).selectOption('cover');const catalog=page.getByLabel(t.groundType,{exact:true});expect(await catalog.locator('option').count()).toBe(45);
   // Forest thumbnails use authored art without shared random draws.
   await catalog.selectOption('{FBD0CD06-016A-4037-AB15-02040218CBAA}-m');await expect(page.locator('.land-task .catalog-preview img')).toBeVisible();
   const original=await bytes(page);await quote(page,t);const confirm=page.getByRole('button',{name:t.groundConfirm,exact:true});await expect(confirm).toBeEnabled();

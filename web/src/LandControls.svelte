@@ -3,7 +3,7 @@
  import ObjectProvenance from './ObjectProvenance.svelte';
  import {untrack} from 'svelte';
  import {messages} from './lib/localization.ts';
- import {landQuery,staticGroundDefinitions,groundCatalogDefinitions,mixedGroundDefinitions,forestGroundLabels} from './lib/land-edit.ts';
+ import {landQuery,staticGroundDefinitions,groundCatalogDefinitions,mixedGroundDefinitions,forestGroundLabels,riceGroundDefinitions} from './lib/land-edit.ts';
  import {currentQuote,constructionFence} from './lib/quote-validity.ts';
  import {WorldSpace} from './lib/map-geometry.ts';
  import {primaryAction} from './lib/primary-action.ts';
@@ -45,13 +45,13 @@
  <form onsubmit={e=>{e.preventDefault();first=undefined;void check();}}>
  <fieldset disabled={view.pending}>
  <label>{text.landAction}<select aria-label={text.landAction} bind:value={action}><option value="buy">{text.landBuy}</option><option value="sell">{text.landSell}</option><option value="cover">{text.groundPlace}</option><option value="removeCover">{text.groundRemove}</option></select></label>
- {#if action==='cover'}<label>{text.groundType}<select aria-label={text.groundType} bind:value={definitionId}>{#each groundCatalogDefinitions as d}<option value={d.reference.recipeId}>{d.handler==='forest'?`${text[forestGroundLabels(d.reference.recipeId).species]} / ${text[forestGroundLabels(d.reference.recipeId).ground]}`:d.handler==='random-land'?`${text.groundMixed} ${mixedGroundDefinitions.indexOf(d)+1}`:`${text.groundFarmland} ${staticGroundDefinitions.indexOf(d)%4+1} / ${Math.floor(staticGroundDefinitions.indexOf(d)/4)+1}`} · ¥{BigInt(d.price).toLocaleString(view.locale)}</option>{/each}</select></label><CatalogPreview id={definitionId} unavailable={text.geometryFailed}/><ObjectProvenance id={definitionId} locale={view.locale}/>{/if}
+ {#if action==='cover'}<label>{text.groundType}<select aria-label={text.groundType} bind:value={definitionId}>{#each groundCatalogDefinitions as d}<option value={d.reference.recipeId}>{d.handler==='forest'?`${text[forestGroundLabels(d.reference.recipeId).species]} / ${text[forestGroundLabels(d.reference.recipeId).ground]}`:d.handler==='rice'?`${text.groundRicefield} ${riceGroundDefinitions.indexOf(d)+1}`:d.handler==='random-land'?`${text.groundMixed} ${mixedGroundDefinitions.indexOf(d)+1}`:`${text.groundFarmland} ${staticGroundDefinitions.indexOf(d)%4+1} / ${Math.floor(staticGroundDefinitions.indexOf(d)/4)+1}`} · ¥{BigInt(d.price).toLocaleString(view.locale)}</option>{/each}</select></label><CatalogPreview id={definitionId} unavailable={text.geometryFailed}/><ObjectProvenance id={definitionId} locale={view.locale}/>{/if}
  <div class="form-actions"><label>{text.landAnchorX}<input aria-label={text.landAnchorX} type="number" bind:value={ax} oninput={cancelDraft}/></label><label>{text.landAnchorY}<input aria-label={text.landAnchorY} type="number" bind:value={ay} oninput={cancelDraft}/></label></div>
  <div class="form-actions"><label>{text.landEndX}<input aria-label={text.landEndX} type="number" bind:value={ex} oninput={cancelDraft}/></label><label>{text.landEndY}<input aria-label={text.landEndY} type="number" bind:value={ey} oninput={cancelDraft}/></label></div>
  <label>{text.landLevel}<input aria-label={text.landLevel} type="number" bind:value={level} oninput={()=>{autoLevel=false;cancelDraft();}}/></label>
  <label><input type="checkbox" bind:checked={autoLevel} onchange={cancelDraft}/>{text.railAutoLevel}</label>
  <button type="button" onclick={()=>{cancelDraft();onpick();}}>{text.landPick}</button>
- </fieldset><p class="hint">{action==='cover'||action==='removeCover'?`${text.groundHelp} ${text.forestPlantHelp}`:text.landHelp}</p><button disabled={blocked||status==='checking'}>{text[action==='cover'||action==='removeCover'?'groundCheck':'landCheck']}</button>
+ </fieldset><p class="hint">{action==='cover'||action==='removeCover'?definition&&riceGroundDefinitions.some(d=>d.reference.recipeId===definition.recipeId)?text.ricefieldHelp:`${text.groundHelp} ${text.forestPlantHelp}`:text.landHelp}</p><button disabled={blocked||status==='checking'}>{text[action==='cover'||action==='removeCover'?'groundCheck':'landCheck']}</button>
  </form>
  <p role="status" data-testid="land-status">{status==='checking'?text.checkingGeometry:status==='failed'?text.geometryFailed:status==='stale'?text.railStale:result?result.legal?text.cityLegal:result.reason==='noEligibleCells'?text.landNoCells:text.cityInvalid:text.landPick}</p>
  {#if result}<details><summary>{text.landSkipped}: {skipped.length}</summary><ul>{#each skipped as c}<li>{c.position.x}, {c.position.y}, {c.position.z} · {text[skipReasons[c.status as keyof typeof skipReasons]??'landNotProperty']}</li>{/each}</ul></details>

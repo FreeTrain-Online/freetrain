@@ -72,12 +72,12 @@ export class CityRenderPlan {
     }
     for(const ground of read.mixed?.city?.ground??[]){
       const d=cityProfile.ground.find(d=>d.reference.recipeId===ground.definition.recipeId);
-      if(d?.handler!=='land-0d')continue; // Later land lifecycle slices own rice/vinyl.
+      if(!d||!['land-0d','rice'].includes(d.handler))continue;
       const p=ground.location,hv=space.storage(p),index=hv.v*space.horizontalSize+hv.h;
       const target:CityTarget={kind:'terrain',id:ground.id,position:p,surface:'ground'};
       this.occupied.add(key(p));this.columnIndices.add(index);
       const column=this.columns.get(index)??{operations:[],bases:[]};this.columns.set(index,column);
-      for(const layer of instantiate(checked(ground.definition.recipeId),ground.id,[p.x-space.centerX,p.y,p.z])){this.layers.push(layer);column.operations.push({target,layer});}
+      for(const layer of instantiate(checked(ground.definition.recipeId),ground.id,[p.x-space.centerX,p.y,p.z],d.handler==='rice'?{selectors:{x:Math.floor(ground.variant/3),y:ground.variant%3}}:{})){this.layers.push(layer);column.operations.push({target,layer});}
     }
     for(const property of read.mixed?.city?.properties??[]){
       const p=property.location,hv=space.storage(p),index=hv.v*space.horizontalSize+hv.h;

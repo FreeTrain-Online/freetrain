@@ -1072,6 +1072,8 @@
   "groundPlace": "地表を配置",
   "groundRemove": "地表を撤去",
   "groundType": "地表の種類",
+  "groundRicefield": "水田",
+  "ricefieldHelp": "水田の角・辺の表示は選択した範囲で決まります。設置できた各マスの150万円に加え、設置できないマスも含めた選択範囲の各マスに150万円がかかります。季節の表示はゲーム内の暦に従い、収穫収入はありません。",
   "groundFarmland": "畑",
   "groundUneven": "地表の高さが異なる",
   "groundNotCover": "地表・森林がない",

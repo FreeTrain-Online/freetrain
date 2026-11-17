@@ -1072,6 +1072,8 @@
   "groundPlace": "Place ground cover",
   "groundRemove": "Remove ground cover",
   "groundType": "Ground cover type",
+  "groundRicefield": "Ricefield",
+  "ricefieldHelp": "Ricefields keep the selected rectangle’s corner and edge tiles. Review includes ¥1,500,000 per placed cell plus ¥1,500,000 per selected cell, including skipped cells. Seasonal appearance follows the game calendar; no harvest income.",
   "groundFarmland": "Farmland",
   "groundUneven": "Different ground level",
   "groundNotCover": "No ground cover or forest",

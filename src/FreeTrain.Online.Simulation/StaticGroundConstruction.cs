@@ -5,6 +5,8 @@ namespace FreeTrain.Online.Simulation;
 
 public static class StaticGroundConstruction
 {
+    // Source min takes precedence for singleton rows/columns. Variant = X*3+Y.
+    private static int RiceIndex(int min,int value,int max)=>value==min?0:value==max?2:1;
     public static LandTradePlan Preview(CityCandidate before,Location anchor,Location end,string action,DefinitionReference? definition)
     {
         var world=before.Construction.World;var graph=world.City!;
@@ -13,8 +15,8 @@ public static class StaticGroundConstruction
             world.Terrain.At(anchor).Relation!=GroundRelation.Ground || remove && definition!=null || !remove && definition==null)
             throw new ArgumentException("Invalid ground selection.");
         var d=remove?null:graph.Profile.GroundDefinition(definition!);
-        if(d!=null && (d.Handler is not ("land-0d" or "random-land") || graph.Profile.Bindings.Single(b=>b.Reference==definition).PlayerCannotBuild || d.GridX!=1 || d.GridY!=1))
-            throw new ArgumentException("Unavailable static ground definition.");
+        if(d!=null && (d.Handler is not ("land-0d" or "random-land" or "rice") || graph.Profile.Bindings.Single(b=>b.Reference==definition).PlayerCannotBuild || d.GridX!=1 || d.GridY!=1))
+            throw new ArgumentException("Unavailable ground definition.");
         var sx=Math.Abs((long)end.X-anchor.X)+1;var sy=Math.Abs((long)end.Y-anchor.Y)+1;
         if(sx>LandTrading.MaximumCells || sy>LandTrading.MaximumCells || sx*sy>LandTrading.MaximumCells)
             throw new ArgumentException("Ground selection capacity exceeded.");
@@ -29,7 +31,7 @@ public static class StaticGroundConstruction
             var existing=graph.State.Ground.SingleOrDefault(g=>g.Id==owner?.Id);
             var forest=world.Terrain.OccupantAt(p)?.Forest!=null;
             var status=relation==GroundRelation.Outside?"outside":relation!=GroundRelation.Ground?"uneven":
-                remove ? (forest || existing!=null && graph.Profile.GroundDefinition(existing.Definition).Handler=="land-0d")?"removable":"notCover":
+                remove ? (forest || existing!=null && graph.Profile.GroundDefinition(existing.Definition).Handler is "land-0d" or "rice")?"removable":"notCover":
                 owner==null || owner.SilentlyReclaimable?"placeable":"protected";
             DefinitionReference? selected=null;
             if(status is "placeable" or "removable")
@@ -41,13 +43,26 @@ public static class StaticGroundConstruction
                         throw new ArgumentException("Unavailable ground reclamation handler.");
                     reclaimed.Add(new(owner,0)); // Silent reuse/removal does not purchase the entity or land.
                 }
-                if(!remove){selected=random==null?definition!:d!.Selections[random["land-selection"].Next(d.Selections.Length)];added.Add(new(next,0,selected,p,true));next=checked(next+1);}
+                if(!remove)
+                {
+                    selected=random==null?definition!:d!.Selections[random["land-selection"].Next(d.Selections.Length)];
+                    var variant=d!.Handler=="rice"?
+                        RiceIndex(Math.Min(anchor.X,end.X),p.X,Math.Max(anchor.X,end.X))*3+
+                        RiceIndex(Math.Min(anchor.Y,end.Y),p.Y,Math.Max(anchor.Y,end.Y)):0;
+                    added.Add(new(next,0,selected,p,true,variant));next=checked(next+1);
+                }
             }
             cells.Add(new(p,status,0,owner?.Id,selected));
         }
         // LandBuilderContribution books the full selected area, including skipped
         // cells. Review shows this exact source charge, even for an all-blocked rectangle.
-        var amount=remove?0:checked(checked(d!.Price*sx)*sy);
+        var areaAmount=remove?0:checked(checked(d!.Price*sx)*sy);
+        // RiceFieldBuilder spends per successful cell BEFORE the inherited
+        // LandBuilderContribution wrapper spends the full rectangle area.
+        var booking=remove?ConstructionBooking.None:d!.Handler=="rice"?
+            new ConstructionBooking(added.Select(_=>new AccountCharge(AccountGenre.Subsidiaries,d.Price)).Append(new(AccountGenre.Subsidiaries,areaAmount))):
+            ConstructionBooking.Spend(areaAmount,AccountGenre.Subsidiaries);
+        var amount=booking.Total;
         var state=CityConstruction.Without(graph.State,removed);
         state=state with {Ground=state.Ground.AddRange(added),Producers=state.Producers.AddRange(added.Where(g=>graph.Profile.GroundDefinition(g.Definition).Population!=null).Select(g=>new CityProducer(g.Id,g.Definition,1)))};
         var terrain=world.Terrain;
@@ -63,7 +78,7 @@ public static class StaticGroundConstruction
             }
             terrain=new(terrain,new Dictionary<int,TerrainCell>(),edits,next,trees);
         }
-        var construction=CityConstruction.Replace(before.Construction,state,next,remove?ConstructionBooking.None:ConstructionBooking.Spend(amount,AccountGenre.Subsidiaries),
+        var construction=CityConstruction.Replace(before.Construction,state,next,booking,
             new(before.Clock.AbsoluteMinute),remove?"staticGroundRemoval":"staticGroundConstruction",terrain:terrain,reclaimed:removed,
             attachMany:added.Where(g=>graph.Profile.GroundDefinition(g.Definition).Population!=null).Select(g=>g.Id));
         return new(before,new(construction,before.Clock,random?.Capture()??before.Random),cells.ToImmutable(),reclaimed.ToImmutable(),amount);

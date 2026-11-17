@@ -36,6 +36,7 @@ export function catalogPreviewLayers(content:RenderCatalog,id:string,direction?:
   content=staticGroundArt(content);
   const recipe=content.renderRecipes.find(recipe=>recipe.id===id);
   if(!recipe)throw new Error('Catalog preview unavailable');
+  if(recipe.handler==='rice')return traversal(Array.from({length:9},(_,i)=>instantiate(recipe,id,[Math.floor(i/3),i%3,0],{selectors:{x:Math.floor(i/3),y:i%3}})).flat());
   if(recipe.handler==='random-land'){
     const ids=recipe.fields.lands as string[],width=Math.ceil(Math.sqrt(ids.length));
     return traversal(ids.flatMap((id,i)=>{const r=content.renderRecipes.find(r=>r.id===id);if(r?.handler!=='land-0d')throw new Error('Mixed ground preview unavailable');return instantiate(r,id,[i%width,Math.floor(i/width),0]);}));

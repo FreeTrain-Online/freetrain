@@ -1,3 +1,8 @@
+**P7-18 ricefields — 17 November:** [Ricefield authoring and calendar lifecycle](doc/web-parity-ricefields.md)
+adds both source styles to EN/JA Land and ground cover (`O`), exact rectangle
+edge/corner art, the source’s successful-cell plus full-area charges, real
+agricultural listeners, free removal and exact peer/save/restart continuation.
+
 **P7-17 forest authoring — 17 November:** [P7-17 forest authoring](doc/web-parity-forest-authoring.md) adds all18 bundled
 forest treatments to Land and ground cover (`O`), with paid rectangle planting,
 owned slope replanting, EN/JA source-art previews and free forest removal.

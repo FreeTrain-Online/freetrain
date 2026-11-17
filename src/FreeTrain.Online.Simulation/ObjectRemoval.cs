@@ -82,7 +82,7 @@ public static class ObjectRemoval
     public static (MixedWorld? Candidate, string Kind, string? Reason) Mixed(MixedWorld world, Location p)
     {
         if(world.City is {} city && city.State.Ground.SingleOrDefault(g=>g.Location==p) is {} ground &&
-            city.Profile.GroundDefinition(ground.Definition).Handler=="land-0d")
+            city.Profile.GroundDefinition(ground.Definition).Handler is "land-0d" or "rice")
         {
             var groundIds=new HashSet<long>{ground.Id};
             var graph=new CityGraph(city.Profile,CityConstruction.Without(city.State,groundIds));

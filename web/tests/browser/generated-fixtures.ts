@@ -11,6 +11,7 @@ type FixtureFamily = {
 
 /** Every generated input and companion oracle has one producer and run-owned path. */
 export const fixtureFamilies = {
+  ricefield: {env:'FREETRAIN_RICEFIELD_OUTPUT',producers:['Ricefield_browser_seed_and_real_successor_fixtures'],suffixes:['','.before.json','.snapshot.json','.delta.json','.removed.json','.removed.delta.json'],consumers:['ricefield.spec.ts']},
   forest: {env:'FREETRAIN_FOREST_OUTPUT',producers:['Forest_browser_seed_and_real_successor_fixtures'],suffixes:['','.before.json','.snapshot.json','.delta.json','.removed.json','.removed.delta.json'],consumers:['forest.spec.ts']},
   staticGround: {env:'FREETRAIN_STATIC_GROUND_OUTPUT',producers:['Static_ground_browser_seed_and_real_successors_export_exact_providers_and_teardown'],suffixes:['','.before.json','.snapshot.json','.delta.json','.removed.json','.removed.delta.json'],consumers:['static-ground.spec.ts']},
   land: {

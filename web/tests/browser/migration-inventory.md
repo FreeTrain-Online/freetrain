@@ -124,3 +124,8 @@ The complete default suite is deliberately left to the user for local execution.
 - The synthetic demo test waited for a draw after deliberately hiding the page, where painting is suspended. Its two-frame absence-observation window is restored. The ready-draw helper also records completed demo draws independently of the live connection gate and requires the rendered reduced-motion preference to match the current media query. A held-frame control checks preference changes cannot consume an earlier ready draw.
 
 The complete default result remains failed historical evidence. Focused repair results and artifact roots are recorded in `tmp/web-browser-test-overhaul-checklist.md`; a combined clean default-suite acceptance remains separate.
+
+P7-18 adds `ricefield.spec.ts` after this migration baseline. Both EN keyboard / JA
+phone-touch journeys use shared session observations, receipt correlation,
+full peer checkpoints, exact bounded save comparisons and managed checkpoint
+restart. No raw socket adapter, unchecked restart or fixed wait is added.

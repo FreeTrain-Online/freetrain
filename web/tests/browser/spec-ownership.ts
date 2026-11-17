@@ -23,6 +23,7 @@ export const browserSpecs = {
     'land-trading.spec.ts',
     'static-ground.spec.ts',
     'forest.spec.ts',
+    'ricefield.spec.ts',
     'city-building.spec.ts',
     'city-transport.spec.ts',
     'city-heat.spec.ts',
