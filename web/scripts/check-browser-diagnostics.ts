@@ -201,6 +201,26 @@ async function run(label: string, mode?: string) {
   );
 }
 console.log(`Diagnostics acceptance artifacts: ${root}`);
+// Passing cases exercise reuse of the same worker (failed cases replace it).
+{
+  const directory = join(root, 'storage');
+  mkdirSync(directory);
+  const run = await new Deno.Command(Deno.execPath(), {
+    cwd: web,
+    env: { FREETRAIN_BROWSER_ARTIFACT_ROOT: directory, FREETRAIN_DIAGNOSTICS_STORAGE: '1' },
+    args: ['run', '-A', 'npm:@playwright/test@1.64.1', 'test', '--config', 'tests/browser-harness/playwright.config.ts'],
+    stdout: 'piped', stderr: 'piped',
+  }).output();
+  writeFileSync(join(directory, 'console.log'), new TextDecoder().decode(run.stdout) + new TextDecoder().decode(run.stderr));
+  equal(run.code, 0, `Storage regression failed; see ${directory}/console.log`);
+  const summary = JSON.parse(text(join(directory, 'summary.json')));
+  equal(summary.results.length, 2);
+  equal(summary.results[0].workerIndex, summary.results[1].workerIndex);
+  const inline = attachment(summary.results[1], 'inline-evidence');
+  equal(text(inline), 'retained bytes');
+  records.push({ label: 'storage', directory, expectedFailures: 0, exitCode: run.code });
+  console.log('Verified storage: passing cases reclaim raw traces and retain inline evidence as files.');
+}
 await run('concurrent-1');
 await run('concurrent-2');
 for (const mode of ['setup', 'restart', 'restart-success', 'teardown']) {

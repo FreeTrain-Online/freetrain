@@ -32,6 +32,7 @@ export function boundedLines(
 export default class BoundedReporter implements Reporter {
   private root = '';
   private results: object[] = [];
+  private outcomes = new Map<TestCase, { title: string; status: TestResult['status'] }>();
   private globalErrors: string[] = [];
   private sequence = 0;
   private rejectedCoverage = false;
@@ -48,13 +49,32 @@ export default class BoundedReporter implements Reporter {
     writeFileSync(path, JSON.stringify(errors, null, 2));
     return path;
   }
+  private attachmentReferences(result: TestResult) {
+    return result.attachments.map(({ body, ...attachment }, index) => {
+      if (body && !attachment.path) {
+        const directory = join(this.root, 'attachments');
+        mkdirSync(directory, { recursive: true });
+        attachment.path = join(
+          directory,
+          `${this.results.length}-${index}-${attachment.name.replace(/[^a-zA-Z0-9_.-]/g, '_')}`,
+        );
+        writeFileSync(attachment.path, body);
+      }
+      return { ...attachment, ...(body ? { bytes: body.length } : {}) };
+    });
+  }
   onTestEnd(test: TestCase, result: TestResult) {
     if (result.status === 'skipped' || result.retry > 0) {
       this.rejectedCoverage = true;
     }
     const title = test.titlePath().join(' › ');
+    // A retry updates the same case instead of counting it as another test.
+    this.outcomes.set(test, { title, status: result.status });
     const failed = result.status !== 'passed' && result.status !== 'skipped';
     let errorPath: string | undefined;
+    let attachments:
+      | ReturnType<BoundedReporter['attachmentReferences']>
+      | undefined;
     if (failed || result.errors.length) {
       errorPath = this.errorArtifact(
         result.errors,
@@ -109,8 +129,9 @@ export default class BoundedReporter implements Reporter {
         'errors',
         `${this.sequence}-attachments.json`,
       );
-      writeFileSync(manifest, JSON.stringify(result.attachments, null, 2));
-      const references = result.attachments.filter((a) => a.path).map((a) =>
+      attachments = this.attachmentReferences(result);
+      writeFileSync(manifest, JSON.stringify(attachments, null, 2));
+      const references = attachments.filter((a) => a.path).map((a) =>
         `${a.name}: ${a.path}`
       );
       const header = [
@@ -146,7 +167,8 @@ export default class BoundedReporter implements Reporter {
       workerIndex: result.workerIndex,
       duration: result.duration,
       errorPath,
-      attachments: result.attachments,
+      // Numeric Buffer arrays made the summary much larger than the evidence.
+      attachments: attachments ?? this.attachmentReferences(result),
     });
   }
   onError(error: TestError) {
@@ -168,6 +190,10 @@ export default class BoundedReporter implements Reporter {
       ? 'failed'
       : result.status;
     const summary = join(this.root, 'summary.json');
+    const outcomes = [...this.outcomes.values()];
+    const passed = outcomes.filter(test => test.status === 'passed').length;
+    const skipped = outcomes.filter(test => test.status === 'skipped').length;
+    const failed = outcomes.filter(test => test.status !== 'passed' && test.status !== 'skipped');
     writeFileSync(
       summary,
       JSON.stringify(
@@ -185,9 +211,13 @@ export default class BoundedReporter implements Reporter {
       ),
     );
     console.log(
-      `Browser run ${status}: ${this.results.length} results. Summary: ${summary}\nMachine-readable report: ${
-        join(this.root, 'report.json')
-      }`,
+      [
+        `Browser run ${status}: ${passed} passed, ${failed.length} failed, ${skipped} skipped.`,
+        ...(this.globalErrors.length ? [`Runner errors: ${this.globalErrors.length}`] : []),
+        ...(failed.length ? ['Failed tests:', ...failed.map(test => `  - ${boundedLines(test.title, 1)[0]} (${test.status})`)] : []),
+        `Summary: ${summary}`,
+        `Machine-readable report: ${join(this.root, 'report.json')}`,
+      ].join('\n'),
     );
   }
   printsToStdio() {

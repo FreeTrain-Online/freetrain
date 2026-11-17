@@ -104,6 +104,15 @@ Each failure gets at most 50 console lines, including source and attachment
 references. `errors/*` retains complete original errors and an attachment manifest;
 the JSON report retains the original errors too. Skipped required cases and passes
 that depend on retries still fail the run.
+The final stdout summary shows passed, failed and skipped test counts and lists
+failed test titles with their project and file. Timeouts and interruptions count
+as failures; retries update the same test's final outcome instead of inflating
+the counts. Runner errors are counted separately.
+
+The summary and failure attachment manifests reference files instead of embedding
+binary Buffer arrays. Attachments supplied as in-memory bodies are saved under
+`attachments/` with their byte count in the index; their complete bytes remain
+available, and the standard Playwright JSON report is unchanged.
 
 `assertions.ts` exports `assertCanonicalState(actual, expected, context)`,
 `assertJSONSave(actualData, expectedData, context)`, and
@@ -130,6 +139,17 @@ including peer contexts closed in `finally` before the error reaches the runner.
 The recorder also closes peer contexts a spec leaves open before finishing its
 evidence, preventing their events from leaking into a subsequent test.
 
+Before creating contexts for the next case, the harness removes the previous
+case's raw trace scratch from that worker's `.playwright-artifacts-N/traces/`
+directory. Playwright 1.64.1 otherwise keeps these raw recordings and resources
+until worker exit, even when a passing trace archive is discarded. This bounds
+scratch usage to the current cases across active workers rather than the whole
+suite. Retained failure `trace.zip` files are separate and preserved. Cleanup is
+skipped if a browser context is still open or live tracing is enabled. The storage
+acceptance cases verify the pinned Playwright layout using two passing cases in
+the same worker; keep that check when upgrading Playwright. A single long case
+can still produce a large trace and full protocol payload file.
+
 `processes/worker-N/` retains backend and preview stdout/stderr in separate files
 for every process start/restart, plus a lifecycle timeline. Per-test `processes/`
 attachments contain log slices and `association.json` links to full worker logs.
@@ -152,6 +172,8 @@ with the intended errors and verifies bounded output, full errors, two-page
 screenshots/traces, process logs and distinct artifact paths. The parent command
 passes only when those checks pass and prints its `acceptance.json` path.
 Normal assertion/reporter regression checks run with `deno task test`.
+The harness also verifies that passing cases reclaim raw trace scratch between
+cases and that inline attachment bytes remain accessible through the summary.
 
 ### Session checkpoints, focused phases and local validation
 

@@ -1,8 +1,9 @@
 import { deepStrictEqual, equal, match, rejects } from 'node:assert/strict';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { TestInfo } from '@playwright/test';
+import type { Browser, TestInfo } from '@playwright/test';
+import { clearCompletedTraceScratch } from './browser/trace-storage.ts';
 import type {
   FullConfig,
   FullResult,
@@ -44,6 +45,31 @@ function evidence() {
   };
 }
 const context = { phase: 'checkpoint reopen', peer: 'JA observer' };
+Deno.test('trace scratch cleanup isolates workers and preserves archives and active contexts', () => {
+  const e = evidence();
+  try {
+    const worker = join(e.directory, '.playwright-artifacts-0');
+    const scratch = join(worker, 'traces');
+    const other = join(e.directory, '.playwright-artifacts-1', 'traces');
+    mkdirSync(scratch, { recursive: true });
+    mkdirSync(other, { recursive: true });
+    writeFileSync(join(scratch, 'raw.trace'), 'raw');
+    writeFileSync(join(other, 'raw.trace'), 'other worker');
+    writeFileSync(join(e.directory, 'trace.zip'), 'retained trace');
+    writeFileSync(join(worker, 'temporary.zip'), 'pending export');
+    const info = { workerIndex: 0, project: { outputDir: e.directory, use: {} } } as TestInfo;
+    clearCompletedTraceScratch({ contexts: () => [{}] } as unknown as Browser, info);
+    equal(existsSync(scratch), true);
+    const browser = { contexts: () => [] } as unknown as Browser;
+    clearCompletedTraceScratch(browser, { ...info, project: { ...info.project, use: { trace: { live: true } } } } as unknown as TestInfo);
+    equal(existsSync(scratch), true);
+    clearCompletedTraceScratch(browser, info);
+    equal(existsSync(scratch), false);
+    equal(readFileSync(join(other, 'raw.trace'), 'utf8'), 'other worker');
+    equal(readFileSync(join(e.directory, 'trace.zip'), 'utf8'), 'retained trace');
+    equal(readFileSync(join(worker, 'temporary.zip'), 'utf8'), 'pending export');
+  } finally { e.cleanup(); }
+});
 Deno.test('canonical heat corruption reports precise path, target identity and full values only on failure', async () => {
   const e = evidence();
   try {
@@ -173,7 +199,7 @@ Deno.test('ordinary reporter errors stay bounded with complete original errors, 
         name: 'save',
         path: '/save.json',
         contentType: 'application/json',
-      }],
+      }, { name: 'inline.png', body: Buffer.alloc(1024 * 1024, 127), contentType: 'image/png' }],
     } as TestResult;
     reporter.onTestEnd(
       {
@@ -187,7 +213,7 @@ Deno.test('ordinary reporter errors stay bounded with complete original errors, 
     equal(output[1].split('\n').length <= 50, true);
     deepStrictEqual(result.errors[0], original);
     deepStrictEqual(
-      JSON.parse(readFileSync(result.attachments[1].path!, 'utf8')),
+      JSON.parse(readFileSync(result.attachments.find(a => a.name === 'complete-errors')!.path!, 'utf8')),
       [original],
     );
     match(output[1], /spec.ts:4:1/);
@@ -200,6 +226,13 @@ Deno.test('ordinary reporter errors stay bounded with complete original errors, 
         .results[0].status,
       'failed',
     );
+    const summary = readFileSync(join(e.directory, 'summary.json'), 'utf8');
+    equal(summary.length < 10000, true);
+    const inline = JSON.parse(summary).results[0].attachments.find((a: { name: string }) => a.name === 'inline.png');
+    equal(inline.body, undefined);
+    equal(inline.bytes, 1024 * 1024);
+    deepStrictEqual(readFileSync(inline.path), result.attachments[1].body);
+    equal(result.attachments[1].path, undefined);
     equal(boundedLines('x'.repeat(10000))[0].length < 550, true);
   } finally {
     console.log = log;
@@ -207,6 +240,49 @@ Deno.test('ordinary reporter errors stay bounded with complete original errors, 
     if (previous === undefined) {
       delete process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT;
     } else process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT = previous;
+    e.cleanup();
+  }
+});
+Deno.test('reporter stdout summarizes final test outcomes and lists failures once', () => {
+  const e = evidence(), previous = process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT;
+  const log = console.log, stderr = console.error, output: string[] = [];
+  process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT = e.directory;
+  console.log = console.error = (...values) => { output.push(values.join(' ')); };
+  try {
+    const reporter = new BoundedReporter();
+    reporter.onBegin({ rootDir: e.directory } as FullConfig);
+    const statuses = ['passed', 'failed', 'timedOut', 'interrupted', 'skipped', 'passed'] as const;
+    for (const [index, status] of statuses.entries()) {
+      const test = {
+        id: `case-${index}`, titlePath: () => ['canonical', 'terrain.spec.ts', `case ${index}`],
+        location: { file: 'terrain.spec.ts', line: index + 1, column: 1 },
+        expectedStatus: 'passed',
+      } as TestCase;
+      const result = { status, retry: 0, workerIndex: 0, errors: [], attachments: [] } as unknown as TestResult;
+      if (index === 5) reporter.onTestEnd(test, { ...result, status: 'failed' });
+      reporter.onTestEnd(test, { ...result, retry: index === 5 ? 1 : 0 });
+    }
+    reporter.onError({ message: 'runner failure' });
+    reporter.onEnd({ status: 'failed' } as FullResult);
+    const summary = output.at(-1)!;
+    match(summary, /^Browser run failed: 2 passed, 3 failed, 1 skipped\./);
+    match(summary, /Runner errors: 1/);
+    const failureLines = summary.split('\n').filter(line => line.startsWith('  - '));
+    deepStrictEqual(failureLines, [
+      '  - canonical › terrain.spec.ts › case 1 (failed)',
+      '  - canonical › terrain.spec.ts › case 2 (timedOut)',
+      '  - canonical › terrain.spec.ts › case 3 (interrupted)',
+    ]);
+    const passing = new BoundedReporter();
+    passing.onBegin({ rootDir: e.directory } as FullConfig);
+    passing.onEnd({ status: 'passed' } as FullResult);
+    match(output.at(-1)!, /^Browser run passed: 0 passed, 0 failed, 0 skipped\./);
+    equal(output.at(-1)!.includes('Failed tests:'), false);
+  } finally {
+    console.log = log;
+    console.error = stderr;
+    if (previous === undefined) delete process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT;
+    else process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT = previous;
     e.cleanup();
   }
 });

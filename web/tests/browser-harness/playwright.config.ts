@@ -3,9 +3,9 @@ import { join, resolve } from 'node:path';
 const root = resolve(process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT!);
 export default defineConfig({
   testDir: __dirname,
-  testMatch: process.env.FREETRAIN_DIAGNOSTICS_MANAGED
-    ? 'managed.ts'
-    : 'failures.ts',
+  testMatch: process.env.FREETRAIN_DIAGNOSTICS_STORAGE
+    ? 'storage.ts'
+    : process.env.FREETRAIN_DIAGNOSTICS_MANAGED ? 'managed.ts' : 'failures.ts',
   outputDir: join(root, 'test-results'),
   fullyParallel: true,
   workers: 2,

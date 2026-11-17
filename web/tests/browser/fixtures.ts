@@ -8,6 +8,7 @@ import { writeTimings } from './run-timings.ts';
 import { BrowserDiagnostics } from './diagnostics.ts';
 import { SessionFixture } from './session.ts';
 import { attachProcessEvidence, ProcessEvidence, processEvidenceDirectory, processLogOffsets } from './process-evidence.ts';
+import { clearCompletedTraceScratch } from './trace-storage.ts';
 
 export * from '@playwright/test';
 
@@ -62,6 +63,7 @@ async function stop(child: ChildProcess) {
 export const test = base.extend<{ resetWorld: void; diagnostics: BrowserDiagnostics | undefined; processEvidence: void; sessions: SessionFixture }, { worldServer: WorldServer }>({
   sessions: async ({}, use, testInfo) => { await use(new SessionFixture(testInfo)); },
   diagnostics: [async ({ browser }, use, testInfo) => {
+    clearCompletedTraceScratch(browser, testInfo);
     const diagnostics = new BrowserDiagnostics(testInfo);
     diagnostics.install(browser);
     try { await use(diagnostics); } finally { await diagnostics.finish(); }
