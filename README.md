@@ -10,11 +10,13 @@ FreeTrain Online is in early development with limited features and a placeholder
 
 - Explore a live map together with other players, with elevation, water and forests.
 - Create flat or generated worlds, or import a heightmap image.
-- Modify terrain with painting and other terrain tools.
-- Lay, attach, branch and remove railway with an authoritative preview.
+- Raise and lower terrain height, and place trees, farmland, etc.
+- Lay, attach, branch and remove railway tracks with an authoritative preview.
+- Build and remove bridges, tunnels, and other structures.
 - Purchase, manage, and place trains.
 - Create and manage time tables for trains.
-- Stations and platforms.
+- Stations, platforms, and passengers.
+- Build and manage city buildings.
 - Save and restore worlds, including automatic checkpoints.
 - English and Japanese localizations.
 - Smoothly animated trains at lower game speeds (the original FreeTrain had no train animation at all).
